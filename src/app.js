@@ -1,10 +1,6 @@
 import {h, div} from '@cycle/dom'
 import xs from 'xstream'
 
-
-import 'aframe-orbit-controls-component-2'
-import './lib/aframe-hello-component'
-
 const intent = domSource => {
   return {
     width$: domSource.select('input#width')
