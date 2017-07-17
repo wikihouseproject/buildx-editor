@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "chai": "^4.1.0",
     "cycle-scripts": "1.1.0"
   },
   "dependencies": {
@@ -18,7 +19,7 @@
   "scripts": {
     "start": "cycle-scripts start",
     "deploy": "npm run build && echo 'https://sprint.buildx.cc' > build/CNAME && gh-pages -d build && rm -rf build",
-    "test": "cycle-scripts test",
+    "test": "mocha --colors --require babel-register --reporter spec tests/**/*.js",
     "build": "cycle-scripts build",
     "eject": "cycle-scripts eject"
   },
