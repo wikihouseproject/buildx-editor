@@ -54,13 +54,6 @@ export default function ThreeD(sources) {
         ]),
 
         h('a-entity', {attrs:{
-          id: 'leftWall',
-          geometry:{ primitive: 'box', width: 0.24, height: wallHeight },
-          material: {color: 'red'},
-          position: {x:-width/2-0.24, y: 0, z: -10}
-        }}),
-
-        h('a-entity', {attrs:{
           id: 'ground',
           geometry:{ primitive: 'plane', width: 20, height: 20},
           material: {color: '#CCC', side: 'double'},
@@ -75,25 +68,3 @@ export default function ThreeD(sources) {
   return { DOM: vtree$ }
 }
 
-/*
-<a-scene stats={true}>
-  <a-entity id="frames" position="-2.4 6 -10" rotation="180 0 0">
-    <a-entity id="frame" position="0 0 0">
-      <a-entity extrude-svg={{path: path, amount: 0.25}} material={{ color: color }}></a-entity>
-    </a-entity>
-    <a-entity clone={{id: '#frame'}} position="0 0 3" />
-    <a-entity clone={{id: '#frame'}} position="0 0 2" />
-    <a-entity clone={{id: '#frame'}} position="0 0 1" />
-  </a-entity>
-</a-scene>
-*/
-
-/*
-scene(attrs({stats: true}),[
-  entity('#frames', attrs({position: '-2 6 10', rotation: '180 0 0'}), [
-    entity('#frame', attrs({position: '0 0 0'}), [
-      piece()
-    ])
-  ])
-])
-*/
