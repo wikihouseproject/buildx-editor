@@ -9,7 +9,9 @@
     "@cycle/dom": "^17.6.0",
     "@cycle/run": "^3.1.0",
     "aframe-orbit-controls-component-2": "^0.1.8",
+    "clipper-js": "^1.0.2",
     "gh-pages": "^1.0.0",
+    "ramda": "^0.24.1",
     "xstream": "^10.9.0"
   },
   "scripts": {
