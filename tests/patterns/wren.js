@@ -11,8 +11,10 @@ describe('wren', () => {
       wallHeight: 8.0*100,
       frameWidth: 10.0,
     };
-    const out = wren(params);
-    chai.expect(out).to.include.property(['viewBox', 'points', 'bounds', 'close']);
 
+    it('should spit out points', () => {
+      const out = wren(params);
+      chai.expect(out).to.include.keys(['viewBox', 'points', 'bounds', 'close']);
+    });
   });
 });
