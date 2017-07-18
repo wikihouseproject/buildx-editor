@@ -1,7 +1,6 @@
+import chai from 'chai';
 
-import 'chai';
-
-import wren from '../../src/lib/s';
+import wren from '../../src/lib/wren';
 
 describe('wren', () => {
 
@@ -13,7 +12,7 @@ describe('wren', () => {
       frameWidth: 10.0,
     };
     const out = wren(params);
-    chai.expect(out).to.include.properties(['viewBox', 'points', 'bounds', 'close']);
+    chai.expect(out).to.include.property(['viewBox', 'points', 'bounds', 'close']);
 
   });
 });

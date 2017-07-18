@@ -1,5 +1,5 @@
 import {h, div} from '@cycle/dom'
-import {rails, bays, floor, frames, walls, connectors} from '../parts'
+import {rails, bays, floor, frames, walls, connectors} from '../lib/wren/parts'
 import {intent, model, renderControls} from '../extras/functions'
 
 export default function SVG(sources) {
