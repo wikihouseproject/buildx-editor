@@ -28,7 +28,10 @@ const renderFrames = count => {
   let frames = []
   for (let i = 1; i < count; i++) {
     frames.push(
-      h('a-entity', {attrs: { clone: {id: '#frame'}, position: {x: 0, y: 0, z: i}}})
+      h('a-entity', {attrs: { clone: {id: '#frame'}, position: {x: 0, y: 0, z: Math.floor(-i/2) }}})
+    )
+    frames.push(
+      h('a-entity', {attrs: { clone: {id: '#frame'}, position: {x: 0, y: 0, z: Math.floor(i/2)}}})
     )
   }
   return frames
@@ -43,32 +46,34 @@ export default function ThreeD(sources) {
     div([
       h('a-scene', {attrs: {stats: true}}, [
 
-        h('a-entity', {attrs: {id: 'frames', position: '-2.4 6 -10', rotation: '180 0 0'}}, [
+        h('a-entity', [
+          h('a-entity', {attrs: {id: 'frames', position: '-2.4 6 0', rotation: '180 0 0'}}, [
 
-          h('a-entity', {attrs:{ id: 'cameraTarget', position: '0 5 0' }}),
+            h('a-entity', {attrs:{ id: 'cameraTarget', position: '0 3 0' }}),
 
-          h('a-entity', {attrs: {id: 'frame', position: '0 0 0'}}, [
-            piece([width, height, wallHeight], 0, 'yellow'),
-            piece([width, height, wallHeight], 1, 'green'),
-            piece([width, height, wallHeight], 2, 'pink'),
-            piece([width, height, wallHeight], 3, 'blue'),
-            piece([width, height, wallHeight], 4, 'orange')
+            h('a-entity', {attrs: {id: 'frame', position: '0 0 0'}}, [
+              piece([width, height, wallHeight], 0, 'yellow'),
+              piece([width, height, wallHeight], 1, 'green'),
+              piece([width, height, wallHeight], 2, 'pink'),
+              piece([width, height, wallHeight], 3, 'blue'),
+              piece([width, height, wallHeight], 4, 'orange')
+            ]),
+            ...renderFrames(bayCount)
           ]),
-          ...renderFrames(bayCount)
         ]),
 
         h('a-entity', {attrs:{
           id: 'ground',
           geometry:{ primitive: 'plane', width: 20, height: 20},
           material: {color: '#CCC', side: 'double'},
-          position: '0 -0.01 -10', rotation: '-90 0 0'
+          position: '0 -0.01 0', rotation: '-90 0 0'
         }}),
 
 
         h('a-entity', {attrs:{
           id: 'camera',
           camera: { fov: 90, zoom: 1 },
-          position: {x: 0, y: 5, z: 4 },
+          position: {x: 0, y: 8, z: 8 },
           'orbit-controls': {
             target: '#cameraTarget',
             autoRotate: false,
