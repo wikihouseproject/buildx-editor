@@ -1,9 +1,10 @@
 import {h, div} from '@cycle/dom'
+import {run} from '@cycle/run'
+import {makeHTMLDriver} from '@cycle/html'
+import xs from 'xstream'
 
 const openPath = points => "M" + points.map(pair => pair.join(",")).join(" ")
 const closedPath = points => openPath(points) + "z"
-
-const circle = radius => point => (['circle', { cx: point[0], cy: point[1], r: radius}])
 
 const frameCuts = (frame) => {
   // TODO: include naming and grouping
@@ -30,8 +31,28 @@ function renderSvg(geometry, options) {
   return h('svg', {attrs:{ xmlns: 'http://www.w3.org/2000/svg', width: options.width, height: options.height }}, paths);
 }
 
+
+// Export as SVG string
+function exportSvg(geometry, options) {
+  const rendered = renderSvg(geometry, options);
+
+  var svg = null;
+  const collectOutput = (out) => {
+    svg = out;
+  }
+  const drivers = {
+    HTML: makeHTMLDriver(collectOutput)
+  }
+  const outputRender = (sources) => {
+    const stream = xs.of(rendered);
+    return { HTML: stream };
+  }
+  run(outputRender, drivers);
+  return svg;
+}
+
 module.exports = {
+  export: exportSvg,
   render: renderSvg,
   closedPath,
-  circle,
 }
