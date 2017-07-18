@@ -67,4 +67,3 @@ export default function ThreeD(sources) {
 
   return { DOM: vtree$ }
 }
-
