@@ -11,11 +11,11 @@ import { intent, model, renderControls } from '../extras/functions'
 import * as wren from '../lib/wren'
 
 const piece = ([width, height, wallHeight], index, color) => {
-  const {viewBox, points, bounds, close} = wren.frame({width: width*100, height: height*100, wallHeight: wallHeight*100, frameWidth: 10})
+  const {viewBox, points, bounds} = wren.frame({width: width*100, height: height*100, wallHeight: wallHeight*100, frameWidth: 10})
   const b = bounds(0)
   return h('a-entity', {attrs:{
     'extrude-svg': {
-      path: close(points(index).map(([x,y]) => [(x-b.minX)/100, (y-b.minY)/100])),
+      path: wren.SVG.closedPath(points(index).map(([x,y]) => [(x-b.minX)/100, (y-b.minY)/100])),
       amount: 0.25
     },
     material: { color }

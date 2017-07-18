@@ -14,7 +14,7 @@ describe('wren.frame', () => {
 
     it('should spit out points', () => {
       const out = wren.frame(params);
-      chai.expect(out).to.include.keys(['viewBox', 'points', 'bounds', 'close']);
+      chai.expect(out).to.include.keys(['viewBox', 'points', 'bounds']);
     });
   });
 });

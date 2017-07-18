@@ -1,21 +1,36 @@
 const {compose} = require('ramda')
-const SVG = require('./patterns/svg')
+export const SVG = require('./svg')
 const List = require('./patterns/list')
 const Clipper = require('./patterns/clipper')
 const Points = require('./patterns/points')
 
-const element = NAME => (ATTRS, CHILDREN=[]) => [NAME, ATTRS, CHILDREN]
-const svg = element('svg')
-const path = element('path')
-const circle = element('circle')
-const g = element('g')
+const getBounds = coords => {
+  return coords.reduce( (bounds, coords) => {
+    // const [x, y] = coords.split(",")
+    const [x, y] = coords
+    bounds.minX = Math.min(bounds.minX, x)
+    bounds.minY = Math.min(bounds.minY, y)
+    bounds.maxX = Math.max(bounds.maxX, x)
+    bounds.maxY = Math.max(bounds.maxY, y)
+    return bounds
+  }, {
+    minX: Infinity,
+    minY: Infinity,
+    maxX: -Infinity,
+    maxY: -Infinity
+  })
+}
+
+const getViewBox = (bounds, padding=10) =>
+  [
+    bounds.minX-padding,
+    bounds.minY-padding,
+    bounds.maxX - bounds.minX+padding*2,
+    bounds.maxY - bounds.minY+padding*2
+  ].join(" ")
+
 //
-const makeSVG = ({ELEMENTS, VIEWBOX}) => SVG.parse(svg({ xmlns: "http://www.w3.org/2000/svg", viewBox: VIEWBOX}, ELEMENTS))
-const render = ({CONTAINER, SVG}) => document.getElementById(CONTAINER).innerHTML = SVG
-//
-const viewBoxFromPoints = compose(SVG.getViewBox, SVG.getBounds)
-//
-const point = p => circle({cx: p[0], cy: p[1], r: 1})
+const viewBoxFromPoints = compose(getViewBox, getBounds)
 //
 const GAP = 10
 //
@@ -106,18 +121,17 @@ export function frame({width, height, wallHeight, frameWidth}) {
     firstPoints(outerCorners, innerCorners, fifthPoints)
   )
 
-  // const bounds = compose(SVG.getBounds, firstPoints(outerCorners, innerCorners, fifthPoints))(0)
+  // const bounds = compose(getBounds, firstPoints(outerCorners, innerCorners, fifthPoints))(0)
   // console.log(SVG.closedPath(firstPoints(outerCorners, innerCorners, fifthPoints)(4).map( ([x,y]) => [ (x-bounds.minX)/100, (y-bounds.minY)/100])))
 
-  // const bounds2 = compose(SVG.getBounds, firstPoints(outerCorners, innerCorners, fifthPoints))(0)
+  // const bounds2 = compose(getBounds, firstPoints(outerCorners, innerCorners, fifthPoints))(0)
   // console.log(SVG.closedPath(firstPoints(outerCorners, innerCorners, fifthPoints)(3).map( ([x,y]) => [ (x-bounds.minX)/100, (y-bounds.minY)/100])))
 
   return {
     viewBox: viewBoxFromPoints(outerCorners),
     firstPath,
     points: firstPoints(outerCorners, innerCorners, fifthPoints),
-    bounds: compose(SVG.getBounds, firstPoints(outerCorners, innerCorners, fifthPoints)),
-    close: SVG.closedPath
+    bounds: compose(getBounds, firstPoints(outerCorners, innerCorners, fifthPoints)),
   }
 }
 
