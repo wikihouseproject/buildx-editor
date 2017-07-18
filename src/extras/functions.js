@@ -1,8 +1,16 @@
 import xs from 'xstream'
 import config from './config'
-import {div, input, span} from '@cycle/dom'
+import {div, input, span, h} from '@cycle/dom'
 
+// TODO: move outside of UI code
+// TODO: take an object for parameters
 const floorArea = (width, bayCount) => width*(bayCount*config.BAY_LENGTH)
+
+const totalCosts = (width, bayCount) => {
+    const frames = width*bayCount;
+    const frameCost = 100; // XXX: bullshit number for now
+    return frames*frameCost;
+}
 
 const intent = domSource => {
   return {
@@ -57,8 +65,9 @@ const renderControls = (width, height, wallHeight, bayCount) => {
         span(`Bays #: ${bayCount}`)
       ]),
     ]),
-    div({attrs: { id: 'figures'}}, [
-      span(`Floor Area: ${floorArea(width, bayCount).toFixed(2)}m²`)
+    h('ul', {attrs: { id: 'figures'}}, [
+      h('li', `Floor Area: ${floorArea(width, bayCount).toFixed(2)}m²`),
+      h('li', `Total costs: ${totalCosts(width, bayCount).toFixed(2)} GPD`),
     ])
   ]
 }
