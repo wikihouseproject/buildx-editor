@@ -1,5 +1,6 @@
 import '../lib/aframe-components/aframe-extrude-svg-component'
 import '../lib/aframe-components/aframe-clone-component'
+import '../lib/aframe-components/aframe-arrow-helper-component'
 import 'aframe-orbit-controls-component-2'
 
 import {h, div} from '@cycle/dom'
@@ -36,6 +37,19 @@ const renderFrames = count => {
   return frames
 }
 
+const renderArrowHelpers = (position, length) => {
+  const directions = [['red', '1 0 0'],['green', '0 1 0'],['blue', '0 0 1']]
+  return directions.map(([color, dir]) => h('a-entity', {attrs:{
+      position,
+      'arrow-helper': {
+        length,
+        color,
+        dir
+      }
+    }}
+  ))
+}
+
 export default function ThreeD(sources) {
 
   const actions = intent(sources.DOM)
@@ -44,6 +58,8 @@ export default function ThreeD(sources) {
   const vtree$ = state$.map(([width, height, wallHeight, bayCount]) =>
     div([
       h('a-scene', {attrs: {stats: true}}, [
+
+        ...renderArrowHelpers('0 0 0', 5),
 
         h('a-entity', [
 
