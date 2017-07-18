@@ -46,9 +46,10 @@ export default function ThreeD(sources) {
       h('a-scene', {attrs: {stats: true}}, [
 
         h('a-entity', [
-          h('a-entity', {attrs: {id: 'frames', position: '-2.4 6 0', rotation: '180 0 0'}}, [
 
-            h('a-entity', {attrs:{ id: 'cameraTarget', position: '0 3 0' }}),
+          h('a-entity', {attrs:{ id: 'cameraTarget', position: '0 3 0' }}),
+
+          h('a-entity', {attrs: {id: 'frames', position: `-${width/2} ${height} 0`, rotation: '180 0 0'}}, [
 
             h('a-entity', {attrs: {id: 'frame', position: '0 0 0'}}, [
               piece([width, height, wallHeight], 0, 'yellow'),
@@ -65,7 +66,7 @@ export default function ThreeD(sources) {
           id: 'ground',
           geometry:{ primitive: 'plane', width: 20, height: 20},
           material: {color: '#CCC', side: 'double'},
-          position: '0 -0.01 0', rotation: '-90 0 0'
+          position: '0 -0.1 0', rotation: '-90 0 0'
         }}),
 
 
