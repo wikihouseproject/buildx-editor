@@ -1,12 +1,12 @@
 import {h, div} from '@cycle/dom'
 
-import wren from '../lib/wren'
+import * as wren from '../lib/wren'
 import {intent, model, renderControls} from '../extras/functions'
 
 const SVG = require('../lib/wren/patterns/svg.js')
 
 const cutPaths = (width, height, wallHeight) => {
-  const out = wren({width: width*100, height: height*100, wallHeight: wallHeight*100, frameWidth: 10});
+  const out = wren.frame({width: width*100, height: height*100, wallHeight: wallHeight*100, frameWidth: 10});
 
   // TODO: include naming and grouping
   var paths = [];

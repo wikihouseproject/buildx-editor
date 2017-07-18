@@ -5,13 +5,12 @@ import 'aframe-orbit-controls-component-2'
 import {h, div} from '@cycle/dom'
 import xs from 'xstream'
 
-import { rails, bays, floor, frames, walls, connectors } from '../lib/wren/parts'
-import { floorArea, intent, model, renderControls } from '../extras/functions'
+import { intent, model, renderControls } from '../extras/functions'
 
-import wren from '../lib/wren'
+import * as wren from '../lib/wren'
 
 const piece = ([width, height, wallHeight], index, color) => {
-  const {viewBox, points, bounds, close} = wren({width: width*100, height: height*100, wallHeight: wallHeight*100, frameWidth: 10})
+  const {viewBox, points, bounds, close} = wren.frame({width: width*100, height: height*100, wallHeight: wallHeight*100, frameWidth: 10})
   const b = bounds(0)
   return h('a-entity', {attrs:{
     'extrude-svg': {

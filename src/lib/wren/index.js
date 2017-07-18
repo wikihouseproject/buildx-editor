@@ -70,7 +70,7 @@ const firstPoints = (outerCorners, innerCorners, fifthPoints) => i => {
   ]
 }
 
-export default function S({width, height, wallHeight, frameWidth}) {
+export function frame({width, height, wallHeight, frameWidth}) {
   // const corners = [[150,50],[250,150],[250,250],[50,250],[50,150]]
   const corners = [
     [width / 2, 0],                 // top center
@@ -119,4 +119,14 @@ export default function S({width, height, wallHeight, frameWidth}) {
     bounds: compose(SVG.getBounds, firstPoints(outerCorners, innerCorners, fifthPoints)),
     close: SVG.closedPath
   }
+}
+
+export function floorArea(width, bayCount, config) {
+    return width*(bayCount*config.BAY_LENGTH);
+}
+
+export function totalCosts(width, bayCount) {
+    const frames = width*bayCount;
+    const frameCost = 100; // XXX: bullshit number for now
+    return frames*frameCost;
 }

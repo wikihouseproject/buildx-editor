@@ -2,15 +2,7 @@ import xs from 'xstream'
 import config from './config'
 import {div, input, span, h} from '@cycle/dom'
 
-// TODO: move outside of UI code
-// TODO: take an object for parameters
-const floorArea = (width, bayCount) => width*(bayCount*config.BAY_LENGTH)
-
-const totalCosts = (width, bayCount) => {
-    const frames = width*bayCount;
-    const frameCost = 100; // XXX: bullshit number for now
-    return frames*frameCost;
-}
+import * as wren from '../lib/wren'
 
 const intent = domSource => {
   return {
@@ -66,10 +58,10 @@ const renderControls = (width, height, wallHeight, bayCount) => {
       ]),
     ]),
     h('ul', {attrs: { id: 'figures'}}, [
-      h('li', `Floor Area: ${floorArea(width, bayCount).toFixed(2)}m²`),
-      h('li', `Total costs: ${totalCosts(width, bayCount).toFixed(2)} GPD`),
+      h('li', `Floor Area: ${wren.floorArea(width, bayCount, config).toFixed(2)}m²`),
+      h('li', `Total costs: ${wren.totalCosts(width, bayCount).toFixed(2)} GPD`),
     ])
   ]
 }
 
-module.exports = { floorArea, intent, model, renderControls }
+module.exports = { intent, model, renderControls }
