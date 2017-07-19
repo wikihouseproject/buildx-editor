@@ -33,7 +33,7 @@ const getViewBox = (bounds, padding=10) =>
 //
 const viewBoxFromPoints = compose(getViewBox, getBounds)
 //
-const GAP = 10
+const GAP = 15 // distance to propagate points by when dedicing grip positions. Half of grip+nongrip (300mm)
 //
 const firstHalfPoints = ({POINTS, CIRCLE}, $) => {
   const _POINTS = List.wrapped(POINTS).map( ([startPoint, endPoint]) => {
