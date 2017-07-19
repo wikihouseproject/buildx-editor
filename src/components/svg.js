@@ -1,4 +1,5 @@
 import {h, div} from '@cycle/dom'
+import xs from 'xstream'
 
 import * as wren from '../lib/wren'
 import {intent, model, renderControls} from '../extras/functions'
@@ -23,7 +24,6 @@ export default function renderCutsheets(sources) {
   const state$ = model(actions)
 
   const vtree$ = state$.map(([width, height, wallHeight, length]) => {
-
     const workarea = { width: 1.2, height: 2.4 }; // TODO: pass as parameters
     const cutsheet = rectangle(workarea.width*100, workarea.height*100);
 
@@ -32,9 +32,13 @@ export default function renderCutsheets(sources) {
       'boundary': cutsheet
     };
 
+    const svg = wren.SVG.export(geometry); 
+    const svgDataUri = "data:image/svg+xml;base64," + btoa(svg);   
+
     return div([
-      wren.SVG.render(geometry),
-      ...renderControls(width, height, wallHeight, length)
+      wren.SVG.render(geometry, { id: 'svgview' }),
+      h('a', { attrs: { id: 'svgdata', href: svgDataUri }}, ['Download']),
+      ...renderControls(width, height, wallHeight, length),
     ])
   })
 

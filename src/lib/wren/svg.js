@@ -28,7 +28,10 @@ function renderSvg(geometry, options) {
   const b = h('path', { attrs: { fill: 'none', stroke: 'grey', d: closedPath(geometry.boundary) }});
   const paths = cuts.concat([b]);
 
-  return h('svg', {attrs:{ xmlns: 'http://www.w3.org/2000/svg', width: options.width, height: options.height }}, paths);
+  var attrs = { xmlns: 'http://www.w3.org/2000/svg', width: options.width, height: options.height };
+  if (options.id) { attrs.id = options.id; }
+
+  return h('svg', {attrs: attrs}, paths);
 }
 
 
