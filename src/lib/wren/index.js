@@ -163,11 +163,23 @@ export function splitFinPieces(finPolygon, params) {
   }
 }
 
-export function finPoints(params) {
+function times(n, iterator) {
+  var accum = Array(Math.max(0, n));
+  for (var i = 0; i < n; i++) accum[i] = iterator.call();
+  return accum;
+}
 
-  const s = finShape(params);
-  return splitFinPieces(s, params);
+// Main entrypoint, generates all geometry of the chassis
+export function chassis(params) {
 
+  const makeFrame = () => {
+    const s = finShape(params);
+    return splitFinPieces(s, params);
+  };
+
+  return {
+    frames: times(params.bayCount, makeFrame),
+  }
 }
 
 

@@ -1,20 +1,13 @@
 import {h} from '@cycle/dom'
 import * as wren from '../../lib/wren'
 
-const piece = ([width, height, wallHeight, amount], index, material) => {
-
-  var p = wren.parameters.defaults;
-  p.width = width;
-  p.height = height;
-  p.wallHeight = wallHeight;
-
-  // TODO: move wren geometry generation out of rendering function
-  const {points, bounds} = wren.finPoints(p)
+export const renderFramePart = (fin, index, extrusionAmount, material) => {
+  const {points, bounds} = fin
   const b = bounds(0)
   return h('a-entity', {attrs:{
     'extrude-svg': {
       path: wren.SVG.closedPath(points(index).map(([x,y]) => [(x-b.minX)/100, (y-b.minY)/100])),
-      amount
+      amount: extrusionAmount,
     },
     material
     // position: '0 0 0',
@@ -22,8 +15,7 @@ const piece = ([width, height, wallHeight, amount], index, material) => {
   }})
 }
 
-
-const renderFrames = (count, spacing) => {
+export const renderFrames = (count, spacing) => {
   let frames = []
   for (let i = 1; i < count; i++) {
     frames.push(
@@ -36,7 +28,7 @@ const renderFrames = (count, spacing) => {
   return frames
 }
 
-const renderArrowHelpers = (position, length) => {
+export const renderArrowHelpers = (position, length) => {
   const directions = [['red', '1 0 0'],['green', '0 1 0'],['blue', '0 0 1']]
   return directions.map(([color, dir]) => h('a-entity', {attrs:{
       position,
@@ -49,4 +41,3 @@ const renderArrowHelpers = (position, length) => {
   ))
 }
 
-module.exports = { piece, renderFrames, renderArrowHelpers }

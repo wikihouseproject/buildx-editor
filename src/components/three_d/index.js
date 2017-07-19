@@ -6,7 +6,7 @@ import 'aframe-orbit-controls-component-2'
 import {h, div} from '@cycle/dom'
 import xs from 'xstream'
 
-import {piece, renderFrames, renderArrowHelpers} from './extras'
+import {renderFramePart, renderFrames, renderArrowHelpers} from './extras'
 import { intent, model, renderControls } from '../../extras/functions'
 import { initialCameraPosition, colours, extrusion } from '../../extras/config'
 
@@ -26,6 +26,8 @@ export default function ThreeD(sources) {
     p.bayCount = bayCount;
     p.bayLength = spacing;
 
+    const chassis = wren.chassis(p);
+
     const dimensions = [width, height, wallHeight]
     const bounds = spacing * bayCount + extrusion
 
@@ -38,12 +40,12 @@ export default function ThreeD(sources) {
           h('a-entity#cameraTarget',{ attrs: {position: '0 0 0' }}, ),
           h('a-entity#frames', {attrs:{position: `-${width/2} ${height} 0`, rotation: '180 0 0'}}, [
             h('a-entity#frame', {attrs:{position: '0 0 0'}},
-              colours.map((c, i) => piece([...dimensions, extrusion], i, {color: c}))
+              colours.map((c, i) => renderFramePart(chassis.frames[0], i, p.frameDepth, {color: c}))
             ),
             h('a-entity#bounding-frame', {attrs:{position: `0 0 ${-bounds/2}`}},
-              colours.map((c, i) => piece([...dimensions, bounds], i, {opacity: 0}))
+              colours.map((c, i) => renderFramePart(chassis.frames[0], i, bounds, {opacity: 0}))
             ),
-            ...renderFrames(bayCount, spacing)
+            ...renderFrames(chassis.frames.length, spacing)
           ]),
         ]),
 
