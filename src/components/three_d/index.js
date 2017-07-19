@@ -8,7 +8,7 @@ import xs from 'xstream'
 
 import {piece, renderFrames, renderArrowHelpers} from './extras'
 import { intent, model, renderControls } from '../../extras/functions'
-import { initialCameraPosition } from '../../extras/config'
+import { initialCameraPosition, colours, extrusion } from '../../extras/config'
 
 import * as wren from '../../lib/wren'
 
@@ -16,8 +16,13 @@ export default function ThreeD(sources) {
 
   const actions = intent(sources.DOM)
   const state$ = model(actions)
-  const vtree$ = state$.map(([width, height, wallHeight, bayCount]) =>
-    div([
+
+  const vtree$ = state$.map(([width, height, wallHeight, spacing, bayCount]) => {
+
+    const dimensions = [width, height, wallHeight]
+    const bounds = spacing * bayCount + extrusion
+
+    return div([
       h('a-scene', {attrs: {stats: true}}, [
 
         ...renderArrowHelpers('0 0 0', 5),
@@ -25,14 +30,13 @@ export default function ThreeD(sources) {
         h('a-entity', [
           h('a-entity#cameraTarget',{ attrs: {position: '0 0 0' }}, ),
           h('a-entity#frames', {attrs:{position: `-${width/2} ${height} 0`, rotation: '180 0 0'}}, [
-            h('a-entity#frame', {attrs:{position: '0 0 0'}}, [
-              piece([width, height, wallHeight], 0, 'yellow'),
-              piece([width, height, wallHeight], 1, 'green'),
-              piece([width, height, wallHeight], 2, 'pink'),
-              piece([width, height, wallHeight], 3, 'blue'),
-              piece([width, height, wallHeight], 4, 'orange')
-            ]),
-            ...renderFrames(bayCount)
+            h('a-entity#frame', {attrs:{position: '0 0 0'}},
+              colours.map((c, i) => piece([...dimensions, extrusion], i, {color: c}))
+            ),
+            h('a-entity#bounding-frame', {attrs:{position: `0 0 ${-bounds/2}`}},
+              colours.map((c, i) => piece([...dimensions, bounds], i, {opacity: 0}))
+            ),
+            ...renderFrames(bayCount, spacing)
           ]),
         ]),
 
@@ -59,9 +63,9 @@ export default function ThreeD(sources) {
         }})
 
       ]),
-      ...renderControls(width, height, wallHeight, bayCount)
+      ...renderControls(width, height, wallHeight, spacing, bayCount)
     ])
-  )
+  })
 
   return { DOM: vtree$ }
 }

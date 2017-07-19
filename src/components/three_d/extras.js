@@ -1,28 +1,29 @@
 import {h} from '@cycle/dom'
 import * as wren from '../../lib/wren'
 
-const piece = ([width, height, wallHeight], index, color) => {
+const piece = ([width, height, wallHeight, amount], index, material) => {
   const {viewBox, points, bounds} = wren.frame({width: width*100, height: height*100, wallHeight: wallHeight*100, frameWidth: 10})
   const b = bounds(0)
   return h('a-entity', {attrs:{
     'extrude-svg': {
       path: wren.SVG.closedPath(points(index).map(([x,y]) => [(x-b.minX)/100, (y-b.minY)/100])),
-      amount: 0.25
+      amount
     },
-    material: { color }
+    material
     // position: '0 0 0',
     // rotation: '0 0 0',
   }})
 }
 
-const renderFrames = count => {
+
+const renderFrames = (count, spacing) => {
   let frames = []
   for (let i = 1; i < count; i++) {
     frames.push(
-      h('a-entity', {attrs: { clone: {source: '#frame'}, position: {x: 0, y: 0, z: Math.floor(-i/2) }}})
+      h('a-entity', {attrs: { clone: {source: '#frame'}, position: {x: 0, y: 0, z: spacing * Math.floor(-i/2) }}})
     )
     frames.push(
-      h('a-entity', {attrs: { clone: {source: '#frame'}, position: {x: 0, y: 0, z: Math.floor(i/2)}}})
+      h('a-entity', {attrs: { clone: {source: '#frame'}, position: {x: 0, y: 0, z: spacing * Math.floor(i /2)}}})
     )
   }
   return frames

@@ -11,6 +11,11 @@ const intent = domSource => {
               .map(ev => Number(ev.target.value))
               .startWith(config.width),
 
+    spacing$: domSource.select('input#spacing')
+              .events('input')
+              .map(ev => Number(ev.target.value))
+              .startWith(config.spacing),
+
     height$: domSource.select('input#height')
               .events('input')
               .map(ev => Number(ev.target.value))
@@ -33,11 +38,12 @@ const model = actions => {
     actions.width$,
     actions.height$,
     actions.wallHeight$,
+    actions.spacing$,
     actions.bayCount$,
   )
 }
 
-const renderControls = (width, height, wallHeight, bayCount) => {
+const renderControls = (width, height, wallHeight, spacing, bayCount) => {
   return [
     div({attrs: { id: 'controls'}}, [
       div([
@@ -51,6 +57,10 @@ const renderControls = (width, height, wallHeight, bayCount) => {
       div([
         input({attrs: { id: 'wallHeight', value: wallHeight, type: 'range', min: 2.5, max: (height-0.1), step: 0.1 }}),
         span(`wallHeight: ${wallHeight}m`)
+      ]),
+      div([
+        input({attrs: { id: 'spacing', value: wallHeight, type: 'range', min: 0.2, max: 2, step: 0.1 }}),
+        span(`Spacing: ${spacing}m`)
       ]),
       div([
         input({attrs: { id: 'bayCount', value: bayCount, type: 'range', min: 5, max: 15, step: 1 }}),
