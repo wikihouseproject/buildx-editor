@@ -1,5 +1,6 @@
 const {compose} = require('ramda')
 export const SVG = require('./svg')
+export const CSV = require('./csv')
 const List = require('./patterns/list')
 const Clipper = require('./patterns/clipper')
 const Points = require('./patterns/points')
@@ -137,6 +138,130 @@ export function frame({width, height, wallHeight, frameWidth}) {
 
 export function floorArea(width, bayCount, config) {
     return width*(bayCount*config.BAY_LENGTH);
+}
+
+// key metrics
+// 
+// frame sizes
+//
+// volume (or area)
+// frame
+// connectors
+// sheeting
+// end walls
+//
+// divide by plywood sheet area
+// nesting efficiency. 75%
+// cost of plywood
+
+// existing est, plywood
+// per m2, 4 - 8 
+// multiple stories -> cheaper
+// thicker frame -> expensive
+
+// 1300 GBP per m2 budget, incl labor
+// possibly as low as 1000
+// 15% chassis, 85% external
+
+// cutting time
+// cutting price
+// 25 per sheet material
+// 25 per sheet usage
+
+// external surface areas
+//
+// roofArea
+// wallArea
+// guttering
+// foundation
+
+// Export as .CSV / .json
+
+// All measurements in meters.
+// Distances generally center-center
+export function getParameters() {
+
+  // parameter declaration
+  const keys = ['id', 'name', 'type', 'default', 'description'];
+  const definitions = [
+    // Commonly configured
+    ['bayCount', "Bays #", 'number', 6, "Number of frames"],
+    ['height', "Height", 'distance', 3.0, "Height to top of frame"],
+    ['width', "Width", 'distance', 1.2, "Width of frame"],
+    ['wallHeight', "Wall height", 'distance', 2.5, "Height of wall, where roof starts"],
+
+    // internal
+    ['bayLength', "Bay length", 'distance', 1.2, "Distance between each of the frames"],
+    ['frameWidth', "Frame width", 'distance', 0.200, "Width of frame body"],
+    ['frameDepth', "Frame width", 'distance', 0.150, "Depth of spacer+fins+reinforcers"],
+    ['materialThickness', "Material thickness", 'distance', 18.0/1000, "Nominal thickness of plywood sheet"],
+    //['tolerance', "Fit tolerance", 'distance', 0.5/1000, "Tolerance for fitting parts"],
+  ]
+  // sanity check
+  definitions.map((d) => {
+    if (d.length != keys.length) {
+      throw new Error('Invalid parameter definition for' + d[0]);
+    }
+  });
+
+  // conveniences
+  var keyIndex = {};
+  for (var i=0; i<keys.length; i++) {
+    const name = keys[i];
+    keyIndex[name] = i;
+  }
+  var defaults = {};
+  for (var i=0; i<definitions.length; i++) {
+      const param = definitions[i];
+      const id = param[keyIndex['id']];
+      const d = param[keyIndex['default']];
+      defaults[id] = d;
+  }
+
+  return {
+    definitions,
+    keys,
+    defaults,
+  }
+}
+
+export const parameters = getParameters(); 
+
+export function geometrics(parameters) {
+
+  const i = parameters;
+
+  const length = i.bayCount * i.bayLength;
+  const outerLength = length + i.bayLength; // 2x half a bay
+  const outerWidth = i.width + i.frameWidth; // 2x half a frame 
+
+  const innerWidth = i.width - i.frameWidth;
+  const innerLength = i.length - i.bayLength;
+  
+  const floorArea = innerWidth * innerHeight;
+
+  // TODO: get wall and roofs from frame polygon
+  const sideWallArea = 10;
+  const endWallArea = 10;
+
+  const outputs = {
+      'footprintArea': outerLength * outerWidth,
+      'floorArea': floorArea,
+      'roofArea': 100, // outer
+      //'wallAreaOuter': sideWallArea*2 + endWallArea*2, // outer
+  }
+
+  // check post-conditions
+  const invalids = Object.keys(outputs).filter((key) => {
+    const val = outputs[key];
+    const valid = val >= 0 && !isNaN(val);
+    return !valid;
+  });
+  if (invalids.length) {
+    throw new Error("wren.geometrics() outputted invalid values: " + JSON.stringify(invalids));
+  }
+
+  return outputs;
 }
 
 export function totalCosts(width, bayCount) {
