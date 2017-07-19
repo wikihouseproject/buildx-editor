@@ -41,9 +41,9 @@ acorn@^3.0.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-3.3.0.tgz#45e37fb39e8da3f25baee3ff5369e2bb5f22017a"
 
-aframe-orbit-controls-component-2@^0.1.8:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/aframe-orbit-controls-component-2/-/aframe-orbit-controls-component-2-0.1.8.tgz#3001898cc903719723f7ac1ee963aac3c170826a"
+aframe-orbit-controls-component-2@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/aframe-orbit-controls-component-2/-/aframe-orbit-controls-component-2-0.1.9.tgz#b43389d0edf12258c6fdc1ceeaf884fef0124879"
 
 ajv@^4.9.1:
   version "4.11.8"
