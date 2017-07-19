@@ -179,6 +179,7 @@ export function chassis(params) {
 
   return {
     frames: times(params.bayCount, makeFrame),
+    parameters: params,
   }
 }
 
@@ -235,8 +236,11 @@ export function getParameters() {
     // internal
     ['bayLength', "Bay length", 'distance', 1.2, "Distance between each of the frames"],
     ['frameWidth', "Frame width", 'distance', 0.264, "Width of frame body"],
-    ['frameDepth', "Frame width", 'distance', 0.150, "Depth of spacer+fins+reinforcers"],
+    ['frameDepth', "Frame depth", 'distance', 0.150, "Depth of spacer+fins+reinforcers"],
+    // sheet
     ['materialThickness', "Material thickness", 'distance', 18.0/1000, "Nominal thickness of plywood sheet"],
+    ['sheetWidth', "Sheet width", 'distance', 1.2, "Width of plywood sheet"],
+    ['sheetLength', "Sheet height", 'distance', 2.4, "Length of plywood sheet"],
     //['tolerance', "Fit tolerance", 'distance', 0.5/1000, "Tolerance for fitting parts"],
   ]
   // sanity check
