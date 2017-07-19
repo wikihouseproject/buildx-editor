@@ -5,7 +5,8 @@ const List = require('./patterns/list')
 const Clipper = require('./patterns/clipper')
 const Points = require('./patterns/points')
 
-const getBounds = coords => {
+// Return bounding rectangle for a set of 2d points
+const getBounds = (coords) => {
   return coords.reduce( (bounds, coords) => {
     // const [x, y] = coords.split(",")
     const [x, y] = coords
@@ -22,6 +23,7 @@ const getBounds = coords => {
   })
 }
 
+// Pad a bounding box
 const getViewBox = (bounds, padding=10) =>
   [
     bounds.minX-padding,
@@ -60,6 +62,7 @@ const secondHalfPoints = ({POINTS, CIRCLE}, $) => {
   })
   return _POINTS
 }
+
 //
 const getPoints = (corner, firstHalf, secondHalf) => {
   const ends = [firstHalf[firstHalf.length-1], secondHalf[0]]
@@ -70,6 +73,7 @@ const getPoints = (corner, firstHalf, secondHalf) => {
   }
   return [corner, ...firstHalf, Points.percentageOnLine(0.5)(...ends), ...secondHalf]
 }
+
 //
 const firstPoints = (outerCorners, innerCorners, fifthPoints) => i => {
   const wrapped = (index, array) => {
@@ -87,7 +91,7 @@ const firstPoints = (outerCorners, innerCorners, fifthPoints) => i => {
 }
 
 // NOTE: Right now only for 5-sided fin shape, with equal wall heights and symmetrical roof
-export function finPoints(params) {
+export function finShape(params) {
   var {width, height, wallHeight, frameWidth} = params;
 
   // Code below uses centimeters
@@ -108,12 +112,36 @@ export function finPoints(params) {
   const outerCorners = Clipper.offset(corners, { DELTA: frameWidth/2 })
   const innerCorners = Clipper.offset(corners, { DELTA: -(frameWidth/2) })
 
+  return {
+    center: corners,
+    inner: innerCorners,
+    outer: outerCorners,
+  };
+}
+
+const movePointOnAngle = ([x,y], angle, delta) =>
+  [x + (Math.sin(angle) * delta), y - (Math.cos(angle) * delta)]
+
+// Takes into considerations
+// TODO: take into consideratin maximum piece size
+export function splitFinPieces(finPolygon, params) {
+  const fiveSided = (5 == finPolygon.center.length) && (5 == finPolygon.outer.length) && (5 == finPolygon.inner.length);   
+  if (!fiveSided) {
+    throw new Error("piece splitter can only handle five-sided polygons");
+  }
+
+  const frameWidth = params.frameWidth*100;
+  const corners = finPolygon.center;
+  const innerCorners = finPolygon.inner;
+  const outerCorners = finPolygon.outer;
+
+  // Group points by which side they belong to
   let groupedPoints = []
   for (var i = 0; i < corners.length; i++) {
     groupedPoints.push(getPoints(corners[i], firstHalfPoints({POINTS: corners})[i], secondHalfPoints({POINTS: corners})[i]))
   }
-  const allPoints = groupedPoints.reduce((accum, el) => accum.concat(el), [])
-  const movePointOnAngle = ([x,y], angle, delta) => [x + (Math.sin(angle) * delta), y - (Math.cos(angle) * delta)]
+
+  // Find points to cut at, by projecting outwards from corners
   let fifthPoints = []
   groupedPoints.map(group => {
     const angle = Points.angle(group[0], group[1])
@@ -125,24 +153,21 @@ export function finPoints(params) {
     })
   })
 
-  const first = firstPoints(outerCorners, innerCorners, fifthPoints)
-  const firstPath = compose(
-    SVG.closedPath,
-    firstPoints(outerCorners, innerCorners, fifthPoints)
-  )
-
-  // const bounds = compose(getBounds, firstPoints(outerCorners, innerCorners, fifthPoints))(0)
-  // console.log(SVG.closedPath(firstPoints(outerCorners, innerCorners, fifthPoints)(4).map( ([x,y]) => [ (x-bounds.minX)/100, (y-bounds.minY)/100])))
-
-  // const bounds2 = compose(getBounds, firstPoints(outerCorners, innerCorners, fifthPoints))(0)
-  // console.log(SVG.closedPath(firstPoints(outerCorners, innerCorners, fifthPoints)(3).map( ([x,y]) => [ (x-bounds.minX)/100, (y-bounds.minY)/100])))
+  // Find the points belonging to the cut pieces
+  const outPoints = firstPoints(outerCorners, innerCorners, fifthPoints);
 
   return {
     viewBox: viewBoxFromPoints(outerCorners),
-    firstPath,
-    points: firstPoints(outerCorners, innerCorners, fifthPoints),
-    bounds: compose(getBounds, firstPoints(outerCorners, innerCorners, fifthPoints)),
+    points: outPoints,
+    bounds: compose(getBounds, outPoints),
   }
+}
+
+export function finPoints(params) {
+
+  const s = finShape(params);
+  return splitFinPieces(s, params);
+
 }
 
 

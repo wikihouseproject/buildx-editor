@@ -9,7 +9,7 @@ const piece = ([width, height, wallHeight, amount], index, material) => {
   p.wallHeight = wallHeight;
 
   // TODO: move wren geometry generation out of rendering function
-  const {viewBox, points, bounds} = wren.finPoints(p)
+  const {points, bounds} = wren.finPoints(p)
   const b = bounds(0)
   return h('a-entity', {attrs:{
     'extrude-svg': {
