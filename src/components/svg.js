@@ -24,22 +24,24 @@ export default function renderCutsheets(sources) {
   const state$ = model(actions)
 
   const vtree$ = state$.map(([width, height, wallHeight, spacing, bayCount]) => {
-    const workarea = { width: 1.2, height: 2.4 }; // TODO: pass as parameters
-    const cutsheet = rectangle(workarea.width*100, workarea.height*100);
-
-    const geometry = {
-      'frame': wren.frame({width: width*100, height: height*100, wallHeight: wallHeight*100, frameWidth: 10}),
-      'boundary': cutsheet
-    };
-
-    const svg = wren.SVG.export(geometry); 
-    const svgDataUri = "data:image/svg+xml;base64," + btoa(svg);   
 
     var p = wren.parameters.defaults;
     p.width = width;
     p.height = height;
     p.wallHeight = wallHeight;
     p.bayCount = bayCount;
+    p.bayLength = spacing;
+
+    const workarea = { width: 1.2, height: 2.4 }; // TODO: pass as parameters
+    const cutsheet = rectangle(workarea.width*100, workarea.height*100);
+
+    const geometry = {
+      'frame': wren.finPoints(p),
+      'boundary': cutsheet
+    };
+
+    const svg = wren.SVG.export(geometry); 
+    const svgDataUri = "data:image/svg+xml;base64," + btoa(svg);   
 
     const metrics = wren.geometrics(p);
 
@@ -50,7 +52,7 @@ export default function renderCutsheets(sources) {
       wren.SVG.render(geometry, { id: 'svgview' }),
       h('a', { attrs: { id: 'svgdata', href: svgDataUri }}, ['Cutsheets (.SVG)']),
       h('a', { attrs: { id: 'csvdata', href: csvDataUri }}, ['Data (.CSV)']),
-      ...renderControls(width, height, wallHeight, spacing, bayCount),
+      ...renderControls(p),
     ])
   })
 

@@ -86,7 +86,16 @@ const firstPoints = (outerCorners, innerCorners, fifthPoints) => i => {
   ]
 }
 
-export function frame({width, height, wallHeight, frameWidth}) {
+// NOTE: Right now only for 5-sided fin shape, with equal wall heights and symmetrical roof
+export function finPoints(params) {
+  var {width, height, wallHeight, frameWidth} = params;
+
+  // Code below uses centimeters
+  width *= 100;
+  height *= 100;
+  wallHeight *= 100;
+  frameWidth *= 100;
+
   // const corners = [[150,50],[250,150],[250,250],[50,250],[50,150]]
   const corners = [
     [width / 2, 0],                 // top center
@@ -96,8 +105,8 @@ export function frame({width, height, wallHeight, frameWidth}) {
     [0, height - wallHeight]        // top left
   ]
 
-  const outerCorners = Clipper.offset(corners, { DELTA: frameWidth })
-  const innerCorners = Clipper.offset(corners, { DELTA: -frameWidth })
+  const outerCorners = Clipper.offset(corners, { DELTA: frameWidth/2 })
+  const innerCorners = Clipper.offset(corners, { DELTA: -(frameWidth/2) })
 
   let groupedPoints = []
   for (var i = 0; i < corners.length; i++) {
@@ -111,7 +120,7 @@ export function frame({width, height, wallHeight, frameWidth}) {
     group.map( (point, index) => {
       if (index === 5) {
         const [x,y] = point
-        fifthPoints.push([movePointOnAngle(point, angle, 10), movePointOnAngle(point, angle, -10)])
+        fifthPoints.push([movePointOnAngle(point, angle, frameWidth/2), movePointOnAngle(point, angle, -(frameWidth/2))])
       }
     })
   })
@@ -136,9 +145,6 @@ export function frame({width, height, wallHeight, frameWidth}) {
   }
 }
 
-export function floorArea(width, bayCount, config) {
-    return width*(bayCount*config.BAY_LENGTH);
-}
 
 // key metrics
 // 
@@ -156,8 +162,7 @@ export function floorArea(width, bayCount, config) {
 
 // existing est, plywood
 // per m2, 4 - 8 
-// multiple stories -> cheaper
-// thicker frame -> expensive
+
 
 // 1300 GBP per m2 budget, incl labor
 // possibly as low as 1000
@@ -192,7 +197,7 @@ export function getParameters() {
 
     // internal
     ['bayLength', "Bay length", 'distance', 1.2, "Distance between each of the frames"],
-    ['frameWidth', "Frame width", 'distance', 0.200, "Width of frame body"],
+    ['frameWidth', "Frame width", 'distance', 0.264, "Width of frame body"],
     ['frameDepth', "Frame width", 'distance', 0.150, "Depth of spacer+fins+reinforcers"],
     ['materialThickness', "Material thickness", 'distance', 18.0/1000, "Nominal thickness of plywood sheet"],
     //['tolerance', "Fit tolerance", 'distance', 0.5/1000, "Tolerance for fitting parts"],
@@ -225,7 +230,7 @@ export function getParameters() {
   }
 }
 
-export const parameters = getParameters(); 
+export const parameters = getParameters();
 
 export function geometrics(parameters) {
 
@@ -264,8 +269,12 @@ export function geometrics(parameters) {
   return outputs;
 }
 
-export function totalCosts(width, bayCount) {
-    const frames = width*bayCount;
-    const frameCost = 100; // XXX: bullshit number for now
-    return frames*frameCost;
+export function estimateCosts(metrics) {
+    // for pilots it ranged between 4-8 GBP per sqm.
+    // multiple stories -> cheaper
+    // thicker frame -> expensive
+    // taller -> expensive
+    const baseCostPerSqm = 8;
+    const chassisCosts = baseCostPerSqm * metrics.footprintArea;
+    return chassisCosts;
 }

@@ -19,6 +19,13 @@ export default function ThreeD(sources) {
 
   const vtree$ = state$.map(([width, height, wallHeight, spacing, bayCount]) => {
 
+    var p = wren.parameters.defaults;
+    p.width = width;
+    p.height = height;
+    p.wallHeight = wallHeight;
+    p.bayCount = bayCount;
+    p.bayLength = spacing;
+
     const dimensions = [width, height, wallHeight]
     const bounds = spacing * bayCount + extrusion
 
@@ -63,7 +70,7 @@ export default function ThreeD(sources) {
         }})
 
       ]),
-      ...renderControls(width, height, wallHeight, spacing, bayCount)
+      ...renderControls(p)
     ])
   })
 

@@ -2,7 +2,14 @@ import {h} from '@cycle/dom'
 import * as wren from '../../lib/wren'
 
 const piece = ([width, height, wallHeight, amount], index, material) => {
-  const {viewBox, points, bounds} = wren.frame({width: width*100, height: height*100, wallHeight: wallHeight*100, frameWidth: 10})
+
+  var p = wren.parameters.defaults;
+  p.width = width;
+  p.height = height;
+  p.wallHeight = wallHeight;
+
+  // TODO: move wren geometry generation out of rendering function
+  const {viewBox, points, bounds} = wren.finPoints(p)
   const b = bounds(0)
   return h('a-entity', {attrs:{
     'extrude-svg': {

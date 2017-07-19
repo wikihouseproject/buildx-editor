@@ -43,33 +43,35 @@ const model = actions => {
   )
 }
 
-const renderControls = (width, height, wallHeight, spacing, bayCount) => {
+const renderControls = (params) => {
+  const m = wren.geometrics(params); // TODO: move out metrics calc/render
+
   return [
     div({attrs: { id: 'controls'}}, [
       div([
-        input({attrs: { id: 'width', value: width, type: 'range', min: 4, max: 7, step: 0.1 }}),
-        span(`Width: ${width}m`)
+        input({attrs: { id: 'width', value: params.width, type: 'range', min: 4, max: 7, step: 0.1 }}),
+        span(`Width: ${params.width}m`)
       ]),
       div([
-        input({attrs: { id: 'height', value: height, type: 'range', min: (wallHeight+0.1), max: 5.5, step: 0.1 }}),
-        span(`Height: ${height}m`)
+        input({attrs: { id: 'height', value: params.height, type: 'range', min: (params.wallHeight+0.1), max: 5.5, step: 0.1 }}),
+        span(`Height: ${params.height}m`)
       ]),
       div([
-        input({attrs: { id: 'wallHeight', value: wallHeight, type: 'range', min: 2.5, max: (height-0.1), step: 0.1 }}),
-        span(`wallHeight: ${wallHeight}m`)
+        input({attrs: { id: 'wallHeight', value: params.wallHeight, type: 'range', min: 2.5, max: (params.height-0.1), step: 0.1 }}),
+        span(`wallHeight: ${params.wallHeight}m`)
       ]),
       div([
-        input({attrs: { id: 'spacing', value: wallHeight, type: 'range', min: 0.2, max: 2, step: 0.1 }}),
-        span(`Spacing: ${spacing}m`)
+        input({attrs: { id: 'spacing', value: params.bayLength, type: 'range', min: 0.6, max: 1.5, step: 0.1 }}),
+        span(`Spacing: ${params.bayLength}m`)
       ]),
       div([
-        input({attrs: { id: 'bayCount', value: bayCount, type: 'range', min: 5, max: 15, step: 1 }}),
-        span(`Bays #: ${bayCount}`)
+        input({attrs: { id: 'bayCount', value: params.bayCount, type: 'range', min: 5, max: 15, step: 1 }}),
+        span(`Bays #: ${params.bayCount}`)
       ]),
     ]),
     h('ul', {attrs: { id: 'figures'}}, [
-      h('li', `Floor Area: ${wren.floorArea(width, bayCount, config).toFixed(2)}m²`),
-      h('li', `Total costs: ${wren.totalCosts(width, bayCount).toFixed(2)} GPD`),
+      h('li', `Total Area: ${m.footprintArea.toFixed(2)}m²`),
+      h('li', `Chassis costs: ${wren.estimateCosts(m).toFixed(2)} GPD`),
     ])
   ]
 }

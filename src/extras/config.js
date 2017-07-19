@@ -7,7 +7,7 @@ const config = {
   colours: [ 'yellow', 'green', 'pink', 'blue', 'orange'],
   extrusion: 0.25,
   spacing: 1,
-  BAY_LENGTH: 2.5
+  bayLength: 1.2,
 }
 
 module.exports = config
