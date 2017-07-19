@@ -17,9 +17,9 @@ const intent = domSource => {
               .startWith(config.height),
 
     wallHeight$: domSource.select('input#wallHeight')
-                  .events('input')
-                  .map(ev => Number(ev.target.value))
-                  .startWith(config.wallHeight),
+              .events('input')
+              .map(ev => Number(ev.target.value))
+              .startWith(config.wallHeight),
 
     bayCount$: domSource.select('input#bayCount')
               .events('input')
@@ -33,7 +33,7 @@ const model = actions => {
     actions.width$,
     actions.height$,
     actions.wallHeight$,
-    actions.bayCount$
+    actions.bayCount$,
   )
 }
 

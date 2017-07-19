@@ -8,6 +8,7 @@ import xs from 'xstream'
 
 import {piece, renderFrames, renderArrowHelpers} from './extras'
 import { intent, model, renderControls } from '../../extras/functions'
+import { initialCameraPosition } from '../../extras/config'
 
 import * as wren from '../../lib/wren'
 
@@ -15,7 +16,6 @@ export default function ThreeD(sources) {
 
   const actions = intent(sources.DOM)
   const state$ = model(actions)
-
   const vtree$ = state$.map(([width, height, wallHeight, bayCount]) =>
     div([
       h('a-scene', {attrs: {stats: true}}, [
@@ -23,7 +23,7 @@ export default function ThreeD(sources) {
         ...renderArrowHelpers('0 0 0', 5),
 
         h('a-entity', [
-          h('a-entity#cameraTarget',{ position: '0 0 0' }),
+          h('a-entity#cameraTarget',{ attrs: {position: '0 0 0' }}, ),
           h('a-entity#frames', {attrs:{position: `-${width/2} ${height} 0`, rotation: '180 0 0'}}, [
             h('a-entity#frame', {attrs:{position: '0 0 0'}}, [
               piece([width, height, wallHeight], 0, 'yellow'),
@@ -44,8 +44,9 @@ export default function ThreeD(sources) {
 
         h('a-entity#camera', {attrs:{
           camera: { fov: 90, zoom: 1 },
-          position: {x: 0, y: 8, z: 8 },
+          position: initialCameraPosition,
           'orbit-controls': {
+            invertZoom: true,
             target: '#cameraTarget',
             autoRotate: false,
             enableDamping: true,
