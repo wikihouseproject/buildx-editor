@@ -5,7 +5,10 @@
   "devDependencies": {
     "chai": "^4.1.0",
     "cycle-scripts": "1.1.0",
-    "mocha": "^3.4.2"
+    "grunt": "^1.0.1",
+    "grunt-noflo-browser": "^1.2.0",
+    "mocha": "^3.4.2",
+    "noflo-runtime-iframe": "^0.8.0"
   },
   "dependencies": {
     "@cycle/dom": "^17.6.0",
@@ -16,6 +19,7 @@
     "eventemitter3": "^2.0.3",
     "gh-pages": "^1.0.0",
     "noflo": "^0.8.3",
+    "noflo-core": "^0.4.0",
     "noflo-runtime-webrtc": "^0.8.0",
     "ramda": "^0.24.1",
     "xstream": "^10.9.0"

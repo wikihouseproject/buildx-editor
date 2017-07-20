@@ -1,0 +1,23 @@
+{
+  "processes": {
+    "a": {
+      "component": "core/Repeat"
+    },
+    "b": {
+      "component": "core/Repeat"
+    }
+  },
+  "connections": [
+    {
+      "src": {
+        "process": "a",
+        "port": "out"
+      },
+      "tgt": {
+        "process": "b",
+        "port": "in"
+      }
+    }
+  ],
+  "caseSensitive": false
+}
