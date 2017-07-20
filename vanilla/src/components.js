@@ -3,7 +3,7 @@ const ground = (width, height) => {
   const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide})
   const mesh = new THREE.Mesh(geometry, material)
   mesh.rotation.x = Math.PI/2
-  mesh.position.y = -0.1
+  mesh.position.y = 0
   return mesh
 }
 

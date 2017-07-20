@@ -28,6 +28,9 @@ camera.position.x = 6
 camera.lookAt(new THREE.Vector3(0,0,0))
 
 const orbitControls = new THREE.OrbitControls(camera, renderer.domElement)
+orbitControls.minDistance = 10;
+orbitControls.maxDistance = 30;
+orbitControls.maxPolarAngle = Math.PI/2
 // orbitControls.enableDamping = true;
 // orbitControls.dampingFactor = 0.125;
 // orbitControls.enableZoom = false
