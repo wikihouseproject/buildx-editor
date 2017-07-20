@@ -26,10 +26,10 @@ const intent = domSource => {
               .map(ev => Number(ev.target.value))
               .startWith(config.wallHeight),
 
-    bayCount$: domSource.select('input#bayCount')
+    totalBays$: domSource.select('input#totalBays')
               .events('input')
               .map(ev => Number(ev.target.value))
-              .startWith(config.bayCount)
+              .startWith(config.totalBays)
   }
 }
 
@@ -39,7 +39,7 @@ const model = actions => {
     actions.height$,
     actions.wallHeight$,
     actions.spacing$,
-    actions.bayCount$,
+    actions.totalBays$,
   )
 }
 
@@ -65,8 +65,8 @@ const renderControls = (params) => {
         span(`Spacing: ${params.bayLength}m`)
       ]),
       div([
-        input({attrs: { id: 'bayCount', value: params.bayCount, type: 'range', min: 5, max: 15, step: 1 }}),
-        span(`Bays #: ${params.bayCount}`)
+        input({attrs: { id: 'totalBays', value: params.totalBays, type: 'range', min: 5, max: 15, step: 1 }}),
+        span(`Bays #: ${params.totalBays}`)
       ]),
     ]),
     h('ul', {attrs: { id: 'figures'}}, [

@@ -9,19 +9,19 @@ export default function renderCutsheets(sources) {
   const actions = intent(sources.DOM)
   const state$ = model(actions)
 
-  const vtree$ = state$.map(([width, height, wallHeight, spacing, bayCount]) => {
+  const vtree$ = state$.map(([width, height, wallHeight, spacing, totalBays]) => {
 
     var p = wren.parameters.defaults;
     p.width = width;
     p.height = height;
     p.wallHeight = wallHeight;
-    p.bayCount = bayCount;
+    p.totalBays = totalBays;
     p.bayLength = spacing;
 
     var chassis = wren.chassis(p);
 
-    const svg = wren.SVG.export(chassis); 
-    const svgDataUri = "data:image/svg+xml;base64," + btoa(svg);   
+    const svg = wren.SVG.export(chassis);
+    const svgDataUri = "data:image/svg+xml;base64," + btoa(svg);
 
     const metrics = wren.geometrics(p);
 

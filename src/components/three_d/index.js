@@ -17,19 +17,19 @@ export default function ThreeD(sources) {
   const actions = intent(sources.DOM)
   const state$ = model(actions)
 
-  const vtree$ = state$.map(([width, height, wallHeight, spacing, bayCount]) => {
+  const vtree$ = state$.map(([width, height, wallHeight, spacing, totalBays]) => {
 
     var p = wren.parameters.defaults;
     p.width = width;
     p.height = height;
     p.wallHeight = wallHeight;
-    p.bayCount = bayCount;
+    p.totalBays = totalBays;
     p.bayLength = spacing;
 
     const chassis = wren.chassis(p);
 
     const dimensions = [width, height, wallHeight]
-    const bounds = spacing * bayCount + extrusion
+    const bounds = spacing * totalBays + extrusion
 
     return div([
       h('a-scene', {attrs: {stats: true}}, [

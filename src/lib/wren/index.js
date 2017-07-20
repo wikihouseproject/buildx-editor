@@ -125,7 +125,7 @@ const movePointOnAngle = ([x,y], angle, delta) =>
 // Takes into considerations
 // TODO: take into consideratin maximum piece size
 export function splitFinPieces(finPolygon, params) {
-  const fiveSided = (5 == finPolygon.center.length) && (5 == finPolygon.outer.length) && (5 == finPolygon.inner.length);   
+  const fiveSided = (5 == finPolygon.center.length) && (5 == finPolygon.outer.length) && (5 == finPolygon.inner.length);
   if (!fiveSided) {
     throw new Error("piece splitter can only handle five-sided polygons");
   }
@@ -178,14 +178,14 @@ export function chassis(params) {
   };
 
   return {
-    frames: times(params.bayCount, makeFrame),
+    frames: times(params.totalBays, makeFrame),
     parameters: params,
   }
 }
 
 
 // key metrics
-// 
+//
 // frame sizes
 //
 // volume (or area)
@@ -199,7 +199,7 @@ export function chassis(params) {
 // cost of plywood
 
 // existing est, plywood
-// per m2, 4 - 8 
+// per m2, 4 - 8
 
 
 // 1300 GBP per m2 budget, incl labor
@@ -228,7 +228,7 @@ export function getParameters() {
   const keys = ['id', 'name', 'type', 'default', 'description'];
   const definitions = [
     // Commonly configured
-    ['bayCount', "Bays #", 'number', 6, "Number of frames"],
+    ['totalBays', "Bays #", 'number', 6, "Number of frames"],
     ['height', "Height", 'distance', 3.0, "Height to top of frame"],
     ['width', "Width", 'distance', 1.2, "Width of frame"],
     ['wallHeight', "Wall height", 'distance', 2.5, "Height of wall, where roof starts"],
@@ -277,13 +277,13 @@ export function geometrics(parameters) {
 
   const i = parameters;
 
-  const length = i.bayCount * i.bayLength;
+  const length = i.totalBays * i.bayLength;
   const outerLength = length + i.bayLength; // 2x half a bay
-  const outerWidth = i.width + i.frameWidth; // 2x half a frame 
+  const outerWidth = i.width + i.frameWidth; // 2x half a frame
 
   const innerWidth = i.width - i.frameWidth;
   const innerLength = i.length - i.bayLength;
-  
+
   const floorArea = innerWidth * innerHeight;
 
   // TODO: get wall and roofs from frame polygon
