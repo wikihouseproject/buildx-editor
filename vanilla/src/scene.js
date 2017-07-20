@@ -30,19 +30,11 @@ camera.lookAt(new THREE.Vector3(0,0,0))
 const orbitControls = new THREE.OrbitControls(camera, renderer.domElement)
 orbitControls.minDistance = 10;
 orbitControls.maxDistance = 30;
-orbitControls.maxPolarAngle = Math.PI/2
+orbitControls.maxPolarAngle = Math.PI/2.1
 // orbitControls.enableDamping = true;
 // orbitControls.dampingFactor = 0.125;
 // orbitControls.enableZoom = false
 // renderer.domElement.addEventListener('mousewheel', mousewheel)
-
-function render() {
-  stats.begin()
-  renderer.render(scene, camera)
-  stats.end()
-  rendererStats.update(renderer)
-  requestAnimationFrame(render)
-}
 
 const setCursor = type => {
   let cursor;
@@ -59,5 +51,5 @@ const setCursor = type => {
   container.style.cursor = cursor
 }
 
-module.exports = { container, stats, rendererStats, renderer, scene, camera, orbitControls, render, setCursor }
+module.exports = { container, stats, rendererStats, renderer, scene, camera, orbitControls, setCursor }
 

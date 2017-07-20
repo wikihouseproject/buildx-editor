@@ -9,6 +9,7 @@
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/86/three.min.js"></script> -->
   <script src="js/three.min.js"></script>
   <script src="js/OrbitControls.js"></script>
+  <script src="js/SectionHelper.js"></script>
   <script src="js/threex.rendererstats.js"></script>
   <script src="js/stats.min.js"></script>
   <title>3D Editor</title>
@@ -16,6 +17,7 @@
     * {
       margin: 0;
       padding: 0;
+      line-height: 2;
     }
     #controls {
       position: absolute;
@@ -25,7 +27,6 @@
     }
     li {
       cursor: pointer;
-      line-height: 2;
       list-style: none;
     }
     li.active {
@@ -56,8 +57,43 @@
 
     <hr/>
 
+    <p>Clipping Height:</p>
+    <input id="clippingHeight" type="range" min="2" max="5" step="0.1" value="3" />
+
+    <hr/>
+
     <label>Roof <input id="roof" type="checkbox" /></label>
   </div>
+
+  <script type="x-shader/x-vertex" id="vertexShader">
+  /**
+   * Multiply each vertex by the
+   * model-view matrix and the
+   * projection matrix (both provided
+   * by Three.js) to get a final
+   * vertex position
+   */
+  void main() {
+    gl_Position = projectionMatrix *
+                  modelViewMatrix *
+                  vec4(position,1.0);
+  }
+  </script>
+
+  <script type="x-shader/x-fragment" id="fragmentShader">
+  /**
+   * Set the colour to a lovely pink.
+   * Note that the color is a 4D Float
+   * Vector, R,G,B and A and each part
+   * runs from 0.0 to 1.0
+   */
+  void main() {
+    gl_FragColor = vec4(1.0,  // R
+                        0.0,  // G
+                        1.0,  // B
+                        1.0); // A
+  }
+  </script>
 
   <script src="assets/app.bundle.js"></script>
 </body>

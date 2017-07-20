@@ -1,5 +1,5 @@
 import { ground, frame, clone, house, connector, outerWall, roof, ball, floor, outline } from "./components"
-import { container, scene, camera, orbitControls, render, setCursor } from "./scene"
+import { renderer, container, scene, camera, orbitControls, setCursor, stats, rendererStats } from "./scene"
 import { removeDescendants, rad2Deg } from "../../src/lib/utils"
 import BasicWren from "../../src/lib/wren/basic_wren"
 import defaults from '../../src/extras/config'
@@ -9,7 +9,10 @@ let balls = []
 let outlineMesh
 const sourceBall = ball()
 
-// scene.add(ground(20,20))
+const clippingPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,-1,0), new THREE.Vector3(0,2.4,0));
+renderer.clippingPlanes = [ clippingPlane ];
+
+scene.add(ground(20,20))
 
 // const outlineGeometry = new THREE.Geometry()
 const outlineMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.BackSide})
@@ -29,7 +32,9 @@ function redrawHouse() {
   for (var i = 0; i <= config.totalBays; i++) {
     const bay = new THREE.Object3D();
     bay.position.z = i*config.bayLength - wren.totalLength/2
-    bay.add(clone(sourceFrame, {}))
+    const frame = clone(sourceFrame, {})
+    bay.add(frame)
+    scene.add(new THREE.SectionHelper(frame, 0x444444))
 
     // only add a frame to the first bay
     if (i > 0) {
@@ -52,16 +57,21 @@ function redrawHouse() {
       bay.add(clone(sourceFloor, {y: config.connectorHeight, x: config.width/2}, {z: Math.PI/2, x: -Math.PI/2}))
 
       // roof
-      bay.add(clone(sourceRoof, {y: config.height}, {z: Math.PI/2, x: -Math.PI/2, y: wren.roofAngle-Math.PI/2}))
-      bay.add(clone(sourceRoof, {y: config.height + config.plyThickness }, {z: -Math.PI/2, x: Math.PI/2, y: wren.roofAngle-Math.PI/2}))
+      const leftRoof = clone(sourceRoof, {y: config.height}, {z: Math.PI/2, x: -Math.PI/2, y: wren.roofAngle-Math.PI/2})
+      const rightRoof = clone(sourceRoof, {y: config.height + config.plyThickness }, {z: -Math.PI/2, x: Math.PI/2, y: wren.roofAngle-Math.PI/2})
+      bay.add(leftRoof)
+      bay.add(rightRoof)
+
+      scene.add(new THREE.SectionHelper(leftRoof, 0x444444))
+      scene.add(new THREE.SectionHelper(rightRoof, 0x444444))
 
       // ceiling
       // bay.add(clone(sourceRoof, {y: config.height-config.connectorHeight}, {z: Math.PI/2, x: -Math.PI/2}))
       // bay.add(clone(sourceRoof, {y: config.height-config.connectorHeight}, {z: -Math.PI/2, x: Math.PI/2}))
 
       // outer walls
-      // bay.add(clone(sourceOuterWall, {x: config.width/2, z: -config.bayLength/2}, {y: Math.PI/2}))
-      // bay.add(clone(sourceOuterWall, {x: -config.width/2 - config.plyThickness, z: -config.bayLength/2}, {y: Math.PI/2}))
+      bay.add(clone(sourceOuterWall, {x: config.width/2, z: -config.bayLength/2}, {y: Math.PI/2}))
+      bay.add(clone(sourceOuterWall, {x: -config.width/2 - config.plyThickness, z: -config.bayLength/2}, {y: Math.PI/2}))
     }
     bays.push(bay)
   }
@@ -75,8 +85,11 @@ function redraw(newConfig) {
 
   removeDescendants(house)
 
-  // house.children = redrawHouse()
-  redrawHouse().forEach(child => house.add(child))
+  const bays = redrawHouse()
+
+  // house.children = bays
+  bays.forEach(bay => house.add(bay))
+
   // house.children.forEach(child => {
   //   child.children.forEach(c => {
   //     // c.geometry.translate( child.position.x, child.position.y, child.position.z );
@@ -102,6 +115,9 @@ function redraw(newConfig) {
 const raycaster = new THREE.Raycaster()
 const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0),new THREE.Vector3(0,0,0))
 const plane = new THREE.Plane()
+
+var light = new THREE.AmbientLight(0x404040)
+scene.add(light)
 
 let uiState = {
   action: 'RESIZE',
@@ -144,7 +160,6 @@ function mouseEvent(event) {
   }
   raycaster.setFromCamera(uiState.mouse, camera)
 
-
   let objects = []
   if (uiState.action === 'RESIZE') objects = balls
   else if (uiState.action === 'MOVE' || uiState.action === 'ROTATE') objects = [outlineMesh]
@@ -166,7 +181,6 @@ function mouseEvent(event) {
   let intersection = new THREE.Vector3()
 
   if (uiState.activeTarget) {
-
       setCursor('GRABBING')
 
       if (uiState.action === 'RESIZE') {
@@ -187,26 +201,7 @@ function mouseEvent(event) {
       } else {
         house.rotation.y = uiState.mouse.x * 4
       }
-
   }
-
-  // if (uiState.activeTarget && raycaster.ray.intersectPlane(groundPlane, intersection)) {
-  //   if (uiState.action === 'MOVE') {
-  //     // // uiState.activeTarget.object.position.copy(intersection.sub(uiState.offset))
-  //     // uiState.activeTarget.object.position.x = intersection.x - uiState.offset.x
-  //     // uiState.activeTarget.object.position.z = intersection.z - uiState.offset.z
-  //   } else if (uiState.action === 'ROTATE') {
-  //     uiState.activeTarget.object.rotation.y = uiState.mouse.x * 4
-  //   } else if (uiState.action === 'RESIZE') {
-  //     scene.add(new THREE.ArrowHelper(
-  //       uiState.activeTarget.face.normal,
-  //       uiState.activeTarget.object.position,
-  //       2,
-  //       0xFF0000
-  //     ))
-  //   }
-  // }
-
 }
 
 document.querySelectorAll('li').forEach(li => li.addEventListener('click', function(event){
@@ -233,9 +228,24 @@ controls.forEach( val =>
   document.getElementById(val).addEventListener('input', event => redraw({ [val]: Number(event.target.value) }))
 )
 
+document.getElementById('clippingHeight').addEventListener('input', event => {
+  const clippingPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,-1,0), new THREE.Vector3(0,Number(event.target.value),0));
+  renderer.clippingPlanes = [ clippingPlane ];
+})
+
 container.addEventListener('mousemove', onMouseMove)
 container.addEventListener('mousedown', onMouseDown)
 container.addEventListener('mouseup', onMouseUp)
 
 redraw(wren.config)
+
+function render() {
+  stats.begin()
+  renderer.render(scene, camera)
+  // clippingPlane.position.y -= 0.01
+  stats.end()
+  rendererStats.update(renderer)
+  requestAnimationFrame(render)
+}
+
 requestAnimationFrame(render)
