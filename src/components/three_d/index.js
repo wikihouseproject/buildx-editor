@@ -10,9 +10,21 @@ import {renderFramePart, renderFrames, renderArrowHelpers} from './extras'
 import { intent, model, renderControls } from '../../extras/functions'
 import { initialCameraPosition, colors, extrusion } from '../../extras/config'
 
-import * as wren from '../../lib/wren'
+
+import * as noflo from '../../lib/noflo';
+import * as wren from '../../lib/wren';
+
+var globalHackRuntime = null;
 
 export default function ThreeD(sources) {
+
+  noflo.setupAndRun({}, (err, runtime) => {
+    if (err) {
+      throw err;
+    }
+    console.log('NoFlo running');
+    globalHackRuntime = runtime;
+  });
 
   const actions = intent(sources.DOM)
   const state$ = model(actions)
@@ -31,7 +43,18 @@ export default function ThreeD(sources) {
     const dimensions = [width, height, wallHeight]
     const bounds = spacing * totalBays + extrusion
 
+    const flowhubLink = (runtime) => {
+      var attrs = {};
+      if (runtime) {
+        attrs.href = noflo.flowhubURL(runtime.signaller, runtime.id);
+      } else {
+        attrs.style = { 'display': 'none' };
+      }
+      return h('a', { attrs }, ['Open in Flowhub']);
+    };
+
     return div([
+      flowhubLink(globalHackRuntime),
       h('a-scene', {attrs: {stats: true}}, [
 
         ...renderArrowHelpers('0 0 0', 5),
