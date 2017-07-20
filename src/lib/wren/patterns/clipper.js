@@ -1,14 +1,18 @@
 const Shape = require('clipper-js').default
 
+// Convert between our conventions for points [x, y]
+// and Clipper convention { X: x, Y: y }
+const multiplier = 1e6
+function toClipper(p) {
+  return { X: p[0]*multiplier, Y: p[1]*multiplier };
+}
+function fromClipper(c) {
+  return [ c.X/multiplier, c.Y/multiplier ];
+}
+
 const offset = (POINTS, {DELTA=-1, JOINT_TYPE='jtMiter', END_TYPE='etClosedPolygon', MITER_LIMIT=Infinity, ROUND_PRECISION=0}) => {
 
-  // needed to prevent rounding
-  const multiplier = 1e6
-
-  const newPoints = POINTS.reduce((chain, pair) => {
-    chain.push({ X: pair[0] * multiplier, Y: pair[1] * multiplier })
-    return chain
-  }, [])
+  const newPoints = POINTS.map(toClipper)
 
   const subject = new Shape([newPoints], true)
   const newShape = subject.offset(DELTA * multiplier, {
@@ -18,14 +22,21 @@ const offset = (POINTS, {DELTA=-1, JOINT_TYPE='jtMiter', END_TYPE='etClosedPolyg
     roundPrecision: ROUND_PRECISION
   })
 
-  const OFFSET_POINTS = newShape.paths[0].reduce((chain, pair) => {
-    chain.push([pair.X / multiplier, pair.Y / multiplier])
-    return chain
-  }, [])
+  const outPath = newShape.paths[0] || [];
+  const OFFSET_POINTS = outPath.map(fromClipper)
 
   return OFFSET_POINTS
 }
 
+function area(outline) {
+  
+  const outlinePoints = outline.map(toClipper);
+  const shape = new Shape([outlinePoints], true);
+  const rawArea = shape.totalArea(); 
+  return (rawArea/multiplier)/multiplier; 
+}
+
 module.exports = {
-  offset
+  offset,
+  area,
 }

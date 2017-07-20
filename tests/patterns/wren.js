@@ -38,8 +38,14 @@ describe('wren.metrics', () => {
     it('should output areas', () => {
       const data = wren.geometrics(params);
       chai.expect(data).to.be.a('object');
-      chai.expect(data).to.include.keys(['footprintArea', 'floorArea']);
+      chai.expect(data).to.include.keys(['footprintArea', 'floorArea', 'roofArea', 'ceilingArea']);
+      chai.expect(data).to.include.keys(['innerWallArea', 'outerWallArea']);
       chai.expect(Math.round(data.footprintArea)).to.equal(33);
+      chai.expect(Math.round(data.floorArea)).to.equal(27);
+      chai.expect(Math.round(data.ceilingArea)).to.equal(28);
+      chai.expect(Math.round(data.roofArea)).to.equal(35);
+      chai.expect(Math.round(data.innerWallArea)).to.equal(61);
+      chai.expect(Math.round(data.outerWallArea)).to.equal(72);
     });
   });
 

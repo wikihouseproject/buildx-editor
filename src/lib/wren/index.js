@@ -297,10 +297,16 @@ function calculateAreas(profile, length) {
     }, 0)
   };
 
+  const endWallArea = (points) => {
+    return Clipper.area(points)/(100*100); // FIXME: don't use centimeters
+  }
+
   const areas = {
-    'outerWallArea': area(profile.outer, walls, length.outer),
+    'outerWallArea': area(profile.outer, walls, length.outer) + 2*endWallArea(profile.outer),
+    'innerWallArea': area(profile.inner, walls, length.inner) + 2*endWallArea(profile.inner),
     'footprintArea': area(profile.outer, undersides, length.outer),
     'roofArea': area(profile.outer, roofs, length.outer),
+    'ceilingArea': area(profile.inner, roofs, length.inner),
     'floorArea': area(profile.inner, undersides, length.inner),
   };
 
