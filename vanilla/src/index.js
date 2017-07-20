@@ -154,7 +154,8 @@ function mouseEvent(event) {
     uiState.target = intersects[0]
     setCursor('GRAB')
   } else {
-    if (uiState.action != 'ROTATE') outlineMesh.material.visible = false
+    // if (uiState.action != 'ROTATE')
+    if (!uiState.mouseDown) outlineMesh.material.visible = false
     if (!uiState.clicked) {
       setCursor('DEFAULT')
       uiState.target = undefined
