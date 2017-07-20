@@ -1,13 +1,16 @@
-const removeDescendants = (current, parent=null) => {
-  const numChildren = current.children.length
-  if (numChildren > 0) {
-    for (let i = 0; i < numChildren; i++) {
-      removeDescendants(current.children[i], parent)
+const removeDescendants = current => {
+  if (current) {
+    if (current.type === "Object3D" && current.children) {
+      // const numChildren = current.children.length
+      // for (let i = 0; i < numChildren; i++) {
+      //   removeDescendants(current.children[i])
+      // }
+      current.children.forEach(removeDescendants)
+    } else if (current.type === "Mesh") {
+      current.parent.remove(current)
+      // current.geometry.dispose()
+      // current.material.dispose()
     }
-  } else if (parent) {
-    parent.remove(current)
-    current.geometry.dispose()
-    current.material.dispose()
   }
 }
 

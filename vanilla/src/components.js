@@ -80,7 +80,7 @@ const extrudeShape = (shape, extrudeSettings, color) => {
   // const geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
   const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 
-  const material = new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide });
+  const material = new THREE.MeshBasicMaterial({ color });
   // const material = new THREE.MeshLambertMaterial({ color, side: THREE.DoubleSide });
   // const material = customShader;
   return new THREE.Mesh(geometry, material)
@@ -101,6 +101,4 @@ const ball = () => {
   return new THREE.Mesh(geometry, material)
 }
 
-const house = new THREE.Object3D()
-
-module.exports = { ground, makePiece, clone, frame, house, connector, outerWall, roof, ball, floor, outline }
+module.exports = { ground, makePiece, clone, frame, connector, outerWall, roof, ball, floor, outline }

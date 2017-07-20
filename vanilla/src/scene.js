@@ -36,20 +36,9 @@ orbitControls.maxPolarAngle = Math.PI/2.1
 // orbitControls.enableZoom = false
 // renderer.domElement.addEventListener('mousewheel', mousewheel)
 
-const setCursor = type => {
-  let cursor;
-  switch(type) {
-    case 'GRAB':
-      cursor = '-webkit-grab'
-      break
-    case 'GRABBING':
-      cursor = '-webkit-grabbing'
-      break
-    default:
-      cursor = 'default'
-  }
-  container.style.cursor = cursor
+const updateClippingPlane = (height) => {
+  const clippingPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,-1,0), new THREE.Vector3(0,height,0));
+  renderer.clippingPlanes = [ clippingPlane ];
 }
 
-module.exports = { container, stats, rendererStats, renderer, scene, camera, orbitControls, setCursor }
-
+module.exports = { container, stats, rendererStats, renderer, scene, camera, orbitControls, updateClippingPlane }
