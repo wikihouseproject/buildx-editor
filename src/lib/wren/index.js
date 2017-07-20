@@ -55,10 +55,10 @@ const firstPoints = (outerCorners, innerCorners, fifthPoints) => i => {
     return array[index]
   }
   return [
-    wrapped(i-1, outerCorners),
+    wrapped(i, outerCorners),
     wrapped(i, fifthPoints)[0],
     wrapped(i, fifthPoints)[1],
-    wrapped(i-1, innerCorners),
+    wrapped(i, innerCorners),
     wrapped(i-1, fifthPoints)[1],
     wrapped(i-1, fifthPoints)[0]
   ]
@@ -75,6 +75,16 @@ function finSides() {
         'leftWall': [3, 4],
         'leftRoof': [4 ,0],
     };
+}
+
+function remapArray(input, mapping) {
+  const sources = Object.keys(mapping);
+  var out = new Array(sources.length);
+  sources.map( (source) => {
+    const targetIndex = mapping[source];
+    return out[targetIndex] = input[source];
+  });
+  return out;
 }
 
 // NOTE: Right now only for 5-sided fin shape, with equal wall heights and symmetrical roof
@@ -99,10 +109,12 @@ export function finShape(params) {
   const outerCorners = Clipper.offset(corners, { DELTA: frameWidth/2 })
   const innerCorners = Clipper.offset(corners, { DELTA: -(frameWidth/2) })
 
+  const clipperPointsToNormal = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 0 };
+
   return {
     center: corners,
-    inner: innerCorners,
-    outer: outerCorners,
+    inner: remapArray(innerCorners, clipperPointsToNormal),
+    outer: remapArray(outerCorners, clipperPointsToNormal),
     sides: finSides()
   };
 }
@@ -134,8 +146,8 @@ export function splitFinPieces(finPolygon, params) {
       if (index === 5) {
         const [x,y] = point
         fifthPoints.push([
-          Points.movePointOnAngle(point, angle, frameWidth/2),
-          Points.movePointOnAngle(point, angle, -(frameWidth/2))
+          Points.movePointOnAngle(point, angle, frameWidth/2), // outer
+          Points.movePointOnAngle(point, angle, -(frameWidth/2)) // inner
         ])
       }
     })
@@ -211,8 +223,8 @@ export function getParameters() {
   const definitions = [
     // Commonly configured
     ['totalBays', "Bays #", 'number', 6, "Number of frames"],
-    ['height', "Height", 'distance', 3.0, "Height to top of frame"],
-    ['width', "Width", 'distance', 1.2, "Width of frame"],
+    ['height', "Height", 'distance', 3.0, "Height to top of chassis"],
+    ['width', "Width", 'distance', 1.2, "Width of chassis"],
     ['wallHeight', "Wall height", 'distance', 2.5, "Height of wall, where roof starts"],
 
     // internal
@@ -270,17 +282,11 @@ function calculateAreas(profile, length) {
     throw new Error('frame profile has unknown sides: ' + diff.toString());
   }
 
-  for (var i=0; i<6; i++) {
-    const p = profile;
-    console.log(i, p.center[i], p.outer[i], p.inner[i]);
-  }
-
   const featureDistance = (points, name) => {
     const indices = profile.sides[name];
     const first = points[indices[0]];
     const second = points[indices[1]];
     const distance = Points.length(first, second)/100; // FIXME: don't use centimeters
-    console.log('d', distance, name, indices, first, second);
     return distance;
   };
   const area = (points, features, length) => {
