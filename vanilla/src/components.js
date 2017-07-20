@@ -3,7 +3,7 @@ const ground = (width, height) => {
   const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide})
   const mesh = new THREE.Mesh(geometry, material)
   mesh.rotation.x = Math.PI/2
-  mesh.position.y = 0
+  mesh.position.y = -0.1
   return mesh
 }
 
@@ -31,6 +31,18 @@ const clone = (sourceMesh, position={}, rotation={}, userData={}) => {
 }
 
 const frame = (points, {frameDepth}) => makePiece(points, frameDepth)
+
+const outline = (outerFramePoints, totalLength) => {
+  const extrudeSettings = {
+    steps: 1,
+    amount: totalLength,
+    bevelEnabled: false
+  }
+  const shape = createShape(outerFramePoints)
+  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+  const material = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide });
+  return new THREE.Mesh(geometry, material)
+}
 
 const outerWall = ({bayLength, wallHeight, plyThickness}) => makePiece([
   [0,wallHeight],
@@ -65,7 +77,8 @@ const floor = ({width, bayLength, plyThickness}) => makePiece([
 ], plyThickness, 'green')
 
 const extrudeShape = (shape, extrudeSettings, color) => {
-  const geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
+  // const geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
+  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
   const material = new THREE.MeshBasicMaterial({ color });
   return new THREE.Mesh(geometry, material)
 }
@@ -87,4 +100,4 @@ const ball = () => {
 
 const house = new THREE.Object3D()
 
-module.exports = { ground, makePiece, clone, frame, house, connector, outerWall, roof, ball, floor }
+module.exports = { ground, makePiece, clone, frame, house, connector, outerWall, roof, ball, floor, outline }

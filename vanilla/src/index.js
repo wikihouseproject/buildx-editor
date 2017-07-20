@@ -1,14 +1,19 @@
-import { ground, frame, clone, house, connector, outerWall, roof, ball, floor } from "./components"
+import { ground, frame, clone, house, connector, outerWall, roof, ball, floor, outline } from "./components"
 import { container, scene, camera, orbitControls, render, setCursor } from "./scene"
 import { removeDescendants, rad2Deg } from "../../src/lib/utils"
 import BasicWren from "../../src/lib/wren/basic_wren"
 import defaults from '../../src/extras/config'
-let wren = BasicWren(defaults)
+let wren = BasicWren(Object.assign({}, defaults, {totalBays: 6}))
 
 let balls = []
+let outlineMesh
 const sourceBall = ball()
 
 scene.add(ground(20,20))
+
+// const outlineGeometry = new THREE.Geometry()
+const outlineMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.BackSide})
+
 scene.add(house)
 
 function redrawHouse() {
@@ -55,7 +60,7 @@ function redrawHouse() {
       // bay.add(clone(sourceRoof, {y: config.height-config.connectorHeight}, {z: -Math.PI/2, x: Math.PI/2}))
 
       // outer walls
-      bay.add(clone(sourceOuterWall, {x: config.width/2, z: -config.bayLength/2}, {y: Math.PI/2}))
+      // bay.add(clone(sourceOuterWall, {x: config.width/2, z: -config.bayLength/2}, {y: Math.PI/2}))
       // bay.add(clone(sourceOuterWall, {x: -config.width/2 - config.plyThickness, z: -config.bayLength/2}, {y: Math.PI/2}))
     }
     bays.push(bay)
@@ -69,7 +74,20 @@ function redraw(newConfig) {
   wren = BasicWren(Object.assign({}, wren.config, newConfig))
 
   removeDescendants(house)
-  house.children = redrawHouse()
+
+  // house.children = redrawHouse()
+  redrawHouse().forEach(child => house.add(child))
+  // house.children.forEach(child => {
+  //   child.children.forEach(c => {
+  //     // c.geometry.translate( child.position.x, child.position.y, child.position.z );
+  //     c.updateMatrix()
+  //     outlineGeometry.merge(c.geometry, c.matrix)
+  //   })
+  // })
+  outlineMesh = outline(wren.framePoints, wren.totalLength)
+  outlineMesh.position.z = -wren.totalLength/2-0.04
+  outlineMesh.scale.multiplyScalar(1.03)
+  house.add(outlineMesh)
 
   balls = [
     clone(sourceBall, {y: wren.config.height, z: wren.config.frameDepth/2 }, {}, {boundVariable: 'height', bindFn: (x => x), dragAxis: 'y'}),
@@ -124,12 +142,19 @@ function mouseEvent(event) {
   }
   raycaster.setFromCamera(uiState.mouse, camera)
 
-  const intersects = raycaster.intersectObjects(balls)
+
+  let objects = []
+  if (uiState.action === 'RESIZE') objects = balls
+  else if (uiState.action === 'MOVE' || uiState.action === 'ROTATE') objects = [outlineMesh]
+
+  const intersects = raycaster.intersectObjects(objects)
 
   if (intersects.length > 0) {
+    if (uiState.action === 'MOVE' || uiState.action === 'ROTATE') outlineMesh.material.visible = true
     uiState.target = intersects[0]
     setCursor('GRAB')
   } else {
+    if (uiState.action != 'ROTATE') outlineMesh.material.visible = false
     if (!uiState.clicked) {
       setCursor('DEFAULT')
       uiState.target = undefined
@@ -138,18 +163,28 @@ function mouseEvent(event) {
   let intersection = new THREE.Vector3()
 
   if (uiState.activeTarget) {
-    if (uiState.action === 'RESIZE') {
+
       setCursor('GRABBING')
-      const ball = uiState.activeTarget.object
-      plane.setFromNormalAndCoplanarPoint(
-        camera.getWorldDirection(plane.normal),
-        ball.position
-      )
-      if (raycaster.ray.intersectPlane(plane, intersection)) {
-        ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
-        redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(ball.position[ball.userData.dragAxis]) })
+
+      if (uiState.action === 'RESIZE') {
+        const ball = uiState.activeTarget.object
+        plane.setFromNormalAndCoplanarPoint(
+          camera.getWorldDirection(plane.normal),
+          ball.position
+        )
+        if (raycaster.ray.intersectPlane(plane, intersection)) {
+          ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
+          redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(ball.position[ball.userData.dragAxis]) })
+        }
+      } else if (uiState.action === 'MOVE') {
+        if (raycaster.ray.intersectPlane(groundPlane, intersection)) {
+          house.position.x = intersection.x
+          house.position.z = intersection.z
+        }
+      } else {
+        house.rotation.y = uiState.mouse.x * 4
       }
-    }
+
   }
 
   // if (uiState.activeTarget && raycaster.ray.intersectPlane(groundPlane, intersection)) {
@@ -173,6 +208,19 @@ function mouseEvent(event) {
 
 document.querySelectorAll('li').forEach(li => li.addEventListener('click', function(event){
   uiState.action = event.target.id
+
+  if (uiState.action === 'RESIZE') {
+    balls.forEach(ball => ball.visible = true)
+  } else {
+    balls.forEach(ball => ball.visible = false)
+  }
+
+  if (uiState.action === 'MOVE' || uiState.action === 'ROTATE') {
+    outline.visible = true
+  } else {
+    outline.visible = false
+  }
+
   document.querySelectorAll('li').forEach(li => li.classList.remove('active'))
   event.target.classList.add('active')
 }))
@@ -185,7 +233,6 @@ controls.forEach( val =>
 container.addEventListener('mousemove', onMouseMove)
 container.addEventListener('mousedown', onMouseDown)
 container.addEventListener('mouseup', onMouseUp)
-
 
 redraw(wren.config)
 requestAnimationFrame(render)
