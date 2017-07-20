@@ -16,8 +16,8 @@ const House = wren => {
   const addOutlineMesh = () => {
     console.log('addOutlineMesh')
     outlineMesh = outline(wren.framePoints, wren.totalLength)
-    // outlineMesh.position.z = -wren.totalLength/2-0.04
-    // outlineMesh.position.y = -0.03
+    outlineMesh.position.z = -wren.totalLength/2-0.04
+    outlineMesh.position.y = -0.03
     outlineMesh.scale.multiplyScalar(2)//1.03
     outlineMesh.material.visible = false
     house.add(outlineMesh)
@@ -27,11 +27,12 @@ const House = wren => {
   const addBalls = () => {
     balls = [
       clone(sourceBall, {y: wren.config.height, z: wren.config.frameDepth/2 }, {}, {boundVariable: 'height', bindFn: (x => x), dragAxis: 'y'}),
-      // clone(sourceBall, {y: wren.config.wallHeight/2, z: (wren.config.bayLength * wren.config.totalBays)/2 },{}, {dragAxis: 'z' }),
+      // clone(sourceBall, {y: wren.config.wallHeight/2, z: (wren.config.bayLength * wren.config.totalBays)/2 }, {}, {dragAxis: 'z' }),
       clone(sourceBall, {y: wren.config.wallHeight/2, x: wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => x*2), dragAxis: 'x'}),
-      // clone(sourceBall, {y: wren.config.wallHeight/2, x: -wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => -x*2), dragAxis: 'x'})
+      clone(sourceBall, {y: wren.config.wallHeight/2, x: -wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => -x*2), dragAxis: 'x'})
     ]
-    balls.forEach(ball => house.add(ball))
+    // balls.forEach(ball => house.add(ball))
+    house.add(...balls)
   }
   addBalls()
 
@@ -96,8 +97,7 @@ const House = wren => {
 
   const redraw = newConfig => {
     wren = BasicWren(Object.assign({}, wren.config, newConfig))
-
-    removeDescendants(house)
+    // removeDescendants(house)
     const bays = redrawHouse(wren)
     // house.children = bays
     bays.forEach(bay => house.add(bay))
@@ -111,9 +111,6 @@ const House = wren => {
     // addOutlineMesh()
     // addBalls()
   }
-
-  // addOutlineMesh()
-  // addBalls()
 
   return {
     house,
