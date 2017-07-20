@@ -1,11 +1,15 @@
 const {compose} = require('ramda')
 export const SVG = require('./svg')
 export const CSV = require('./csv')
+const set = require('./set');
 const List = require('./patterns/list')
 const Clipper = require('./patterns/clipper')
 const Points = require('./patterns/points')
 const Utils = require('../utils')
+
+
 const config = require('../../extras/config')
+
 
 const firstHalfPoints = ({POINTS, CIRCLE}, $) => {
   const _POINTS = List.wrapped(POINTS).map( ([startPoint, endPoint]) => {
@@ -60,6 +64,19 @@ const firstPoints = (outerCorners, innerCorners, fifthPoints) => i => {
   ]
 }
 
+// Returns object with named sides, and the indices of points
+function finSides() {
+
+    // NOTE: we could calculate these, just pairwise points in order
+    return {
+        'rightRoof': [0, 1],
+        'rightWall': [1, 2],
+        'underside': [2, 3],
+        'leftWall': [3, 4],
+        'leftRoof': [4 ,0],
+    };
+}
+
 // NOTE: Right now only for 5-sided fin shape, with equal wall heights and symmetrical roof
 export function finShape(params) {
   var {width, height, wallHeight, frameWidth} = params;
@@ -86,6 +103,7 @@ export function finShape(params) {
     center: corners,
     inner: innerCorners,
     outer: outerCorners,
+    sides: finSides()
   };
 }
 
@@ -237,37 +255,75 @@ export function getParameters() {
 
 export const parameters = getParameters();
 
+function calculateAreas(profile, length) {
+
+  // Features we care about
+  const walls = new Set(['leftWall', 'rightWall']);
+  const undersides = new Set(['underside']);
+  const roofs = new Set(['leftRoof', 'rightRoof']);
+  const allSides = set.unionAll(walls, undersides, roofs);
+
+  // Pre-condition, all features must be known
+  const knownSides = new Set(Object.keys(profile.sides));
+  const diff = set.symmetricDifference(knownSides, allSides);
+  if (diff.size) {
+    throw new Error('frame profile has unknown sides: ' + diff.toString());
+  }
+
+  for (var i=0; i<6; i++) {
+    const p = profile;
+    console.log(i, p.center[i], p.outer[i], p.inner[i]);
+  }
+
+  const featureDistance = (points, name) => {
+    const indices = profile.sides[name];
+    const first = points[indices[0]];
+    const second = points[indices[1]];
+    const distance = Points.length(first, second)/100; // FIXME: don't use centimeters
+    console.log('d', distance, name, indices, first, second);
+    return distance;
+  };
+  const area = (points, features, length) => {
+    return Array.from(features).reduce((sum, name) => {
+      const d = featureDistance(points, name);
+      const area = d * length;
+      return sum + area;
+    }, 0)
+  };
+
+  const areas = {
+    'outerWallArea': area(profile.outer, walls, length.outer),
+    'footprintArea': area(profile.outer, undersides, length.outer),
+    'roofArea': area(profile.outer, roofs, length.outer),
+    'floorArea': area(profile.inner, undersides, length.inner),
+  };
+
+  return areas;
+}
+
 export function geometrics(parameters) {
 
   const i = parameters;
 
-  const length = i.totalBays * i.bayLength;
-  const outerLength = length + i.bayLength; // 2x half a bay
-  const outerWidth = i.width + i.frameWidth; // 2x half a frame
+  const centerLength = i.totalBays * i.bayLength;
+  const length = {
+    center: centerLength,
+    outer: centerLength + i.bayLength, // 2x half a bay
+    inner: centerLength - i.bayLength,
+  };
 
-  const innerWidth = i.width - i.frameWidth;
-  const innerLength = i.length - i.bayLength;
-
-  const floorArea = innerWidth * innerHeight;
-
-  // TODO: get wall and roofs from frame polygon
-  const sideWallArea = 10;
-  const endWallArea = 10;
-
-  const outputs = {
-      'footprintArea': outerLength * outerWidth,
-      'floorArea': floorArea,
-      'roofArea': 100, // outer
-      //'wallAreaOuter': sideWallArea*2 + endWallArea*2, // outer
-  }
+  const profile = finShape(parameters);
+  const surfaceAreas = calculateAreas(profile, length);
+  const outputs = surfaceAreas;
 
   // check post-conditions
   const invalids = Object.keys(outputs).filter((key) => {
     const val = outputs[key];
-    const valid = val >= 0 && !isNaN(val);
+    const valid = typeof val == 'number' && val >= 0 && !isNaN(val);
     return !valid;
   });
   if (invalids.length) {
+    console.error('geometrics()', outputs);
     throw new Error("wren.geometrics() outputted invalid values: " + JSON.stringify(invalids));
   }
 
