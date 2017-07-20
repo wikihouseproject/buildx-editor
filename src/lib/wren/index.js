@@ -5,43 +5,13 @@ const List = require('./patterns/list')
 const Clipper = require('./patterns/clipper')
 const Points = require('./patterns/points')
 
-// Return bounding rectangle for a set of 2d points
-const getBounds = (coords) => {
-  return coords.reduce( (bounds, coords) => {
-    // const [x, y] = coords.split(",")
-    const [x, y] = coords
-    bounds.minX = Math.min(bounds.minX, x)
-    bounds.minY = Math.min(bounds.minY, y)
-    bounds.maxX = Math.max(bounds.maxX, x)
-    bounds.maxY = Math.max(bounds.maxY, y)
-    return bounds
-  }, {
-    minX: Infinity,
-    minY: Infinity,
-    maxX: -Infinity,
-    maxY: -Infinity
-  })
-}
+const config = require('../../extras/config')
 
-// Pad a bounding box
-const getViewBox = (bounds, padding=10) =>
-  [
-    bounds.minX-padding,
-    bounds.minY-padding,
-    bounds.maxX - bounds.minX+padding*2,
-    bounds.maxY - bounds.minY+padding*2
-  ].join(" ")
-
-//
-const viewBoxFromPoints = compose(getViewBox, getBounds)
-//
-const GAP = 15 // distance to propagate points by when dedicing grip positions. Half of grip+nongrip (300mm)
-//
 const firstHalfPoints = ({POINTS, CIRCLE}, $) => {
   const _POINTS = List.wrapped(POINTS).map( ([startPoint, endPoint]) => {
     const distance = Points.length(startPoint, endPoint)
     let points = []
-    for (let i = GAP; i < distance/2; i += GAP) {
+    for (let i = config.pointDistanceCM; i < distance/2; i += config.pointDistanceCM) {
       const [x,y] = Points.pointOnLine(i)(startPoint, endPoint)
       points.push([x+startPoint[0],y+startPoint[1]])
     }
@@ -49,12 +19,12 @@ const firstHalfPoints = ({POINTS, CIRCLE}, $) => {
   })
   return _POINTS
 }
-//
+
 const secondHalfPoints = ({POINTS, CIRCLE}, $) => {
   const _POINTS = List.wrapped(POINTS).map( ([endPoint, startPoint]) => {
     const distance = Points.length(startPoint, endPoint)
     let points = []
-    for (let i = GAP; i < distance/2; i += GAP) {
+    for (let i = config.pointDistanceCM; i < distance/2; i += config.pointDistanceCM) {
       const [x,y] = Points.pointOnLine(i)(startPoint, endPoint)
       points.push([x+startPoint[0],y+startPoint[1]])
     }
@@ -67,7 +37,7 @@ const secondHalfPoints = ({POINTS, CIRCLE}, $) => {
 const getPoints = (corner, firstHalf, secondHalf) => {
   const ends = [firstHalf[firstHalf.length-1], secondHalf[0]]
   const distance = Points.length(...ends)
-  if (distance < GAP*1.2) {
+  if (distance < config.pointDistanceCM*1.2) {
     firstHalf = firstHalf.slice(0, -1)
     secondHalf = secondHalf.slice(1)
   }
@@ -157,9 +127,9 @@ export function splitFinPieces(finPolygon, params) {
   const outPoints = firstPoints(outerCorners, innerCorners, fifthPoints);
 
   return {
-    viewBox: viewBoxFromPoints(outerCorners),
+    viewBox: Points.viewBoxFromPoints(outerCorners),
     points: outPoints,
-    bounds: compose(getBounds, outPoints),
+    bounds: compose(Points.getBounds, outPoints),
   }
 }
 

@@ -8,6 +8,7 @@ const config = {
   bayLength: 1.2,
 
   // only used in /src/lib/wren so far
+    pointDistanceCM: 15, // distance to propagate points by when dedicing grip positions. Half of grip+nongrip (300mm)
     initialCameraPosition: { x: 0, y: 8, z: 8 },
     colours: [ 'yellow', 'green', 'pink', 'blue', 'orange'],
     extrusion: 0.25,

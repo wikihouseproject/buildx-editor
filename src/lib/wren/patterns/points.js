@@ -1,3 +1,5 @@
+const {compose} = require('ramda')
+
 const getXY = (startX,startY,endX,endY) => [endX - startX, endY - startY]
 
 const split = (amount=1) => ([startX, startY], [endX, endY]) => {
@@ -39,11 +41,43 @@ const rotateAroundPoint = ([pointX, pointY], [originX, originY], angle) => {
   ]
 }
 
+// Return bounding rectangle for a set of 2d points
+const getBounds = (coords) => {
+  return coords.reduce( (bounds, coords) => {
+    // const [x, y] = coords.split(",")
+    const [x, y] = coords
+    bounds.minX = Math.min(bounds.minX, x)
+    bounds.minY = Math.min(bounds.minY, y)
+    bounds.maxX = Math.max(bounds.maxX, x)
+    bounds.maxY = Math.max(bounds.maxY, y)
+    return bounds
+  }, {
+    minX: Infinity,
+    minY: Infinity,
+    maxX: -Infinity,
+    maxY: -Infinity
+  })
+}
+
+// Pad a bounding box
+const getViewBox = (bounds, padding=10) =>
+  [
+    bounds.minX-padding,
+    bounds.minY-padding,
+    bounds.maxX - bounds.minX+padding*2,
+    bounds.maxY - bounds.minY+padding*2
+  ].join(" ")
+
+const viewBoxFromPoints = compose(getViewBox, getBounds)
+
 module.exports = {
   angle,
   split,
   length,
   pointOnLine,
   percentageOnLine,
-  rotateAroundPoint
+  rotateAroundPoint,
+  getBounds,
+  getViewBox,
+  viewBoxFromPoints
 }
