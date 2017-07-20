@@ -17,6 +17,8 @@ const pointOnLine = (distance=1) => ([startX, startY], [endX, endY]) => {
   return [x/hypot*distance,y/hypot*distance]
 }
 
+const movePointOnAngle = ([x,y], angle, delta) => [x + (Math.sin(angle) * delta), y - (Math.cos(angle) * delta)]
+
 const length = ([startX, startY], [endX, endY]) => {
   const [x,y] = getXY(startX,startY,endX,endY)
   return Math.hypot(x, y)
@@ -75,6 +77,7 @@ module.exports = {
   split,
   length,
   pointOnLine,
+  movePointOnAngle,
   percentageOnLine,
   rotateAroundPoint,
   getBounds,

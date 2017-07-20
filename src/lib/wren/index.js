@@ -4,7 +4,7 @@ export const CSV = require('./csv')
 const List = require('./patterns/list')
 const Clipper = require('./patterns/clipper')
 const Points = require('./patterns/points')
-
+const Utils = require('../utils')
 const config = require('../../extras/config')
 
 const firstHalfPoints = ({POINTS, CIRCLE}, $) => {
@@ -89,9 +89,6 @@ export function finShape(params) {
   };
 }
 
-const movePointOnAngle = ([x,y], angle, delta) =>
-  [x + (Math.sin(angle) * delta), y - (Math.cos(angle) * delta)]
-
 // Takes into considerations
 // TODO: take into consideratin maximum piece size
 export function splitFinPieces(finPolygon, params) {
@@ -118,7 +115,10 @@ export function splitFinPieces(finPolygon, params) {
     group.map( (point, index) => {
       if (index === 5) {
         const [x,y] = point
-        fifthPoints.push([movePointOnAngle(point, angle, frameWidth/2), movePointOnAngle(point, angle, -(frameWidth/2))])
+        fifthPoints.push([
+          Points.movePointOnAngle(point, angle, frameWidth/2),
+          Points.movePointOnAngle(point, angle, -(frameWidth/2))
+        ])
       }
     })
   })
@@ -133,12 +133,6 @@ export function splitFinPieces(finPolygon, params) {
   }
 }
 
-function times(n, iterator) {
-  var accum = Array(Math.max(0, n));
-  for (var i = 0; i < n; i++) accum[i] = iterator.call();
-  return accum;
-}
-
 // Main entrypoint, generates all geometry of the chassis
 export function chassis(params) {
 
@@ -148,7 +142,7 @@ export function chassis(params) {
   };
 
   return {
-    frames: times(params.totalBays, makeFrame),
+    frames: Utils.times(params.totalBays, makeFrame),
     parameters: params,
   }
 }
@@ -281,11 +275,11 @@ export function geometrics(parameters) {
 }
 
 export function estimateCosts(metrics) {
-    // for pilots it ranged between 4-8 GBP per sqm.
-    // multiple stories -> cheaper
-    // thicker frame -> expensive
-    // taller -> expensive
-    const baseCostPerSqm = 8;
-    const chassisCosts = baseCostPerSqm * metrics.footprintArea;
-    return chassisCosts;
+  // for pilots it ranged between 4-8 GBP per sqm.
+  // multiple stories -> cheaper
+  // thicker frame -> expensive
+  // taller -> expensive
+  const baseCostPerSqm = 8;
+  const chassisCosts = baseCostPerSqm * metrics.footprintArea;
+  return chassisCosts;
 }

@@ -1,7 +1,6 @@
 import { offset } from "../../src/lib/wren/patterns/clipper"
 
 const Wren = config => {
-
   const framePoints = [
     [0,config.height],
     [config.width/2,config.wallHeight],
