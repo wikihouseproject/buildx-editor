@@ -4,35 +4,38 @@ import { removeDescendants } from "../../src/lib/utils"
 
 import BasicWren from "../../src/lib/wren/basic_wren"
 
-// const outlineGeometry = new THREE.Geometry()
-// const outlineMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.BackSide})
-
 const sourceBall = ball()
 
 const House = wren => {
 
   const house = new THREE.Object3D()
 
-  let balls = []
+  let balls = [],
+      outlineMesh = undefined
 
-  let outlineMesh = outline(wren.framePoints, wren.totalLength)
-  outlineMesh.position.z = -wren.totalLength/2-0.04
-  outlineMesh.position.y = -0.03
-  outlineMesh.scale.multiplyScalar(1.03)
-  house.add(outlineMesh)
+  const addOutlineMesh = () => {
+    console.log('addOutlineMesh')
+    outlineMesh = outline(wren.framePoints, wren.totalLength)
+    // outlineMesh.position.z = -wren.totalLength/2-0.04
+    // outlineMesh.position.y = -0.03
+    outlineMesh.scale.multiplyScalar(2)//1.03
+    outlineMesh.material.visible = false
+    house.add(outlineMesh)
+  }
+  addOutlineMesh()
 
   const addBalls = () => {
     balls = [
       clone(sourceBall, {y: wren.config.height, z: wren.config.frameDepth/2 }, {}, {boundVariable: 'height', bindFn: (x => x), dragAxis: 'y'}),
       // clone(sourceBall, {y: wren.config.wallHeight/2, z: (wren.config.bayLength * wren.config.totalBays)/2 },{}, {dragAxis: 'z' }),
-      clone(sourceBall, {y: wren.config.wallHeight/2, x: wren.config.width/2 + wren.config.frameDepth}, {}, {boundVariable: 'width', bindFn: (x => x*2), dragAxis: 'x'}),
-      clone(sourceBall, {y: wren.config.wallHeight/2, x: -wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => -x*2), dragAxis: 'x'})
+      clone(sourceBall, {y: wren.config.wallHeight/2, x: wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => x*2), dragAxis: 'x'}),
+      // clone(sourceBall, {y: wren.config.wallHeight/2, x: -wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => -x*2), dragAxis: 'x'})
     ]
     balls.forEach(ball => house.add(ball))
   }
+  addBalls()
 
   const redrawHouse = wren => {
-
     const { config } = wren
 
     const sourceConnector = connector(config)
@@ -47,7 +50,7 @@ const House = wren => {
       bay.position.z = i*config.bayLength - wren.totalLength/2
       const frame = clone(sourceFrame, {})
       bay.add(frame)
-      scene.add(new THREE.SectionHelper(frame, 0x444444))
+      // scene.add(new THREE.SectionHelper(frame, 0x444444))
 
       // only add a frame to the first bay
       if (i > 0) {
@@ -75,16 +78,16 @@ const House = wren => {
         bay.add(leftRoof)
         bay.add(rightRoof)
 
-        scene.add(new THREE.SectionHelper(leftRoof, 0x444444))
-        scene.add(new THREE.SectionHelper(rightRoof, 0x444444))
+        // scene.add(new THREE.SectionHelper(leftRoof, 0x444444))
+        // scene.add(new THREE.SectionHelper(rightRoof, 0x444444))
 
         // ceiling
         // bay.add(clone(sourceRoof, {y: config.height-config.connectorHeight}, {z: Math.PI/2, x: -Math.PI/2}))
         // bay.add(clone(sourceRoof, {y: config.height-config.connectorHeight}, {z: -Math.PI/2, x: Math.PI/2}))
 
         // outer walls
-        bay.add(clone(sourceOuterWall, {x: config.width/2, z: -config.bayLength/2}, {y: Math.PI/2}))
-        bay.add(clone(sourceOuterWall, {x: -config.width/2 - config.plyThickness, z: -config.bayLength/2}, {y: Math.PI/2}))
+        // bay.add(clone(sourceOuterWall, {x: config.width/2, z: -config.bayLength/2}, {y: Math.PI/2}))
+        // bay.add(clone(sourceOuterWall, {x: -config.width/2 - config.plyThickness, z: -config.bayLength/2}, {y: Math.PI/2}))
       }
       bays.push(bay)
     }
@@ -105,16 +108,12 @@ const House = wren => {
     //     outlineGeometry.merge(c.geometry, c.matrix)
     //   })
     // })
-
-    // outlineMesh = outline(wren.framePoints, wren.totalLength)
-    // outlineMesh.position.z = -wren.totalLength/2-0.04
-    // outlineMesh.position.y = -0.03
-    // outlineMesh.scale.multiplyScalar(1.03)
-    // house.add(outlineMesh)
-    addBalls()
+    // addOutlineMesh()
+    // addBalls()
   }
 
-  addBalls()
+  // addOutlineMesh()
+  // addBalls()
 
   return {
     house,

@@ -5,7 +5,7 @@ const Mouse = (_window, container) => {
   let state = {
     target: undefined,
     activeTarget: undefined,
-    offset: undefined,
+    activeTargetOffset: undefined,
     isDown: false,
     position: { x: 0, y: 0 }
   }
@@ -24,14 +24,15 @@ const Mouse = (_window, container) => {
   }
 
   function onMouseMove(event) {
-    mouseEvent(event)
     events.emit('move')
+    mouseEvent(event)
   }
 
   function onMouseDown(event) {
     state.isDown = true
     if (state.target) {
       state.activeTarget = state.target
+      state.activeTargetOffset = state.activeTarget.point.sub(state.activeTarget.object.position)
     } else {
       state.activeTarget = undefined
     }
@@ -45,6 +46,17 @@ const Mouse = (_window, container) => {
       y: -(event.clientY/_window.innerHeight)*2 + 1
     }
     events.emit('all')
+  }
+
+  function handleIntersects(intersects) {
+    if (intersects.length > 0) {
+      state.target = intersects[0]
+      setCursor('GRAB')
+    } else if (!state.clicked) {
+      setCursor('DEFAULT')
+      state.target = undefined
+    }
+    if (state.activeTarget) setCursor('GRABBING')
   }
 
   const setCursor = type => {
@@ -65,7 +77,8 @@ const Mouse = (_window, container) => {
   return {
     state,
     events,
-    setCursor
+    setCursor,
+    handleIntersects
   }
 
 }

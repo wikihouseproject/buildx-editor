@@ -32,6 +32,7 @@ const clone = (sourceMesh, position={}, rotation={}, userData={}) => {
 
 const frame = (points, {frameDepth}) => makePiece(points, frameDepth)
 
+// const outlineMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.BackSide})
 const outline = (outerFramePoints, totalLength) => {
   const extrudeSettings = {
     steps: 1,
@@ -96,7 +97,7 @@ const makePiece = (points, amount, color=0x00ff00) => {
 }
 
 const ball = () => {
-  const geometry = new THREE.SphereGeometry(0.2, 32, 32);
+  const geometry = new THREE.SphereGeometry(0.5, 8, 8);
   const material = new THREE.MeshBasicMaterial({ color: 0x00000 });
   return new THREE.Mesh(geometry, material)
 }

@@ -5,37 +5,38 @@ import defaults from '../../src/extras/config'
 import Mouse from './mouse'
 import House from './house'
 
+let currentAction = "RESIZE"
+
 let wren = BasicWren(Object.assign({}, defaults, {totalBays: 6}))
 
-let currentAction = 'RESIZE'
-
 const mouse = Mouse(window,container)
+
+const raycaster = new THREE.Raycaster()
 
 const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0),new THREE.Vector3(0,0,0))
 const plane = new THREE.Plane()
 
 const house = House(wren)
+house.redraw(wren.config)
 
 scene.add(ground(20,20))
 scene.add(house.house)
 
-const raycaster = new THREE.Raycaster()
+// Control Inputs Events
 
-document.querySelectorAll('li').forEach(li => li.addEventListener('click', function(event){
+function changeCurrentAction(event) {
   currentAction = event.target.id
-  if (currentAction === 'RESIZE') {
-    house.balls.forEach(ball => ball.visible = true)
-  } else {
-    house.balls.forEach(ball => ball.visible = false)
-  }
-  if (currentAction === 'MOVE' || currentAction === 'ROTATE') {
-    house.outline.visible = true
-  } else {
-    house.outline.visible = false
-  }
+
+  // hide balls unless resizing
+  house.balls.forEach(ball => ball.visible = (currentAction === 'RESIZE'))
+  // hide outline unless moving or rotating
+  house.outlineMesh.visible = (currentAction === 'MOVE' || currentAction === 'ROTATE')
+
+  // change activeState
   document.querySelectorAll('li').forEach(li => li.classList.remove('active'))
   event.target.classList.add('active')
-}))
+}
+document.querySelectorAll('li').forEach(li => li.addEventListener('click', changeCurrentAction))
 
 const controls = ['totalBays', 'width', 'height']
 controls.forEach( val =>
@@ -46,68 +47,79 @@ document.getElementById('clippingHeight').addEventListener('input', event => {
   updateClippingPlane(Number(event.target.value))
 })
 
+// Mouse Events
+
 mouse.events.on('down', () => {
-  if (mouse.state.target) {
-    // state.offset = state.activeTarget.point.sub(state.activeTarget.object.position)
-    orbitControls.enabled = false
-  }
+  if (mouse.state.target) orbitControls.enabled = false
 })
 
 mouse.events.on('up', () => {
   orbitControls.enabled = true
 })
 
+let hitTestObjects = [],
+    intersects = [],
+    intersectFn = undefined
+
 mouse.events.on('all', mouseEvent)
 
 function mouseEvent() {
   raycaster.setFromCamera(mouse.state.position, camera)
 
-
-  let objects = []
-  if (currentAction === 'RESIZE') objects = house.balls
-  else if (currentAction === 'MOVE' || currentAction === 'ROTATE') objects = [house.outlineMesh]
-
-  const intersects = raycaster.intersectObjects(objects)
-
-  if (intersects.length > 0) {
-    if (currentAction === 'MOVE' || currentAction === 'ROTATE') house.outlineMesh.material.visible = true
-    mouse.state.target = intersects[0]
-    mouse.setCursor('GRAB')
-  } else {
-    //// if (currentAction != 'ROTATE')
-    if (!mouse.state.isDown) house.outlineMesh.material.visible = false
-    if (!mouse.state.clicked) {
-      mouse.setCursor('DEFAULT')
-      mouse.state.target = undefined
-    }
+  if (currentAction === 'RESIZE') {
+    hitTestObjects = house.balls
+    intersectFn = handleResize
+  } else if (currentAction === 'MOVE') {
+    hitTestObjects = [house.outlineMesh]
+    intersectFn = handleMove
+  } else if (currentAction === 'ROTATE') {
+    hitTestObjects = [house.outlineMesh]
+    intersectFn = handleRotate
   }
-  let intersection = new THREE.Vector3()
 
+  intersects = raycaster.intersectObjects(hitTestObjects)
+  mouse.handleIntersects(intersects)
+  intersectFn(intersects, new THREE.Vector3())
+}
+
+function handleOutlineMesh(intersects) {
+  if (intersects.length > 0) {
+    house.outlineMesh.material.visible = true
+  } else {
+    if (!mouse.state.isDown) house.outlineMesh.material.visible = false
+  }
+}
+
+function handleMove(intersects, intersection) {
+  handleOutlineMesh(intersects)
   if (mouse.state.activeTarget) {
-    mouse.setCursor('GRABBING')
-
-    if (currentAction === 'RESIZE') {
-      const ball = mouse.state.activeTarget.object
-      plane.setFromNormalAndCoplanarPoint(
-        camera.getWorldDirection(plane.normal),
-        ball.position
-      )
-      if (raycaster.ray.intersectPlane(plane, intersection)) {
-        ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
-        house.redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(ball.position[ball.userData.dragAxis]) })
-      }
-    } else if (currentAction === 'MOVE') {
-      if (raycaster.ray.intersectPlane(groundPlane, intersection)) {
-        house.house.position.x = intersection.x
-        house.house.position.z = intersection.z
-      }
-    } else {
-      house.house.rotation.y = mouse.state.position.x * 4
+    if (raycaster.ray.intersectPlane(groundPlane, intersection)) {
+      house.house.position.x = intersection.x
+      house.house.position.z = intersection.z
     }
   }
 }
 
-house.redraw(wren.config)
+function handleRotate(intersects, intersection) {
+  handleOutlineMesh(intersects)
+  if (mouse.state.activeTarget) {
+    house.house.rotation.y = mouse.state.position.x * 4
+  }
+}
+
+function handleResize(intersects, intersection) {
+  if (mouse.state.activeTarget) {
+    const ball = mouse.state.activeTarget.object
+    plane.setFromNormalAndCoplanarPoint(
+      camera.getWorldDirection(plane.normal),
+      ball.position
+    )
+    if (raycaster.ray.intersectPlane(plane, intersection)) {
+      ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
+      house.redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(ball.position[ball.userData.dragAxis]) })
+    }
+  }
+}
 
 function render() {
   stats.begin()
