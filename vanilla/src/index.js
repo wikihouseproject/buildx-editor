@@ -1,10 +1,9 @@
 import { ground, frame, clone, house, connector, outerWall, roof, ball, floor } from "./components"
+import { container, scene, camera, orbitControls, render } from "./scene"
 import { removeDescendants, rad2Deg } from "../../src/lib/utils"
-import { container, stats, rendererStats, renderer, scene, camera, orbitControls, render } from "./scene"
-
-import Wren from "./wren"
+import BasicWren from "../../src/lib/wren/basic_wren"
 import defaults from '../../src/extras/config'
-let wren = Wren(defaults)
+let wren = BasicWren(defaults)
 
 scene.add(ground(20,20))
 scene.add(house)
@@ -67,7 +66,7 @@ const sourceBall = ball()
 function redraw(newConfig) {
   const numChildren = (house.children || []).length
   // wren.config = Object.assign({}, wren.config, newConfig)
-  wren = Wren(Object.assign({}, wren.config, newConfig))
+  wren = BasicWren(Object.assign({}, wren.config, newConfig))
 
   removeDescendants(house)
   house.children = redrawHouse()

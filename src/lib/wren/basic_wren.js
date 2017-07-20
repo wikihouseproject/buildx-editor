@@ -1,6 +1,6 @@
-import { offset } from "../../src/lib/wren/patterns/clipper"
+import { offset } from "./patterns/clipper"
 
-const Wren = config => {
+const BasicWren = config => {
   const framePoints = [
     [0,config.height],
     [config.width/2,config.wallHeight],
@@ -28,4 +28,4 @@ const Wren = config => {
   }
 }
 
-module.exports = Wren
+module.exports = BasicWren

@@ -23,7 +23,8 @@
     "deploy": "npm run build && echo 'https://sprint.buildx.cc' > build/CNAME && gh-pages -d build && rm -rf build",
     "test": "mocha --colors --require babel-register --reporter spec tests/**/*.js",
     "build": "cycle-scripts build",
-    "eject": "cycle-scripts eject"
+    "eject": "cycle-scripts eject",
+    "start-vanilla": "./node_modules/webpack-dev-server-vanilla/bin/webpack-dev-server.js"
   },
   "babel": {
     "presets": [
