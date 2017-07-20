@@ -15,6 +15,8 @@
     "clipper-js": "^1.0.2",
     "eventemitter3": "^2.0.3",
     "gh-pages": "^1.0.0",
+    "noflo": "^0.8.3",
+    "noflo-runtime-webrtc": "^0.8.0",
     "ramda": "^0.24.1",
     "xstream": "^10.9.0"
   },
