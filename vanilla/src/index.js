@@ -72,9 +72,9 @@ function redraw(newConfig) {
   house.children = redrawHouse()
 
   balls = [
-    clone(sourceBall, {y: wren.config.height, z: wren.config.frameDepth/2 }, {}, {dragAxis: 'y'}),
-    clone(sourceBall, {y: wren.config.wallHeight/2, z: (wren.config.bayLength * wren.config.totalBays)/2 },{}, {dragAxis: 'z'}),
-    clone(sourceBall, {y: wren.config.wallHeight/2, x: wren.config.width/2 + wren.config.frameDepth}, {}, {dragAxis: 'x'})
+    clone(sourceBall, {y: wren.config.height, z: wren.config.frameDepth/2 }, {}, {boundVariable: 'height', bindFn: (x => x), dragAxis: 'y'}),
+    // clone(sourceBall, {y: wren.config.wallHeight/2, z: (wren.config.bayLength * wren.config.totalBays)/2 },{}, {dragAxis: 'z' }),
+    clone(sourceBall, {y: wren.config.wallHeight/2, x: wren.config.width/2 + wren.config.frameDepth}, {}, {boundVariable: 'width', bindFn: (x => x*2), dragAxis: 'x'})
   ]
   balls.forEach(ball => house.add(ball))
 }
@@ -147,6 +147,7 @@ function mouseEvent(event) {
       )
       if (raycaster.ray.intersectPlane(plane, intersection)) {
         ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
+        redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(ball.position[ball.userData.dragAxis]) })
       }
     }
   }
