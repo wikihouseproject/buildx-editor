@@ -15,7 +15,7 @@ const createShape = points => {
   return shape
 }
 
-const clone = (sourceMesh, position={}, rotation={}) => {
+const clone = (sourceMesh, position={}, rotation={}, userData={}) => {
   const geometry = sourceMesh.geometry;
   const material = sourceMesh.material;
   const mesh = new THREE.Mesh(geometry, material)
@@ -26,6 +26,7 @@ const clone = (sourceMesh, position={}, rotation={}) => {
   mesh.rotation.x = (rotation.x || sourceMesh.rotation.x)
   mesh.rotation.y = (rotation.y || sourceMesh.rotation.y)
   mesh.rotation.z = (rotation.z || sourceMesh.rotation.z)
+  mesh.userData = userData
   return mesh
 }
 

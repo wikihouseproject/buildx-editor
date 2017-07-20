@@ -41,5 +41,20 @@ function render() {
   requestAnimationFrame(render)
 }
 
-module.exports = { container, stats, rendererStats, renderer, scene, camera, orbitControls, render }
+const setCursor = type => {
+  let cursor;
+  switch(type) {
+    case 'GRAB':
+      cursor = '-webkit-grab'
+      break
+    case 'GRABBING':
+      cursor = '-webkit-grabbing'
+      break
+    default:
+      cursor = 'default'
+  }
+  container.style.cursor = cursor
+}
+
+module.exports = { container, stats, rendererStats, renderer, scene, camera, orbitControls, render, setCursor }
 
