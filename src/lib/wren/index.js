@@ -1,11 +1,15 @@
 const {compose} = require('ramda')
 export const SVG = require('./svg')
 export const CSV = require('./csv')
+const set = require('./set');
 const List = require('./patterns/list')
 const Clipper = require('./patterns/clipper')
 const Points = require('./patterns/points')
 const Utils = require('../utils')
+
+
 const config = require('../../extras/config')
+
 
 const firstHalfPoints = ({POINTS, CIRCLE}, $) => {
   const _POINTS = List.wrapped(POINTS).map( ([startPoint, endPoint]) => {
@@ -51,13 +55,36 @@ const firstPoints = (outerCorners, innerCorners, fifthPoints) => i => {
     return array[index]
   }
   return [
-    wrapped(i-1, outerCorners),
+    wrapped(i, outerCorners),
     wrapped(i, fifthPoints)[0],
     wrapped(i, fifthPoints)[1],
-    wrapped(i-1, innerCorners),
+    wrapped(i, innerCorners),
     wrapped(i-1, fifthPoints)[1],
     wrapped(i-1, fifthPoints)[0]
   ]
+}
+
+// Returns object with named sides, and the indices of points
+function finSides() {
+
+    // NOTE: we could calculate these, just pairwise points in order
+    return {
+        'rightRoof': [0, 1],
+        'rightWall': [1, 2],
+        'underside': [2, 3],
+        'leftWall': [3, 4],
+        'leftRoof': [4 ,0],
+    };
+}
+
+function remapArray(input, mapping) {
+  const sources = Object.keys(mapping);
+  var out = new Array(sources.length);
+  sources.map( (source) => {
+    const targetIndex = mapping[source];
+    return out[targetIndex] = input[source];
+  });
+  return out;
 }
 
 // NOTE: Right now only for 5-sided fin shape, with equal wall heights and symmetrical roof
@@ -82,10 +109,13 @@ export function finShape(params) {
   const outerCorners = Clipper.offset(corners, { DELTA: frameWidth/2 })
   const innerCorners = Clipper.offset(corners, { DELTA: -(frameWidth/2) })
 
+  const clipperPointsToNormal = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 0 };
+
   return {
     center: corners,
-    inner: innerCorners,
-    outer: outerCorners,
+    inner: remapArray(innerCorners, clipperPointsToNormal),
+    outer: remapArray(outerCorners, clipperPointsToNormal),
+    sides: finSides()
   };
 }
 
@@ -116,8 +146,8 @@ export function splitFinPieces(finPolygon, params) {
       if (index === 5) {
         const [x,y] = point
         fifthPoints.push([
-          Points.movePointOnAngle(point, angle, frameWidth/2),
-          Points.movePointOnAngle(point, angle, -(frameWidth/2))
+          Points.movePointOnAngle(point, angle, frameWidth/2), // outer
+          Points.movePointOnAngle(point, angle, -(frameWidth/2)) // inner
         ])
       }
     })
@@ -193,8 +223,8 @@ export function getParameters() {
   const definitions = [
     // Commonly configured
     ['totalBays', "Bays #", 'number', 6, "Number of frames"],
-    ['height', "Height", 'distance', 3.0, "Height to top of frame"],
-    ['width', "Width", 'distance', 1.2, "Width of frame"],
+    ['height', "Height", 'distance', 3.0, "Height to top of chassis"],
+    ['width', "Width", 'distance', 1.2, "Width of chassis"],
     ['wallHeight', "Wall height", 'distance', 2.5, "Height of wall, where roof starts"],
 
     // internal
@@ -237,37 +267,99 @@ export function getParameters() {
 
 export const parameters = getParameters();
 
+function calculateAreas(profile, length) {
+
+  // Features we care about
+  const walls = new Set(['leftWall', 'rightWall']);
+  const undersides = new Set(['underside']);
+  const roofs = new Set(['leftRoof', 'rightRoof']);
+  const allSides = set.unionAll(walls, undersides, roofs);
+
+  // Pre-condition, all features must be known
+  const knownSides = new Set(Object.keys(profile.sides));
+  const diff = set.symmetricDifference(knownSides, allSides);
+  if (diff.size) {
+    throw new Error('frame profile has unknown sides: ' + diff.toString());
+  }
+
+  const featureDistance = (points, name) => {
+    const indices = profile.sides[name];
+    const first = points[indices[0]];
+    const second = points[indices[1]];
+    const distance = Points.length(first, second)/100; // FIXME: don't use centimeters
+    return distance;
+  };
+  const area = (points, features, length) => {
+    return Array.from(features).reduce((sum, name) => {
+      const d = featureDistance(points, name);
+      const area = d * length;
+      return sum + area;
+    }, 0)
+  };
+
+  const endWallArea = (points) => {
+    return Clipper.area(points)/(100*100); // FIXME: don't use centimeters
+  }
+
+  const areas = {
+    'outerWallArea': area(profile.outer, walls, length.outer) + 2*endWallArea(profile.outer),
+    'innerWallArea': area(profile.inner, walls, length.inner) + 2*endWallArea(profile.inner),
+    'footprintArea': area(profile.outer, undersides, length.outer),
+    'roofArea': area(profile.outer, roofs, length.outer),
+    'ceilingArea': area(profile.inner, roofs, length.inner),
+    'floorArea': area(profile.inner, undersides, length.inner),
+  };
+
+  return areas;
+}
+
+function calculateVolumes(profile, length, params) {
+  
+  const endWallArea = (points) => {
+    return Clipper.area(points)/(100*100); // FIXME: don't use centimeters
+  }
+
+  const endWallThickness = params.frameDepth;
+
+  const innerArea = endWallArea(profile.inner);
+  const outerArea = endWallArea(profile.outer);
+  const frameSection = outerArea - innerArea;
+  const frameVolume = frameSection * length.outer;
+  const endWallVolume = endWallThickness * innerArea; // endwall sits inside frame 
+
+  const volumes = {
+    'insulationVolume': frameVolume + 2*endWallVolume, // rough est for insulation needed
+    'innerVolume': length.inner * innerArea, 
+    'outerVolume': length.outer * outerArea,
+  };
+  return volumes;
+}
+
 export function geometrics(parameters) {
 
   const i = parameters;
 
-  const length = i.totalBays * i.bayLength;
-  const outerLength = length + i.bayLength; // 2x half a bay
-  const outerWidth = i.width + i.frameWidth; // 2x half a frame
+  const centerLength = i.totalBays * i.bayLength;
+  const length = {
+    center: centerLength,
+    outer: centerLength + i.bayLength, // 2x half a bay
+    inner: centerLength - i.bayLength,
+  };
 
-  const innerWidth = i.width - i.frameWidth;
-  const innerLength = i.length - i.bayLength;
+  const profile = finShape(parameters);
+  const surfaceAreas = calculateAreas(profile, length);
+  const volumes = calculateVolumes(profile, length, parameters);
 
-  const floorArea = innerWidth * innerHeight;
-
-  // TODO: get wall and roofs from frame polygon
-  const sideWallArea = 10;
-  const endWallArea = 10;
-
-  const outputs = {
-      'footprintArea': outerLength * outerWidth,
-      'floorArea': floorArea,
-      'roofArea': 100, // outer
-      //'wallAreaOuter': sideWallArea*2 + endWallArea*2, // outer
-  }
+  const outputs = Object.assign(surfaceAreas, volumes);
 
   // check post-conditions
   const invalids = Object.keys(outputs).filter((key) => {
     const val = outputs[key];
-    const valid = val >= 0 && !isNaN(val);
+    const valid = typeof val == 'number' && val >= 0 && !isNaN(val);
     return !valid;
   });
   if (invalids.length) {
+    console.error('geometrics()', outputs);
     throw new Error("wren.geometrics() outputted invalid values: " + JSON.stringify(invalids));
   }
 
