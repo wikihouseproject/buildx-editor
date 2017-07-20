@@ -1,0 +1,89 @@
+const ground = (width, height) => {
+  const geometry = new THREE.PlaneGeometry(width, height, 32)
+  const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide})
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.rotation.x = Math.PI/2
+  mesh.position.y = 0
+  return mesh
+}
+
+const createShape = points => {
+  let shape = new THREE.Shape()
+  shape.moveTo(...points[0])
+  points.slice(1).forEach( ([x,y]) => shape.lineTo(x,y))
+  shape.lineTo(...points[0])
+  return shape
+}
+
+const clone = (sourceMesh, position={}, rotation={}) => {
+  const geometry = sourceMesh.geometry;
+  const material = sourceMesh.material;
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.position.x = (position.x || sourceMesh.position.x)
+  mesh.position.y = (position.y || sourceMesh.position.y)
+  mesh.position.z = (position.z || sourceMesh.position.z)
+  mesh.rotation.order = (rotation.order || sourceMesh.rotation.order)
+  mesh.rotation.x = (rotation.x || sourceMesh.rotation.x)
+  mesh.rotation.y = (rotation.y || sourceMesh.rotation.y)
+  mesh.rotation.z = (rotation.z || sourceMesh.rotation.z)
+  return mesh
+}
+
+const frame = (points, {frameDepth}) => makePiece(points, frameDepth)
+
+const outerWall = ({bayLength, wallHeight, plyThickness}) => makePiece([
+  [0,wallHeight],
+  [bayLength/2,wallHeight],
+  [bayLength/2,0],
+  [-bayLength/2,0],
+  [-bayLength/2,wallHeight]
+], plyThickness, 0x5A717E)
+
+const connector = ({connectorWidth, connectorHeight, plyThickness}) => makePiece([
+  [0,connectorHeight],
+  [connectorWidth,connectorHeight],
+  [connectorWidth,0],
+  [0,0]
+], plyThickness, 'yellow')
+
+const roof = ({width, height, wallHeight, bayLength, plyThickness}) => {
+  const roofLength = Math.hypot((width/2), (height-wallHeight))
+  return makePiece([
+    [0,roofLength],
+    [bayLength,roofLength],
+    [bayLength,0],
+    [0,0]
+  ], plyThickness, 'orange')
+}
+
+const floor = ({width, bayLength, plyThickness}) => makePiece([
+  [0,width],
+  [bayLength,width],
+  [bayLength,0],
+  [0,0]
+], plyThickness, 'green')
+
+const extrudeShape = (shape, extrudeSettings, color) => {
+  const geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
+  const material = new THREE.MeshBasicMaterial({ color });
+  return new THREE.Mesh(geometry, material)
+}
+
+const makePiece = (points, amount, color=0x00ff00) => {
+  const extrudeSettings = {
+    steps: 1,
+    amount,
+    bevelEnabled: false
+  }
+  return extrudeShape(createShape(points), extrudeSettings, color)
+}
+
+const ball = () => {
+  const geometry = new THREE.SphereGeometry(0.2, 32, 32);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00000 });
+  return new THREE.Mesh(geometry, material)
+}
+
+const house = new THREE.Object3D()
+
+module.exports = { ground, makePiece, clone, frame, house, connector, outerWall, roof, ball, floor }
