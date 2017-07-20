@@ -313,6 +313,28 @@ function calculateAreas(profile, length) {
   return areas;
 }
 
+function calculateVolumes(profile, length, params) {
+  
+  const endWallArea = (points) => {
+    return Clipper.area(points)/(100*100); // FIXME: don't use centimeters
+  }
+
+  const endWallThickness = params.frameDepth;
+
+  const innerArea = endWallArea(profile.inner);
+  const outerArea = endWallArea(profile.outer);
+  const frameSection = outerArea - innerArea;
+  const frameVolume = frameSection * length.outer;
+  const endWallVolume = endWallThickness * innerArea; // endwall sits inside frame 
+
+  const volumes = {
+    'insulationVolume': frameVolume + 2*endWallVolume, // rough est for insulation needed
+    'innerVolume': length.inner * innerArea, 
+    'outerVolume': length.outer * outerArea,
+  };
+  return volumes;
+}
+
 export function geometrics(parameters) {
 
   const i = parameters;
@@ -326,7 +348,9 @@ export function geometrics(parameters) {
 
   const profile = finShape(parameters);
   const surfaceAreas = calculateAreas(profile, length);
-  const outputs = surfaceAreas;
+  const volumes = calculateVolumes(profile, length, parameters);
+
+  const outputs = Object.assign(surfaceAreas, volumes);
 
   // check post-conditions
   const invalids = Object.keys(outputs).filter((key) => {

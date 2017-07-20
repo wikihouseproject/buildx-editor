@@ -47,6 +47,16 @@ describe('wren.metrics', () => {
       chai.expect(Math.round(data.innerWallArea)).to.equal(61);
       chai.expect(Math.round(data.outerWallArea)).to.equal(72);
     });
+    it('should output volumes', () => {
+      params.frameWidth = 0.2;
+      const data = wren.geometrics(params);
+      chai.expect(data).to.be.a('object');
+      chai.expect(data).to.include.keys(['innerVolume', 'outerVolume']);
+      chai.expect(data).to.include.keys(['insulationVolume']);
+      chai.expect(Math.round(data.innerVolume)).to.equal(65);
+      chai.expect(Math.round(data.outerVolume)).to.equal(103);
+      chai.expect(Math.round(data.insulationVolume)).to.equal(27);
+    });
   });
 
 });
