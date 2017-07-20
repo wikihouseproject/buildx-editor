@@ -1,11 +1,9 @@
 import { ground, frame, clone, house, connector, outerWall, roof, ball, floor } from "./components"
 import { removeDescendants, rad2Deg } from "../../src/lib/utils"
-import Wren from "./wren"
-
 import { container, stats, rendererStats, renderer, scene, camera, orbitControls, render } from "./scene"
 
+import Wren from "./wren"
 import defaults from '../../src/extras/config'
-
 let wren = Wren(defaults)
 
 scene.add(ground(20,20))
