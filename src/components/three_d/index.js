@@ -5,11 +5,11 @@ import 'aframe-orbit-controls-component-2'
 
 import {h, div} from '@cycle/dom'
 import xs from 'xstream'
+import * as uuid from 'uuid'
 
 import {renderFramePart, renderFrames, renderArrowHelpers} from './extras'
 import { intent, model, renderControls } from '../../extras/functions'
 import { initialCameraPosition, colors, extrusion } from '../../extras/config'
-
 
 import * as noflo from '../../lib/noflo';
 import * as wren from '../../lib/wren';
@@ -18,7 +18,15 @@ var globalHackRuntime = null;
 
 export default function ThreeD(sources) {
 
-  noflo.setupAndRun({}, (err, runtime) => {
+  const idKey = 'noflo_runtime_id';
+  const storage = window.localStorage; // could also use sessionStorage
+  var runtimeId = storage.getItem(idKey);
+  if (!runtimeId) {
+    runtimeId = uuid.v4();
+    storage.setItem(idKey, runtimeId);
+  }
+
+  noflo.setupAndRun({ id: runtimeId }, (err, runtime) => {
     if (err) {
       throw err;
     }

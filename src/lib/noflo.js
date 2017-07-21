@@ -3,16 +3,6 @@ const r = window['require'];
 const noflo = r('noflo');
 const nofloWebRTC = r('noflo-runtime-webrtc');
 
-function getParameterByName(name) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-  var results = regex.exec(location.search);
-  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
-
-var queryProtocol = getParameterByName('fbp_protocol');
-var queryAddress = getParameterByName('fbp_address');
-var queryNoLoad = getParameterByName('fbp_noload');
 
 export function flowhubURL(signalServer, runtimeId, options) {
   options = options || {};
@@ -29,6 +19,10 @@ function createRuntime(libraryPrefix, options) {
   options = options || {};
   options.protocol = options.protocol || 'webrtc';
   options.signalServer = options.signalServer || 'https://api.flowhub.io';
+
+  if (options.id) {
+    options.address = options.signalServer + "#" + options.id;
+  }
 
   var runtimeOptions = {
     baseDir: libraryPrefix,
