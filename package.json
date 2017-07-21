@@ -1,9 +1,10 @@
 {
-  "name": "buildx-sprint",
+  "name": "buildx-editor",
+  "description": "A 3D editor for designing a WikiHouse using the WREN building engine",
+  "bugs": { "url" : "https://github.com/wikihouseproject/buildx-editor/issues"},
   "version": "0.0.1",
-  "private": true,
-  "description": "",
   "main": "./src/editor/index.js",
+  "homepage": "https://github.com/wikihouseproject/buildx-editor",
   "dependencies": {
     "@cycle/dom": "^17.6.0",
     "@cycle/html": "^1.1.0",
@@ -36,6 +37,6 @@
     "build": "grunt && webpack -p",
     "test": "mocha --colors --compilers js:babel-core/register --reporter spec tests/**/*.js"
   },
-  "keywords": [],
+  "keywords": ["wikihouse", "wren", "parametric", "3d"],
   "license": "MIT"
 }
