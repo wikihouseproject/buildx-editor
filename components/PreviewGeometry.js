@@ -26,23 +26,23 @@ exports.getComponent = function() {
     const scene = window.scene; // XXX: hack
 
     const is2dPoint = (p) => {
-      return p && Array.isArray(p) && Array.isArray(p.length == 2)
+      return (p && Array.isArray(p) && (p.length == 2));
     }
     const is2dPointArray = (a) => {
-      const nonEmptyArray = a && Array.isArray(a) && a.length;
+      const nonEmptyArray = (a && Array.isArray(a) && (a.length > 0));
       const childIs2d = is2dPoint(a[0]);
-      console.log('a', a, nonEmptyArray, childIs2d);
+      console.log('a', a, nonEmptyArray, a[0], a[0].length);
       return nonEmptyArray && childIs2d;
     }
 
     var items = [];
     if (geometry == 'box') {
-      var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+      var geometry = new THREE.BoxGeometry( 500, 500, 500 );
       var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
       var cube = new THREE.Mesh( geometry, material );
       items.push(cube);
     } else if (is2dPointArray(geometry)) {
-      const outline = components.outline(geometry, 10);
+      const outline = components.makePiece(geometry, 10, 0xff0000);
       items.push(outline);
     }
 
