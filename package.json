@@ -20,7 +20,9 @@
     "gh-pages": "^1.0.0",
     "noflo": "^0.8.3",
     "noflo-core": "^0.4.0",
+    "noflo-objects": "^0.3.0",
     "noflo-runtime-webrtc": "^0.8.0",
+    "noflo-strings": "^0.3.0",
     "ramda": "^0.24.1",
     "xstream": "^10.9.0"
   },

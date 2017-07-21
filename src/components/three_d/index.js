@@ -14,6 +14,7 @@ import { initialCameraPosition, colors, extrusion } from '../../extras/config'
 import * as noflo from '../../lib/noflo';
 import * as wren from '../../lib/wren';
 
+window.wren = wren;
 var globalHackRuntime = null;
 
 export default function ThreeD(sources) {
