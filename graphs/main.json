@@ -5,9 +5,19 @@
     },
     "b": {
       "component": "core/Repeat"
+    },
+    "o": {
+      "component": "core/Output"
     }
   },
   "connections": [
+    {
+      "data": "hello world",
+      "tgt": {
+        "process": "a",
+        "port": "in"
+      }
+    },
     {
       "src": {
         "process": "a",
@@ -15,6 +25,16 @@
       },
       "tgt": {
         "process": "b",
+        "port": "in"
+      }
+    },
+    {
+      "src": {
+        "process": "b",
+        "port": "out"
+      },
+      "tgt": {
+        "process": "o",
         "port": "in"
       }
     }

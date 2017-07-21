@@ -15,10 +15,11 @@ var queryAddress = getParameterByName('fbp_address');
 var queryNoLoad = getParameterByName('fbp_noload');
 
 export function flowhubURL(signalServer, runtimeId, options) {
+  options = options || {};
   options.ide = options.ide || 'http://app.flowhub.io';
   const protocol = 'webrtc';
-  const address = `${signalServer}+'#'+${runtimeId}`;
-  const params = `protocol=${protocol}&address=${address}'+`;
+  const address = `${signalServer}#${runtimeId}`;
+  const params = `protocol=${protocol}&address=${address}&id=${runtimeId}`;
   var debugUrl = options.ide+'#runtime/endpoint?'+encodeURIComponent(params);
   return debugUrl;
 }
@@ -74,10 +75,10 @@ export function setupAndRun(options, callback) {
     instance.on('ready', function () {
       const graph = instance.network.graph;
       const runtime = createRuntime(libraryPrefix, { graph: graph, id: options.id });
-      runtime.network.on('addnetwork', function () {
-        return callback(null, runtime);
-      });
       runtime.start();
+      setTimeout(() => {
+        return callback(null, runtime);
+      }, 100);
     });
   });
 }
