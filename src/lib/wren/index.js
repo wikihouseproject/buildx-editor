@@ -314,7 +314,7 @@ function calculateAreas(profile, length) {
 }
 
 function calculateVolumes(profile, length, params) {
-  
+
   const endWallArea = (points) => {
     return Clipper.area(points)/(100*100); // FIXME: don't use centimeters
   }
@@ -325,11 +325,11 @@ function calculateVolumes(profile, length, params) {
   const outerArea = endWallArea(profile.outer);
   const frameSection = outerArea - innerArea;
   const frameVolume = frameSection * length.outer;
-  const endWallVolume = endWallThickness * innerArea; // endwall sits inside frame 
+  const endWallVolume = endWallThickness * innerArea; // endwall sits inside frame
 
   const volumes = {
     'insulationVolume': frameVolume + 2*endWallVolume, // rough est for insulation needed
-    'innerVolume': length.inner * innerArea, 
+    'innerVolume': length.inner * innerArea,
     'outerVolume': length.outer * outerArea,
   };
   return volumes;

@@ -6,37 +6,108 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <title>Buildx Sprint</title>
-  <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
-  <style type="text/css">
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/86/three.min.js"></script> -->
+  <script src="js/three.min.js"></script>
+  <script src="js/OrbitControls.js"></script>
+  <script src="js/SectionHelper.js"></script>
+  <script src="js/threex.rendererstats.js"></script>
+  <script src="js/stats.min.js"></script>
+  <title>3D Editor</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      line-height: 2;
+      font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
     #controls {
-      z-index: 2;
       position: absolute;
-      bottom: 0;
-      right: 10px;
-      width: 300px;
+      right: 0;
+      top: 200px;
+      padding: 20px;
     }
-    #controls div {
-      margin-bottom: 15px;
+    input {
+      width: 100%;
     }
-    #figures {
-      position: absolute;
-      bottom: 0;
+    tr td:last-child {
+      text-align: right;
     }
-    #svgdata {
-      position: absolute;
-      top: 0;
-      right: 10px; 
+    li {
+      cursor: pointer;
+      list-style: none;
     }
-    #csvdata {
-      position: absolute;
-      top: 25px;
-      right: 10px;
+    li.active {
+      background: red;
     }
   </style>
 </head>
 <body>
   <div id="app"></div>
-  <script src="bundle.js"></script>
+
+  <div id="controls">
+    <ul>
+      <li id="RESIZE" class="active">Resize</li>
+      <li id="MOVE">Move</li>
+      <li id="ROTATE">Rotate</li>
+    </ul>
+
+    <hr/>
+
+    <p>Total Bays:</p>
+    <input id="totalBays" type="range" min="5" max="10" value="6" />
+
+    <p>Width:</p>
+    <input id="width" type="range" min="1" max="10" step="0.1" value="3" />
+
+    <p>Height:</p>
+    <input id="height" type="range" min="1" max="7" step="0.1" value="3" />
+
+    <hr/>
+
+    <p>Clipping Height:</p>
+    <input id="clippingHeight" type="range" min="0.1" max="5" step="0.1" value="3" />
+
+    <hr/>
+
+    <label>Roof <input id="roof" type="checkbox" /></label>
+
+    <hr/>
+    <table id="metrics"></table>
+    <hr/>
+    <table id="costs"></table>
+
+  </div>
+
+  <script type="x-shader/x-vertex" id="vertexShader">
+  /**
+   * Multiply each vertex by the
+   * model-view matrix and the
+   * projection matrix (both provided
+   * by Three.js) to get a final
+   * vertex position
+   */
+  void main() {
+    gl_Position = projectionMatrix *
+                  modelViewMatrix *
+                  vec4(position,1.0);
+  }
+  </script>
+
+  <script type="x-shader/x-fragment" id="fragmentShader">
+  /**
+   * Set the colour to a lovely pink.
+   * Note that the color is a 4D Float
+   * Vector, R,G,B and A and each part
+   * runs from 0.0 to 1.0
+   */
+  void main() {
+    gl_FragColor = vec4(1.0,  // R
+                        0.0,  // G
+                        1.0,  // B
+                        1.0); // A
+  }
+  </script>
+
+  <script src="assets/app.bundle.js"></script>
 </body>
 </html>

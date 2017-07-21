@@ -1,4 +1,0 @@
-```
-yarn
-yarn run start
-```
