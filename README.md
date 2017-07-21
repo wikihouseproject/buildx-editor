@@ -9,9 +9,3 @@ npm i -g yarn
 yarn
 yarn run start
 ```
-
-# Deploying
-
-```javascript
-npm run deploy
-```

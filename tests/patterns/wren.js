@@ -34,7 +34,7 @@ describe('wren.metrics', () => {
     params.bayLength = 1;
     params.width = 3;
     params.frameWidth = 0.01;
-    
+
     it('should output areas', () => {
       const data = wren.geometrics(params);
       chai.expect(data).to.be.a('object');

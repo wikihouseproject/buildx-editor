@@ -1,0 +1,25 @@
+* {
+  margin: 0;
+  padding: 0;
+  line-height: 2;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+#controls {
+  position: absolute;
+  right: 0;
+  top: 200px;
+  padding: 20px;
+}
+input {
+  width: 100%;
+}
+tr td:last-child {
+  text-align: right;
+}
+li {
+  cursor: pointer;
+  list-style: none;
+}
+li.active {
+  background: red;
+}

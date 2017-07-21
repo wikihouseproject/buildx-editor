@@ -1,8 +1,8 @@
 import { outline, frame, clone, connector, outerWall, roof, floor, ball, segment } from "./components"
 import { scene } from "./scene"
-import { removeDescendants } from "../../src/lib/utils"
+import { removeDescendants } from "./lib/utils"
 
-import BasicWren from "../../src/lib/wren/basic_wren"
+import BasicWren from "./lib/wren/basic_wren"
 
 const sourceBall = ball()
 
