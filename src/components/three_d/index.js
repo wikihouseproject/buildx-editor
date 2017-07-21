@@ -23,7 +23,8 @@ export default function ThreeD(sources) {
   var runtimeId = storage.getItem(idKey);
   if (!runtimeId) {
     runtimeId = uuid.v4();
-    storage.setItem(idKey, runtimeId);
+    // Persistence DISABLED, due to https://github.com/noflo/noflo-ui/issues/748
+    //storage.setItem(idKey, runtimeId);
   }
 
   noflo.setupAndRun({ id: runtimeId }, (err, runtime) => {
@@ -52,7 +53,7 @@ export default function ThreeD(sources) {
     const bounds = spacing * totalBays + extrusion
 
     const flowhubLink = (runtime) => {
-      var attrs = {};
+      var attrs = { target: '_blank' };
       if (runtime) {
         attrs.href = noflo.flowhubURL(runtime.signaller, runtime.id);
       } else {
