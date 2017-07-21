@@ -6,6 +6,11 @@ import BasicWren from "../../src/lib/wren/basic_wren"
 
 const sourceBall = ball()
 
+const renderObj = obj => Object.keys(obj).map( key => `<tr><td>${key}</td><td>${obj[key].toFixed(2)}</td></tr>`).join("\n")
+
+const metricsTable = document.getElementById('metrics')
+// const costsTable = document.getElementById('costs')
+
 const House = (wren, w) => {
 
   const house = new THREE.Object3D()
@@ -13,8 +18,14 @@ const House = (wren, w) => {
 
   house.add(components)
 
-  let balls = [],
-    outlineMesh = undefined
+  let balls = [
+    clone(sourceBall, {y: wren.config.height, z: wren.config.frameDepth/2}, {}, {boundVariable: 'height', bindFn: (x => x), dragAxis: 'y'}),
+    // clone(sourceBall, {y: wren.config.wallHeight/2, z: (wren.config.bayLength * wren.config.totalBays)/2 }, {}, {dragAxis: 'z' }),
+    clone(sourceBall, {y: wren.config.wallHeight/2, x: wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => x*2), dragAxis: 'x'}),
+    clone(sourceBall, {y: wren.config.wallHeight/2, x: -wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => -x*2), dragAxis: 'x'})
+  ]
+  house.add(...balls)
+  let outlineMesh = undefined
 
   const addOutlineMesh = () => {
     outlineMesh = outline(wren.framePoints, wren.totalLength)
@@ -26,19 +37,20 @@ const House = (wren, w) => {
   }
   addOutlineMesh()
 
-  const addBalls = () => {
-    balls = [
-      clone(sourceBall, {y: wren.config.height, z: wren.config.frameDepth/2 }, {}, {boundVariable: 'height', bindFn: (x => x), dragAxis: 'y'}),
-      // clone(sourceBall, {y: wren.config.wallHeight/2, z: (wren.config.bayLength * wren.config.totalBays)/2 }, {}, {dragAxis: 'z' }),
-      clone(sourceBall, {y: wren.config.wallHeight/2, x: wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => x*2), dragAxis: 'x'}),
-      clone(sourceBall, {y: wren.config.wallHeight/2, x: -wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => -x*2), dragAxis: 'x'})
-    ]
+  const updateBalls = () => {
+    balls[0].position.y = wren.config.height
+    balls[0].position.z = wren.config.frameDepth/2
+
+    balls[1].position.y = wren.config.wallHeight/2
+    balls[1].position.x = wren.config.width/2
+
+    balls[2].position.y = wren.config.wallHeight/2
+    balls[2].position.x = -wren.config.width/2
     // balls.forEach(ball => house.add(ball))
-    house.add(...balls)
   }
-  addBalls()
 
   const redrawHouse = (wren, w) => {
+
     const { config } = wren
 
     const sourceConnector = connector(config)
@@ -46,6 +58,8 @@ const House = (wren, w) => {
     const sourceOuterWall = outerWall(config)
     const sourceRoof = roof(config)
     const sourceFloor = floor(config)
+
+    metricsTable.innerHTML = renderObj(w.geometrics(config))
 
     let bays = []
     for (var i = 0; i <= config.totalBays; i++) {
@@ -107,13 +121,14 @@ const House = (wren, w) => {
   }
 
   const redraw = newConfig => {
+    console.log("REDRAWING")
     const conf = Object.assign({}, wren.config, newConfig)
 
     wren = BasicWren(conf)
     removeDescendants(components)
 
     const bays = redrawHouse(wren, w)
-    // house.children = bays
+
     bays.forEach(bay => components.add(bay))
     // house.children.forEach(child => {
     //   child.children.forEach(c => {
@@ -123,7 +138,7 @@ const House = (wren, w) => {
     //   })
     // })
     addOutlineMesh()
-    // addBalls()
+    updateBalls()
   }
 
   return {

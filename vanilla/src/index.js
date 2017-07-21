@@ -117,8 +117,8 @@ function handleResize(intersects, intersection) {
       ball.position
     )
     if (raycaster.ray.intersectPlane(plane, intersection)) {
-      ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
-      house.redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(ball.position[ball.userData.dragAxis]) })
+      // ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
+      house.redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) })
     }
   }
 }

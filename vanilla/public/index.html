@@ -18,12 +18,19 @@
       margin: 0;
       padding: 0;
       line-height: 2;
+      font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     #controls {
       position: absolute;
       right: 0;
       top: 200px;
       padding: 20px;
+    }
+    input {
+      width: 100%;
+    }
+    tr td:last-child {
+      text-align: right;
     }
     li {
       cursor: pointer;
@@ -63,6 +70,12 @@
     <hr/>
 
     <label>Roof <input id="roof" type="checkbox" /></label>
+
+    <hr/>
+    <table id="metrics"></table>
+    <hr/>
+    <table id="costs"></table>
+
   </div>
 
   <script type="x-shader/x-vertex" id="vertexShader">
