@@ -7,15 +7,11 @@ const Clipper = require('./patterns/clipper')
 const Points = require('./patterns/points')
 const Utils = require('../utils')
 
-
-const config = require('../../extras/config')
-
-
-const firstHalfPoints = ({POINTS, CIRCLE}, $) => {
+const firstHalfPoints = (pointDistanceCM, {POINTS, CIRCLE}, $) => {
   const _POINTS = List.wrapped(POINTS).map( ([startPoint, endPoint]) => {
     const distance = Points.length(startPoint, endPoint)
     let points = []
-    for (let i = config.pointDistanceCM; i < distance/2; i += config.pointDistanceCM) {
+    for (let i = pointDistanceCM; i < distance/2; i += pointDistanceCM) {
       const [x,y] = Points.pointOnLine(i)(startPoint, endPoint)
       points.push([x+startPoint[0],y+startPoint[1]])
     }
@@ -24,11 +20,11 @@ const firstHalfPoints = ({POINTS, CIRCLE}, $) => {
   return _POINTS
 }
 
-const secondHalfPoints = ({POINTS, CIRCLE}, $) => {
+const secondHalfPoints = (pointDistanceCM, {POINTS, CIRCLE}, $) => {
   const _POINTS = List.wrapped(POINTS).map( ([endPoint, startPoint]) => {
     const distance = Points.length(startPoint, endPoint)
     let points = []
-    for (let i = config.pointDistanceCM; i < distance/2; i += config.pointDistanceCM) {
+    for (let i = pointDistanceCM; i < distance/2; i += pointDistanceCM) {
       const [x,y] = Points.pointOnLine(i)(startPoint, endPoint)
       points.push([x+startPoint[0],y+startPoint[1]])
     }
@@ -38,10 +34,10 @@ const secondHalfPoints = ({POINTS, CIRCLE}, $) => {
 }
 
 //
-const getPoints = (corner, firstHalf, secondHalf) => {
+const getPoints = (corner, firstHalf, secondHalf, pointDistanceCM) => {
   const ends = [firstHalf[firstHalf.length-1], secondHalf[0]]
   const distance = Points.length(...ends)
-  if (distance < config.pointDistanceCM*1.2) {
+  if (distance < pointDistanceCM*1.2) {
     firstHalf = firstHalf.slice(0, -1)
     secondHalf = secondHalf.slice(1)
   }
@@ -135,7 +131,14 @@ export function splitFinPieces(finPolygon, params) {
   // Group points by which side they belong to
   let groupedPoints = []
   for (var i = 0; i < corners.length; i++) {
-    groupedPoints.push(getPoints(corners[i], firstHalfPoints({POINTS: corners})[i], secondHalfPoints({POINTS: corners})[i]))
+    groupedPoints.push(
+      getPoints(
+        corners[i],
+        firstHalfPoints(params.pointDistanceCM, {POINTS: corners})[i],
+        secondHalfPoints(params.pointDistanceCM, {POINTS: corners})[i],
+        params.pointDistanceCM
+      )
+    )
   }
 
   // Find points to cut at, by projecting outwards from corners
