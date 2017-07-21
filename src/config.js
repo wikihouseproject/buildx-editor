@@ -1,3 +1,5 @@
+// NOTE: to be reconciled with the paramters in wren/index.js and then removed
+
 // all units in metres unless otherwise specified
 
 const config = {
@@ -7,6 +9,9 @@ const config = {
   totalBays: 10,
   bayLength: 1.2,
   colors: [ 'yellow', 'green', 'pink', 'blue', 'orange'],
+  plyThickness: 0.018,
+  frameDepth: 0.15,
+  frameWidth: 0.264,
 
   sheetWidth: 1.2,
   sheetHeight: 2.4,
@@ -19,10 +24,7 @@ const config = {
 
   // only used in /vanilla so far
     connectorWidth: 1.2,
-    connectorHeight: 0.25,
-    plyThickness: 0.018,
-    frameDepth: 0.15,
-    frameWidth: 0.264
+    connectorHeight: 0.25
 }
 
 module.exports = config
