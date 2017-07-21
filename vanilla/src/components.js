@@ -1,3 +1,8 @@
+const segment = (points, {frameDepth}, color) => {
+  const normalizedPoints = points.map( ([x,y]) => [x/100, y/100] )
+  return makePiece(normalizedPoints, frameDepth, color)
+}
+
 const ground = (width, height) => {
   const geometry = new THREE.PlaneGeometry(width, height, 32)
   const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide})
@@ -31,7 +36,6 @@ const clone = (sourceMesh, position={}, rotation={}, userData={}) => {
 }
 
 const frame = (points, {frameDepth}) => makePiece(points, frameDepth)
-
 // const outlineMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.BackSide})
 const outline = (outerFramePoints, totalLength) => {
   const extrudeSettings = {
@@ -58,7 +62,7 @@ const connector = ({connectorWidth, connectorHeight, plyThickness}) => makePiece
   [connectorWidth,connectorHeight],
   [connectorWidth,0],
   [0,0]
-], plyThickness, 'yellow')
+], plyThickness, '#777')
 
 const roof = ({width, height, wallHeight, bayLength, plyThickness}) => {
   const roofLength = Math.hypot((width/2), (height-wallHeight))
@@ -67,7 +71,7 @@ const roof = ({width, height, wallHeight, bayLength, plyThickness}) => {
     [bayLength,roofLength],
     [bayLength,0],
     [0,0]
-  ], plyThickness, 'orange')
+  ], plyThickness, '#777')
 }
 
 const floor = ({width, bayLength, plyThickness}) => makePiece([
@@ -75,7 +79,7 @@ const floor = ({width, bayLength, plyThickness}) => makePiece([
   [bayLength,width],
   [bayLength,0],
   [0,0]
-], plyThickness, 'green')
+], plyThickness, '#777')
 
 const extrudeShape = (shape, extrudeSettings, color) => {
   // const geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
@@ -102,4 +106,4 @@ const ball = () => {
   return new THREE.Mesh(geometry, material)
 }
 
-module.exports = { ground, makePiece, clone, frame, connector, outerWall, roof, ball, floor, outline }
+module.exports = { ground, makePiece, clone, frame, connector, outerWall, roof, ball, floor, outline, segment }

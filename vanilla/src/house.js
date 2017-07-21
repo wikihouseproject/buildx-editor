@@ -1,4 +1,4 @@
-import { outline, frame, clone, connector, outerWall, roof, floor, ball } from "./components"
+import { outline, frame, clone, connector, outerWall, roof, floor, ball, segment } from "./components"
 import { scene } from "./scene"
 import { removeDescendants } from "../../src/lib/utils"
 
@@ -6,7 +6,7 @@ import BasicWren from "../../src/lib/wren/basic_wren"
 
 const sourceBall = ball()
 
-const House = wren => {
+const House = (wren, w) => {
 
   const house = new THREE.Object3D()
   const components = new THREE.Object3D()
@@ -38,7 +38,7 @@ const House = wren => {
   }
   addBalls()
 
-  const redrawHouse = wren => {
+  const redrawHouse = (wren, w) => {
     const { config } = wren
 
     const sourceConnector = connector(config)
@@ -51,12 +51,21 @@ const House = wren => {
     for (var i = 0; i <= config.totalBays; i++) {
       const bay = new THREE.Object3D();
       bay.position.z = i*config.bayLength - wren.totalLength/2
-      const frame = clone(sourceFrame, {})
-      bay.add(frame)
+
+      // const frame = clone(sourceFrame, {})
+      // bay.add(frame)
+
+      for (let seg = 0; seg < 5; seg++) {
+        const s = segment(w.chassis(config).frames[0].points(seg), config, config.colors[seg])
+        bay.add(clone(s, {x: -config.width/2, y: config.height }, { x: Math.PI }))
+      }
+
       // scene.add(new THREE.SectionHelper(frame, 0x444444))
 
       // only add a frame to the first bay
       if (i > 0) {
+
+
 
         // roof connector
         bay.add(clone(sourceConnector, {y: config.height - config.connectorHeight}, {y: Math.PI/2}))
@@ -98,9 +107,12 @@ const House = wren => {
   }
 
   const redraw = newConfig => {
-    wren = BasicWren(Object.assign({}, wren.config, newConfig))
+    const conf = Object.assign({}, wren.config, newConfig)
+
+    wren = BasicWren(conf)
     removeDescendants(components)
-    const bays = redrawHouse(wren)
+
+    const bays = redrawHouse(wren, w)
     // house.children = bays
     bays.forEach(bay => components.add(bay))
     // house.children.forEach(child => {

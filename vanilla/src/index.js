@@ -5,6 +5,8 @@ import defaults from '../../src/extras/config'
 import Mouse from './mouse'
 import House from './house'
 
+import * as w from "../../src/lib/wren"
+
 let currentAction = "RESIZE"
 
 let wren = BasicWren(Object.assign({}, defaults, {totalBays: 6}))
@@ -16,8 +18,8 @@ const raycaster = new THREE.Raycaster()
 const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0),new THREE.Vector3(0,0,0))
 const plane = new THREE.Plane()
 
-const house = House(wren)
-house.redraw(wren.config)
+const house = House(wren, w)
+house.redraw()
 
 scene.add(ground(20,20))
 scene.add(house.house)

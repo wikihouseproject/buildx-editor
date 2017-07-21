@@ -6,11 +6,11 @@ const config = {
   wallHeight: 2,
   totalBays: 10,
   bayLength: 1.2,
+  colors: [ 'yellow', 'green', 'pink', 'blue', 'orange'],
 
   // only used in /src/lib/wren so far
     pointDistanceCM: 15, // distance to propagate points by when dedicing grip positions. Half of grip+nongrip (300mm)
     initialCameraPosition: { x: 0, y: 8, z: 8 },
-    colours: [ 'yellow', 'green', 'pink', 'blue', 'orange'],
     extrusion: 0.25,
     spacing: 1,
 

@@ -8,7 +8,7 @@ import xs from 'xstream'
 
 import {renderFramePart, renderFrames, renderArrowHelpers} from './extras'
 import { intent, model, renderControls } from '../../extras/functions'
-import { initialCameraPosition, colours, extrusion } from '../../extras/config'
+import { initialCameraPosition, colors, extrusion } from '../../extras/config'
 
 import * as wren from '../../lib/wren'
 
@@ -40,10 +40,10 @@ export default function ThreeD(sources) {
           h('a-entity#cameraTarget',{ attrs: {position: '0 0 0' }}, ),
           h('a-entity#frames', {attrs:{position: `-${width/2} ${height} 0`, rotation: '180 0 0'}}, [
             h('a-entity#frame', {attrs:{position: '0 0 0'}},
-              colours.map((c, i) => renderFramePart(chassis.frames[0], i, p.frameDepth, {color: c}))
+              colors.map((c, i) => renderFramePart(chassis.frames[0], i, p.frameDepth, {color: c}))
             ),
             h('a-entity#bounding-frame', {attrs:{position: `0 0 ${-bounds/2}`}},
-              colours.map((c, i) => renderFramePart(chassis.frames[0], i, bounds, {opacity: 0}))
+              colors.map((c, i) => renderFramePart(chassis.frames[0], i, bounds, {opacity: 0}))
             ),
             ...renderFrames(chassis.frames.length, spacing)
           ]),
