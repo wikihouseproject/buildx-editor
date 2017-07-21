@@ -77,3 +77,30 @@ export function setupAndRun(options, callback) {
   });
 }
 
+function sendTo(component, portName, data) {
+  const socket = noflo.internalSocket.createSocket()
+  const port = component.inPorts[portName]
+  port.attach(socket);
+  socket.send(data);
+  port.detach(socket);
+}
+
+export function sendToInport(runtime, graphName, portName, data) {
+  const graph = runtime.graph.graphs[graphName];
+  const network = runtime.network.networks[graphName]
+  if (!(graph && network)) {
+    throw new Error("Could not find graph named " + graphName);
+  }
+
+  const internal = graph.inports[portName];
+  if (!(internal && internal.process && internal.port)) {
+    throw new Error("No exported port named " + portName);
+  }
+
+  const node = network.network.getNode(internal.process);
+  if (!(node && node.component)) {
+    throw new Error("Could not find node for exported port " + portName);
+  }
+
+  return sendTo(node.component, internal.port, data);  
+}

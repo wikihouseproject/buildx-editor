@@ -7,7 +7,7 @@
         }
     },
     "inports": {
-        "in": {
+        "scene": {
             "process": "core/Repeat_nxa8h",
             "port": "in",
             "metadata": {
@@ -21,31 +21,11 @@
     "outports": {},
     "groups": [],
     "processes": {
-        "a": {
-            "component": "core/Repeat",
-            "metadata": {
-                "x": 36,
-                "y": 36,
-                "width": 72,
-                "height": 72,
-                "label": "a"
-            }
-        },
-        "b": {
-            "component": "core/Repeat",
-            "metadata": {
-                "x": 144,
-                "y": 36,
-                "width": 72,
-                "height": 72,
-                "label": "b"
-            }
-        },
         "o": {
             "component": "core/Output",
             "metadata": {
-                "x": 288,
-                "y": 36,
+                "x": 324,
+                "y": -216,
                 "width": 72,
                 "height": 72,
                 "label": "o"
@@ -65,7 +45,7 @@
             "component": "buildx-sprint/CreateFin",
             "metadata": {
                 "label": "CreateFin",
-                "x": 108,
+                "x": 72,
                 "y": -108,
                 "width": 72,
                 "height": 72
@@ -75,7 +55,7 @@
             "component": "objects/ExtractProperty",
             "metadata": {
                 "label": "ExtractProperty",
-                "x": 288,
+                "x": 180,
                 "y": -144,
                 "width": 72,
                 "height": 72
@@ -90,29 +70,19 @@
                 "width": 72,
                 "height": 72
             }
+        },
+        "buildx-sprint/ClearScene_nekcn": {
+            "component": "buildx-sprint/ClearScene",
+            "metadata": {
+                "label": "ClearScene",
+                "x": -108,
+                "y": -288,
+                "width": 72,
+                "height": 72
+            }
         }
     },
     "connections": [
-        {
-            "src": {
-                "process": "a",
-                "port": "out"
-            },
-            "tgt": {
-                "process": "b",
-                "port": "in"
-            }
-        },
-        {
-            "src": {
-                "process": "b",
-                "port": "out"
-            },
-            "tgt": {
-                "process": "o",
-                "port": "in"
-            }
-        },
         {
             "src": {
                 "process": "buildx-sprint/GetDefaultParameters_7fxg8",
@@ -121,19 +91,7 @@
             "tgt": {
                 "process": "buildx-sprint/CreateFin_631o3",
                 "port": "parameters"
-            },
-            "metadata": {}
-        },
-        {
-            "src": {
-                "process": "buildx-sprint/CreateFin_631o3",
-                "port": "out"
-            },
-            "tgt": {
-                "process": "b",
-                "port": "in"
-            },
-            "metadata": {}
+            }
         },
         {
             "src": {
@@ -156,8 +114,7 @@
             "tgt": {
                 "process": "o",
                 "port": "in"
-            },
-            "metadata": {}
+            }
         },
         {
             "src": {
@@ -167,14 +124,19 @@
             "tgt": {
                 "process": "buildx-sprint/GetDefaultParameters_7fxg8",
                 "port": "in"
-            },
-            "metadata": {}
+            }
         },
         {
-            "data": "hello world",
+            "src": {
+                "process": "buildx-sprint/ClearScene_nekcn",
+                "port": "out"
+            },
             "tgt": {
-                "process": "a",
+                "process": "o",
                 "port": "in"
+            },
+            "metadata": {
+                "route": null
             }
         },
         {
@@ -188,6 +150,13 @@
             "data": "fff",
             "tgt": {
                 "process": "core/Repeat_nxa8h",
+                "port": "in"
+            }
+        },
+        {
+            "data": "ss",
+            "tgt": {
+                "process": "buildx-sprint/ClearScene_nekcn",
                 "port": "in"
             }
         }

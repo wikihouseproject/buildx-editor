@@ -4,7 +4,7 @@ import * as wren from './lib/wren';
 
 import * as uuid from 'uuid';
 
-window.wren = wren;
+window.wren = wren; // Hack to expose for NoFlo components, built with another
 
 function setupNoFlo(callback) {
 
@@ -51,7 +51,10 @@ function main() {
     link.id = 'flowhubLink';
     document.body.appendChild(link);
 
-    // TODO: send the scene to NoFlo
+    // Send the scene to NoFlo
+    // XXX: does not work, since project mode rebuilds the graph/network
+    noflo.sendToInport(runtime, 'default/main', 'scene', scene);
+    window.scene = scene; // HACK
   });
 
   var renderer = new THREE.WebGLRenderer();
