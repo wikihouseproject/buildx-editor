@@ -4,6 +4,7 @@ module.exports = {
   context: path.resolve(__dirname, './src'),
   entry: {
     app: './index.js',
+    basic3d: './basic3d.js'
   },
   output: {
     filename: '[name].bundle.js',
