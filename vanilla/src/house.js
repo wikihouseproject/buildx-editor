@@ -9,16 +9,18 @@ const sourceBall = ball()
 const House = wren => {
 
   const house = new THREE.Object3D()
+  const components = new THREE.Object3D()
+
+  house.add(components)
 
   let balls = [],
-      outlineMesh = undefined
+    outlineMesh = undefined
 
   const addOutlineMesh = () => {
-    console.log('addOutlineMesh')
     outlineMesh = outline(wren.framePoints, wren.totalLength)
     outlineMesh.position.z = -wren.totalLength/2-0.04
     outlineMesh.position.y = -0.03
-    outlineMesh.scale.multiplyScalar(2)//1.03
+    outlineMesh.scale.multiplyScalar(1.03)
     outlineMesh.material.visible = false
     house.add(outlineMesh)
   }
@@ -97,10 +99,10 @@ const House = wren => {
 
   const redraw = newConfig => {
     wren = BasicWren(Object.assign({}, wren.config, newConfig))
-    // removeDescendants(house)
+    removeDescendants(components)
     const bays = redrawHouse(wren)
     // house.children = bays
-    bays.forEach(bay => house.add(bay))
+    bays.forEach(bay => components.add(bay))
     // house.children.forEach(child => {
     //   child.children.forEach(c => {
     //     // c.geometry.translate( child.position.x, child.position.y, child.position.z );
@@ -108,7 +110,7 @@ const House = wren => {
     //     outlineGeometry.merge(c.geometry, c.matrix)
     //   })
     // })
-    // addOutlineMesh()
+    addOutlineMesh()
     // addBalls()
   }
 
