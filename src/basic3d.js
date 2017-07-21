@@ -1,24 +1,81 @@
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+import * as noflo from './lib/noflo';
+import * as wren from './lib/wren';
 
-var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
+import * as uuid from 'uuid';
 
-camera.position.z = 5;
+window.wren = wren;
 
-var animate = function () {
-  requestAnimationFrame( animate );
+function setupNoFlo(callback) {
 
-  cube.rotation.x += 0.1;
-  cube.rotation.y += 0.1;
+  const idKey = 'noflo_runtime_id';
+  const storage = window.localStorage; // could also use sessionStorage
+  var runtimeId = storage.getItem(idKey);
+  if (!runtimeId) {
+    runtimeId = uuid.v4();
+    // Persistence DISABLED, due to https://github.com/noflo/noflo-ui/issues/748
+    //storage.setItem(idKey, runtimeId);
+  }
 
-  renderer.render(scene, camera);
-};
+  noflo.setupAndRun({ id: runtimeId }, (err, runtime) => {
+    return callback(err, runtime);
+  });
 
-animate();
+}
+
+function flowhubLink(url) {
+  var link = document.createElement('a');
+  link.innerHTML = "Open in Flowhub";
+  link.className = "debug";
+  link.href = url;
+  link.target = '_blank';
+  return link;
+}
+
+
+function main() {
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+  var nofloRuntime = null;
+
+  setupNoFlo((err, runtime) => {
+    if (err) {
+      throw err;
+    }
+
+    nofloRuntime = runtime;
+    console.log('NoFlo running, adding link');
+    const url = noflo.flowhubURL(runtime.signaller, runtime.id);
+    console.log('Open in Flowhub URL:\n', url);
+    const link = flowhubLink(url);
+    link.id = 'flowhubLink';
+    document.body.appendChild(link);
+
+    // TODO: send the scene to NoFlo
+  });
+
+  var renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild( renderer.domElement );
+
+  var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+  var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+  var cube = new THREE.Mesh( geometry, material );
+  scene.add( cube );
+
+  camera.position.z = 5;
+
+  var animate = function () {
+    requestAnimationFrame( animate );
+
+    cube.rotation.x += 0.02;
+    cube.rotation.y += 0.02;
+
+    renderer.render(scene, camera);
+  };
+
+  animate();
+
+}
+main();
+

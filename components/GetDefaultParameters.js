@@ -6,7 +6,7 @@ exports.getComponent = function() {
   c.description = 'Get default Wren model parameters';
   c.icon = 'forward';
   c.inPorts.add('in', {
-    datatype: 'any',
+    datatype: 'all',
     description: 'Trigger'
   });
   c.outPorts.add('out', {
