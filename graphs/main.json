@@ -1,43 +1,195 @@
 {
-  "processes": {
-    "a": {
-      "component": "core/Repeat"
+    "caseSensitive": false,
+    "properties": {
+        "name": "main",
+        "environment": {
+            "type": "noflo-browser"
+        }
     },
-    "b": {
-      "component": "core/Repeat"
+    "inports": {
+        "in": {
+            "process": "core/Repeat_nxa8h",
+            "port": "in",
+            "metadata": {
+                "x": -324,
+                "y": -144,
+                "width": 72,
+                "height": 72
+            }
+        }
     },
-    "o": {
-      "component": "core/Output"
-    }
-  },
-  "connections": [
-    {
-      "data": "hello world",
-      "tgt": {
-        "process": "a",
-        "port": "in"
-      }
+    "outports": {},
+    "groups": [],
+    "processes": {
+        "a": {
+            "component": "core/Repeat",
+            "metadata": {
+                "x": 36,
+                "y": 36,
+                "width": 72,
+                "height": 72,
+                "label": "a"
+            }
+        },
+        "b": {
+            "component": "core/Repeat",
+            "metadata": {
+                "x": 144,
+                "y": 36,
+                "width": 72,
+                "height": 72,
+                "label": "b"
+            }
+        },
+        "o": {
+            "component": "core/Output",
+            "metadata": {
+                "x": 288,
+                "y": 36,
+                "width": 72,
+                "height": 72,
+                "label": "o"
+            }
+        },
+        "buildx-sprint/GetDefaultParameters_7fxg8": {
+            "component": "buildx-sprint/GetDefaultParameters",
+            "metadata": {
+                "label": "GetDefaultParameters",
+                "x": -72,
+                "y": -72,
+                "width": 72,
+                "height": 72
+            }
+        },
+        "buildx-sprint/CreateFin_631o3": {
+            "component": "buildx-sprint/CreateFin",
+            "metadata": {
+                "label": "CreateFin",
+                "x": 108,
+                "y": -108,
+                "width": 72,
+                "height": 72
+            }
+        },
+        "objects/ExtractProperty_l7ics": {
+            "component": "objects/ExtractProperty",
+            "metadata": {
+                "label": "ExtractProperty",
+                "x": 288,
+                "y": -144,
+                "width": 72,
+                "height": 72
+            }
+        },
+        "core/Repeat_nxa8h": {
+            "component": "core/Repeat",
+            "metadata": {
+                "label": "Repeat",
+                "x": -180,
+                "y": -144,
+                "width": 72,
+                "height": 72
+            }
+        }
     },
-    {
-      "src": {
-        "process": "a",
-        "port": "out"
-      },
-      "tgt": {
-        "process": "b",
-        "port": "in"
-      }
-    },
-    {
-      "src": {
-        "process": "b",
-        "port": "out"
-      },
-      "tgt": {
-        "process": "o",
-        "port": "in"
-      }
-    }
-  ],
-  "caseSensitive": false
+    "connections": [
+        {
+            "src": {
+                "process": "a",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "b",
+                "port": "in"
+            }
+        },
+        {
+            "src": {
+                "process": "b",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "o",
+                "port": "in"
+            }
+        },
+        {
+            "src": {
+                "process": "buildx-sprint/GetDefaultParameters_7fxg8",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "buildx-sprint/CreateFin_631o3",
+                "port": "parameters"
+            },
+            "metadata": {}
+        },
+        {
+            "src": {
+                "process": "buildx-sprint/CreateFin_631o3",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "b",
+                "port": "in"
+            },
+            "metadata": {}
+        },
+        {
+            "src": {
+                "process": "buildx-sprint/CreateFin_631o3",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "objects/ExtractProperty_l7ics",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "objects/ExtractProperty_l7ics",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "o",
+                "port": "in"
+            },
+            "metadata": {}
+        },
+        {
+            "src": {
+                "process": "core/Repeat_nxa8h",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "buildx-sprint/GetDefaultParameters_7fxg8",
+                "port": "in"
+            },
+            "metadata": {}
+        },
+        {
+            "data": "hello world",
+            "tgt": {
+                "process": "a",
+                "port": "in"
+            }
+        },
+        {
+            "data": "inner",
+            "tgt": {
+                "process": "objects/ExtractProperty_l7ics",
+                "port": "key"
+            }
+        },
+        {
+            "data": "fff",
+            "tgt": {
+                "process": "core/Repeat_nxa8h",
+                "port": "in"
+            }
+        }
+    ]
 }
