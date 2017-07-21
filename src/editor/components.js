@@ -1,6 +1,6 @@
-const segment = (points, {frameDepth}, color) => {
+const segment = (points, {frameDepth}, thickness, color) => {
   const normalizedPoints = points.map( ([x,y]) => [x/100, y/100] )
-  return makePiece(normalizedPoints, frameDepth, color)
+  return makePiece(normalizedPoints, thickness, color)
 }
 
 const ground = (width, height) => {

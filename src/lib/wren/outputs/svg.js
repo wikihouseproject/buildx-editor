@@ -82,5 +82,5 @@ function exportSvg(geometry, options) {
 module.exports = {
   export: exportSvg,
   render: renderSvg,
-  closedPath,
+  closedPath
 }

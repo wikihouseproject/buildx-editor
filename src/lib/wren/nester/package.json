@@ -7,7 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "John Rees <john@bitsushi.com>",
   "license": "MIT",
   "dependencies": {
     "canvas": "^1.6.5"

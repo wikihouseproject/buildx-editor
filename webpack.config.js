@@ -3,7 +3,7 @@ const webpack = require('webpack');
 module.exports = {
   context: path.resolve(__dirname, './src'),
   entry: {
-    app: './index.js',
+    app: './editor/index.js',
     basic3d: './basic3d.js'
   },
   output: {

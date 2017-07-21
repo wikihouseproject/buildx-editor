@@ -3,13 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "description": "",
-  "main": "index.js",
+  "main": "./src/editor/index.js",
   "dependencies": {
     "@cycle/dom": "^17.6.0",
     "@cycle/html": "^1.1.0",
     "@cycle/run": "^3.1.0",
     "clipper-js": "^1.0.2",
     "eventemitter3": "^2.0.3",
+    "mathjs": "^3.14.2",
     "noflo": "^0.8.3",
     "noflo-core": "^0.4.0",
     "noflo-objects": "^0.3.0",
@@ -32,6 +33,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
+    "build": "grunt && webpack -p",
     "test": "mocha --colors --compilers js:babel-core/register --reporter spec tests/**/*.js"
   },
   "keywords": [],

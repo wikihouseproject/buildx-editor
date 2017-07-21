@@ -1,8 +1,8 @@
 import { outline, frame, clone, connector, outerWall, roof, floor, ball, segment } from "./components"
 import { scene } from "./scene"
-import { removeDescendants } from "./lib/utils"
+import { removeDescendants } from "../lib/utils"
 
-import BasicWren from "./lib/wren/basic_wren"
+import BasicWren from "../lib/wren/basic_wren"
 
 const sourceBall = ball()
 
@@ -11,11 +11,19 @@ const renderObj = obj => Object.keys(obj).map( key => `<tr><td>${key}</td><td>${
 const metricsTable = document.getElementById('metrics')
 // const costsTable = document.getElementById('costs')
 
+const thing = (obj, config, color='#E9E6C5') => {
+  const x = segment(obj[0], config, config.plyThickness, color)
+  const mesh = clone(x, obj[1], obj[2])
+  const geom = new THREE.EdgesGeometry(mesh.geometry);
+  const lines = new THREE.LineSegments(geom, new THREE.LineBasicMaterial( { color: 0xa09e88 }));
+  mesh.add(lines)
+  return mesh
+}
+
 const House = (wren, w) => {
 
   const house = new THREE.Object3D()
   const components = new THREE.Object3D()
-
   house.add(components)
 
   let balls = [
@@ -68,10 +76,11 @@ const House = (wren, w) => {
 
       // const frame = clone(sourceFrame, {})
       // bay.add(frame)
-
       for (let seg = 0; seg < 5; seg++) {
-        const s = segment(w.chassis(config).frames[0].points(seg), config, config.colors[seg])
-        bay.add(clone(s, {x: -config.width/2, y: config.height }, { x: Math.PI }))
+        const s = segment(w.chassis(config).frames[0].points(seg), config, config.frameDepth, '#E9E6C5')
+        bay.add(clone(s, {x: -config.width/2, y: config.height-w.chassis(config).frames[0].points(0)[0][1]/100, z: config.frameDepth/2 }, { x: Math.PI }))
+        // const s = thing(w.chassis(config).frames[0][0].points(seg), config)
+        // bay.add(s)
       }
 
       // scene.add(new THREE.SectionHelper(frame, 0x444444))
@@ -79,28 +88,49 @@ const House = (wren, w) => {
       // only add a frame to the first bay
       if (i > 0) {
 
+        const rOW = thing(w.chassis(config).bays[0].leftOuterWall, config)
+        bay.add(rOW)
+        bay.add(thing(w.chassis(config).bays[0].leftInnerWall, config))
+        bay.add(thing(w.chassis(config).bays[0].rightOuterWall, config))
+
+        bay.add(thing(w.chassis(config).bays[0].rightInnerWall, config))
+
+        bay.add(thing(w.chassis(config).bays[0].floor, config))
+
+        bay.add(thing(w.chassis(config).bays[0].leftOuterRoof, config))
+        bay.add(thing(w.chassis(config).bays[0].leftInnerRoof, config))
+
+        bay.add(thing(w.chassis(config).bays[0].rightOuterRoof, config))
+        bay.add(thing(w.chassis(config).bays[0].rightInnerRoof, config))
+
+        // bay.add(thing(w.chassis(config).bays[0].rightOuterRoof, config))
+
         // roof connector
         bay.add(clone(sourceConnector, {y: config.height - config.connectorHeight}, {y: Math.PI/2}))
 
         // wall connectors
-        bay.add(clone(sourceConnector, {y: config.wallHeight - config.connectorHeight, x: config.width/2}, {y: Math.PI/2, x: -Math.PI/2, order: 'ZYX'}))
-        bay.add(clone(sourceConnector, {y: config.wallHeight - config.connectorHeight, x: -config.width/2}, {y: Math.PI/2, x: Math.PI/2, order: 'ZYX'}))
+        // bay.add(clone(sourceConnector, {y: config.wallHeight - config.connectorHeight, x: config.width/2}, {y: Math.PI/2, x: -Math.PI/2, order: 'ZYX'}))
+        // bay.add(clone(sourceConnector, {y: config.wallHeight - config.connectorHeight, x: -config.width/2}, {y: Math.PI/2, x: Math.PI/2, order: 'ZYX'}))
 
         // floor connectors
-        for (let j = 0; j <= 5; j++) {
-          const x = config.width/5*j - config.width/2
-          const conn = clone(sourceConnector, {x}, {y: Math.PI/2})
-          bay.add(conn)
-        }
+        // for (let j = 0; j <= 5; j++) {
+        //   const x = config.width/5*j - config.width/2
+        //   const conn = clone(sourceConnector, {x}, {y: Math.PI/2})
+        //   bay.add(conn)
+        // }
 
-        // floors
-        bay.add(clone(sourceFloor, {y: config.connectorHeight, x: config.width/2}, {z: Math.PI/2, x: -Math.PI/2}))
+        // // floors
+        // bay.add(clone(sourceFloor, {y: config.connectorHeight, x: config.width/2}, {z: Math.PI/2, x: -Math.PI/2}))
 
-        // roof
-        const leftRoof = clone(sourceRoof, {y: config.height}, {z: Math.PI/2, x: -Math.PI/2, y: wren.roofAngle-Math.PI/2})
-        const rightRoof = clone(sourceRoof, {y: config.height + config.plyThickness }, {z: -Math.PI/2, x: Math.PI/2, y: wren.roofAngle-Math.PI/2})
-        bay.add(leftRoof)
-        bay.add(rightRoof)
+        // // roof
+        // const leftRoof = clone(sourceRoof, {y: config.height}, {z: Math.PI/2, x: -Math.PI/2, y: wren.roofAngle-Math.PI/2})
+        // bay.add(leftRoof)
+
+        // // const rightRoof = clone(sourceRoof, {y: config.height + config.plyThickness }, {z: -Math.PI/2, x: Math.PI/2, y: wren.roofAngle-Math.PI/2})
+        // // bay.add(rightRoof)
+        // const r = w.chassis(config).bays[0].rightOuterRoof
+        // const rightOuterRoof = segment(r[0], config, config.plyThickness, 'red')
+        // bay.add(clone(rightOuterRoof, r[1], {y: Math.PI/2}))
 
         // scene.add(new THREE.SectionHelper(leftRoof, 0x444444))
         // scene.add(new THREE.SectionHelper(rightRoof, 0x444444))

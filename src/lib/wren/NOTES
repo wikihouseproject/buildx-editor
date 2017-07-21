@@ -1,0 +1,35 @@
+// key metrics
+//
+// frame sizes
+//
+// volume (or area)
+// frame
+// connectors
+// sheeting
+// end walls
+//
+// divide by plywood sheet area
+// nesting efficiency. 75%
+// cost of plywood
+
+// existing est, plywood
+// per m2, 4 - 8
+
+
+// 1300 GBP per m2 budget, incl labor
+// possibly as low as 1000
+// 15% chassis, 85% external
+
+// cutting time
+// cutting price
+// 25 per sheet material
+// 25 per sheet usage
+
+// external surface areas
+//
+// roofArea
+// wallArea
+// guttering
+// foundation
+
+// Export as .CSV / .json

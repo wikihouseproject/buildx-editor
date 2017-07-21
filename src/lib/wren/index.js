@@ -1,11 +1,13 @@
 const {compose} = require('ramda')
-export const SVG = require('./svg')
-export const CSV = require('./csv')
-const set = require('./set');
+const SVG = require('./outputs/svg')
+const CSV = require('./outputs/csv')
+const set = require('./utils/set');
 const List = require('./patterns/list')
 const Clipper = require('./patterns/clipper')
 const Points = require('./patterns/points')
 const Utils = require('../utils')
+
+const { bayComponent, floorComponent, roofComponent } = require('./parts/components')
 
 const firstHalfPoints = (pointDistanceCM, {POINTS, CIRCLE}, $) => {
   const _POINTS = List.wrapped(POINTS).map( ([startPoint, endPoint]) => {
@@ -62,29 +64,18 @@ const firstPoints = (outerCorners, innerCorners, fifthPoints) => i => {
 
 // Returns object with named sides, and the indices of points
 function finSides() {
-
-    // NOTE: we could calculate these, just pairwise points in order
-    return {
-        'rightRoof': [0, 1],
-        'rightWall': [1, 2],
-        'underside': [2, 3],
-        'leftWall': [3, 4],
-        'leftRoof': [4 ,0],
-    };
-}
-
-function remapArray(input, mapping) {
-  const sources = Object.keys(mapping);
-  var out = new Array(sources.length);
-  sources.map( (source) => {
-    const targetIndex = mapping[source];
-    return out[targetIndex] = input[source];
-  });
-  return out;
+  // NOTE: we could calculate these, just pairwise points in order
+  return {
+    'rightRoof': [0, 1],
+    'rightWall': [1, 2],
+    'underside': [2, 3],
+    'leftWall': [3, 4],
+    'leftRoof': [4 ,0],
+  };
 }
 
 // NOTE: Right now only for 5-sided fin shape, with equal wall heights and symmetrical roof
-export function finShape(params) {
+function finShape(params) {
   var {width, height, wallHeight, frameWidth} = params;
 
   // Code below uses centimeters
@@ -109,15 +100,15 @@ export function finShape(params) {
 
   return {
     center: corners,
-    inner: remapArray(innerCorners, clipperPointsToNormal),
-    outer: remapArray(outerCorners, clipperPointsToNormal),
+    inner: List.remapArray(innerCorners, clipperPointsToNormal),
+    outer: List.remapArray(outerCorners, clipperPointsToNormal),
     sides: finSides()
   };
 }
 
 // Takes into considerations
 // TODO: take into consideratin maximum piece size
-export function splitFinPieces(finPolygon, params) {
+function splitFinPieces(finPolygon, params) {
   const fiveSided = (5 == finPolygon.center.length) && (5 == finPolygon.outer.length) && (5 == finPolygon.inner.length);
   if (!fiveSided) {
     throw new Error("piece splitter can only handle five-sided polygons");
@@ -167,65 +158,47 @@ export function splitFinPieces(finPolygon, params) {
 }
 
 // Main entrypoint, generates all geometry of the chassis
-export function chassis(params) {
+function chassis(params) {
 
-  const makeFrame = () => {
-    const s = finShape(params);
-    return splitFinPieces(s, params);
-  };
+  const s = finShape(params)
+
+  const makeFrame = () => splitFinPieces(s, params)
+
+  const bay = () => ({
+    leftOuterWall: bayComponent(s, params, s.outer, s.sides.leftWall, {x: (params.width + params.frameWidth)/2 }, { y: Math.PI/2 }),
+    leftInnerWall: bayComponent(s, params, s.inner, s.sides.leftWall, {x: (params.width - params.frameWidth)/2 - params.plyThickness, y: params.frameWidth }, { y: Math.PI/2 }),
+    rightOuterWall: bayComponent(s, params, s.outer, s.sides.rightWall, {x: -(params.width + params.frameWidth)/2 - params.plyThickness }, { y: Math.PI/2 }),
+    rightInnerWall: bayComponent(s, params, s.inner, s.sides.rightWall, {x: -(params.width- params.frameWidth)/2, y: params.frameWidth }, { y: Math.PI/2 }),
+    // rightOuterRoof: roofComponent(s, params, s.sides.rightRoof),
+    floor: floorComponent(s, params, s.inner, s.sides.underside, {y: params.frameWidth + params.plyThickness, z: -params.bayLength, x: params.width/2 - params.frameWidth/2 }, {x: Math.PI/2, z: Math.PI/2}),
+    roofConnector: bayComponent(s, params, s.outer, s.sides.leftWall, {x: (params.width + params.frameWidth)/2 }, { y: Math.PI/2 }),
+    // rightInnerRoof: bayComponent(s, params, s.sides.rightRoof),
+    leftOuterRoof: roofComponent(s, params, s.outer, s.sides.leftRoof, {y: params.height - s.outer[0][1]/100 + params.frameWidth/2 }),
+    leftInnerRoof: roofComponent(s, params, s.inner, s.sides.leftRoof, {y: params.height - s.inner[0][1]/100 + params.frameWidth/2 }),
+
+    rightOuterRoof: roofComponent(s, params, s.outer, s.sides.rightRoof, {y: params.height - s.outer[0][1]/100 + params.frameWidth/2 }),
+    rightInnerRoof: roofComponent(s, params, s.inner, s.sides.rightRoof, {y: params.height - s.inner[0][1]/100 + params.frameWidth/2 }),
+
+    // rightOuterRoof: roofComponent(s, params, s.outer, s.sides.rightRoof, {y: params.height - s.outer[0][1]/100 + params.frameWidth/2 }),
+    // leftInnerRoof: bayComponent(s, params, s.sides.leftRoof),
+  })
 
   return {
     frames: Utils.times(params.totalBays, makeFrame),
-    parameters: params,
+    bays: Utils.times(params.totalBays, bay),
+    parameters: params
   }
 }
 
-
-// key metrics
-//
-// frame sizes
-//
-// volume (or area)
-// frame
-// connectors
-// sheeting
-// end walls
-//
-// divide by plywood sheet area
-// nesting efficiency. 75%
-// cost of plywood
-
-// existing est, plywood
-// per m2, 4 - 8
-
-
-// 1300 GBP per m2 budget, incl labor
-// possibly as low as 1000
-// 15% chassis, 85% external
-
-// cutting time
-// cutting price
-// 25 per sheet material
-// 25 per sheet usage
-
-// external surface areas
-//
-// roofArea
-// wallArea
-// guttering
-// foundation
-
-// Export as .CSV / .json
-
 // All measurements in meters.
 // Distances generally center-center
-export function getParameters() {
+function getParameters() {
 
   // parameter declaration
   const keys = ['id', 'name', 'type', 'default', 'description'];
   const definitions = [
     // Commonly configured
-    ['totalBays', "Bays #", 'number', 6, "Number of frames"],
+    ['totalBays', "Bays #", 'number', 6, "Number of bays (blocks inbetween frames)"],
     ['height', "Height", 'distance', 3.0, "Height to top of chassis"],
     ['width', "Width", 'distance', 1.2, "Width of chassis"],
     ['wallHeight', "Wall height", 'distance', 2.5, "Height of wall, where roof starts"],
@@ -238,6 +211,9 @@ export function getParameters() {
     ['materialThickness', "Material thickness", 'distance', 18.0/1000, "Nominal thickness of plywood sheet"],
     ['sheetWidth', "Sheet width", 'distance', 1.2, "Width of plywood sheet"],
     ['sheetLength', "Sheet height", 'distance', 2.4, "Length of plywood sheet"],
+
+    ['pointDistanceCM', "Point distance", 'distance', 0.15, "Distance between wren fin points"],
+
     //['tolerance', "Fit tolerance", 'distance', 0.5/1000, "Tolerance for fitting parts"],
   ]
   // sanity check
@@ -268,7 +244,7 @@ export function getParameters() {
   }
 }
 
-export const parameters = getParameters();
+const parameters = getParameters();
 
 function calculateAreas(profile, length) {
 
@@ -338,7 +314,7 @@ function calculateVolumes(profile, length, params) {
   return volumes;
 }
 
-export function geometrics(parameters) {
+function geometrics(parameters) {
 
   const i = parameters;
 
@@ -369,7 +345,7 @@ export function geometrics(parameters) {
   return outputs;
 }
 
-export function estimateCosts(metrics) {
+function estimateCosts(metrics) {
   // for pilots it ranged between 4-8 GBP per sqm.
   // multiple stories -> cheaper
   // thicker frame -> expensive
@@ -377,4 +353,16 @@ export function estimateCosts(metrics) {
   const baseCostPerSqm = 8;
   const chassisCosts = baseCostPerSqm * metrics.footprintArea;
   return chassisCosts;
+}
+
+module.exports = {
+  SVG,
+  CSV,
+  finShape,
+  geometrics,
+  estimateCosts,
+  splitFinPieces,
+  chassis,
+  getParameters,
+  parameters
 }

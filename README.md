@@ -5,7 +5,7 @@
 # Setup
 
 ```javascript
-npm i -g yarn
-yarn
-yarn run start
+npm install
+grunt
+npm run start
 ```

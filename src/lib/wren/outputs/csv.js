@@ -1,4 +1,3 @@
-
 const defaultParameterOrder = ['footprintArea', 'floorArea'];
 
 function orderKeys(keys, order) {
@@ -9,17 +8,17 @@ function orderKeys(keys, order) {
   originalKeys.map((key) => {
     const index = order.indexOf(key);
     if (index == -1) {
-      unsortedKeys.push(key); 
+      unsortedKeys.push(key);
     } else {
       sortedKeys[index] = key;
-    } 
-  });  
+    }
+  });
   const allKeys = sortedKeys.concat(unsortedKeys);
   return allKeys;
 }
 
 // WARNING: does escape spaces, newlines or delimiters
-export function dumpKeyValues(object, options) {
+function dumpKeyValues(object, options) {
   options = options || {};
   options.order = options.order || defaultParameterOrder;
   options.delimiter = options.delimiter || ';';
@@ -34,4 +33,8 @@ export function dumpKeyValues(object, options) {
   const values = orderedKeys.map((k) => object[k]).join(options.delimiter);
   const out = header + options.newline + values + options.newline;
   return out;
+}
+
+module.exports = {
+  dumpKeyValues
 }

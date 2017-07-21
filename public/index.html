@@ -6,7 +6,6 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <title>Buildx Sprint</title>
 
   <script src="https://app.flowhub.io/node_modules/rtc/dist/rtc.min.js"></script>
 
@@ -18,7 +17,7 @@
 
   <title>3D Editor</title>
 
-  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
   <div id="app"></div>
@@ -53,37 +52,36 @@
     <table id="metrics"></table>
     <hr/>
     <table id="costs"></table>
-
   </div>
 
   <script type="x-shader/x-vertex" id="vertexShader">
-  /**
-   * Multiply each vertex by the
-   * model-view matrix and the
-   * projection matrix (both provided
-   * by Three.js) to get a final
-   * vertex position
-   */
-  void main() {
+    /**
+    * Multiply each vertex by the
+    * model-view matrix and the
+    * projection matrix (both provided
+    * by Three.js) to get a final
+    * vertex position
+    */
+    void main() {
     gl_Position = projectionMatrix *
-                  modelViewMatrix *
-                  vec4(position,1.0);
-  }
+      modelViewMatrix *
+      vec4(position,1.0);
+    }
   </script>
 
   <script type="x-shader/x-fragment" id="fragmentShader">
-  /**
-   * Set the colour to a lovely pink.
-   * Note that the color is a 4D Float
-   * Vector, R,G,B and A and each part
-   * runs from 0.0 to 1.0
-   */
-  void main() {
+    /**
+    * Set the colour to a lovely pink.
+    * Note that the color is a 4D Float
+    * Vector, R,G,B and A and each part
+    * runs from 0.0 to 1.0
+    */
+    void main() {
     gl_FragColor = vec4(1.0,  // R
-                        0.0,  // G
-                        1.0,  // B
-                        1.0); // A
-  }
+      0.0,  // G
+      1.0,  // B
+      1.0); // A
+    }
   </script>
 
   <script src="assets/app.bundle.js"></script>
