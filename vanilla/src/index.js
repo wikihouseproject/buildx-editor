@@ -119,6 +119,7 @@ function handleResize(intersects, intersection) {
     if (raycaster.ray.intersectPlane(plane, intersection)) {
       // ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
       house.redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) })
+      document.getElementById(ball.userData.boundVariable).value = intersection[ball.userData.dragAxis].toFixed(1)
     }
   }
 }

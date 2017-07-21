@@ -2339,6 +2339,16 @@ pkg-dir@^2.0.0:
   dependencies:
     find-up "^2.1.0"
 
+pngjs-draw@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/pngjs-draw/-/pngjs-draw-0.0.6.tgz#1bb2b39e2e1a1bd622fbe0e341e51d6291722766"
+  dependencies:
+    pngjs "^0.4.0"
+
+pngjs@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-0.4.0.tgz#294071adc1b2b60bfd4aca4dbe4759bccee6fd77"
+
 portfinder@^1.0.9:
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.13.tgz#bb32ecd87c27104ae6ee44b5a3ccbf0ebb1aede9"

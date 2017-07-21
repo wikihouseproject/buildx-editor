@@ -70,6 +70,7 @@ const House = (wren, w) => {
       // bay.add(frame)
 
       for (let seg = 0; seg < 5; seg++) {
+        console.log(JSON.stringify(w.chassis(config).frames[0].points(seg)))
         const s = segment(w.chassis(config).frames[0].points(seg), config, config.colors[seg])
         bay.add(clone(s, {x: -config.width/2, y: config.height }, { x: Math.PI }))
       }
@@ -78,8 +79,6 @@ const House = (wren, w) => {
 
       // only add a frame to the first bay
       if (i > 0) {
-
-
 
         // roof connector
         bay.add(clone(sourceConnector, {y: config.height - config.connectorHeight}, {y: Math.PI/2}))
