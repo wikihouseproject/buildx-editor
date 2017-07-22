@@ -198,15 +198,17 @@ function getParameters() {
   const keys = ['id', 'name', 'type', 'default', 'description'];
   const definitions = [
     // Commonly configured
-    ['totalBays', "Bays #", 'number', 6, "Number of bays (blocks inbetween frames)"],
     ['height', "Height", 'distance', 3.0, "Height to top of chassis"],
     ['width', "Width", 'distance', 1.2, "Width of chassis"],
     ['wallHeight', "Wall height", 'distance', 2.5, "Height of wall, where roof starts"],
+
+    ['totalBays', "Bays #", 'number', 6, "Number of bays (blocks inbetween frames)"],
 
     // internal
     ['bayLength', "Bay length", 'distance', 1.2, "Distance between each of the frames"],
     ['frameWidth', "Frame width", 'distance', 0.264, "Width of frame body"],
     ['frameDepth', "Frame depth", 'distance', 0.150, "Depth of spacer+fins+reinforcers"],
+
     // sheet
     ['materialThickness', "Material thickness", 'distance', 18.0/1000, "Nominal thickness of plywood sheet"],
     ['sheetWidth', "Sheet width", 'distance', 1.2, "Width of plywood sheet"],
@@ -265,9 +267,8 @@ function calculateAreas(profile, length) {
     }, 0)
   };
 
-  const endWallArea = (points) => {
-    return Clipper.area(points)/(100*100); // FIXME: don't use centimeters
-  }
+  // FIXME: don't use centimeters
+  const endWallArea = points => Clipper.area(points)/(100*100)
 
   const areas = {
     'outerWallArea': area(profile.outer, walls, length.outer) + 2*endWallArea(profile.outer),
@@ -283,9 +284,8 @@ function calculateAreas(profile, length) {
 
 function calculateVolumes(profile, length, params) {
 
-  const endWallArea = (points) => {
-    return Clipper.area(points)/(100*100); // FIXME: don't use centimeters
-  }
+  // FIXME: don't use centimeters
+  const endWallArea = points => Clipper.area(points)/(100*100)
 
   const endWallThickness = params.frameDepth;
 
