@@ -216,26 +216,15 @@ function getParameters() {
 
     //['tolerance', "Fit tolerance", 'distance', 0.5/1000, "Tolerance for fitting parts"],
   ]
-  // sanity check
-  definitions.map((d) => {
-    if (d.length != keys.length) {
-      throw new Error('Invalid parameter definition for' + d[0]);
-    }
-  });
 
-  // conveniences
-  var keyIndex = {};
-  for (var i=0; i<keys.length; i++) {
-    const name = keys[i];
-    keyIndex[name] = i;
-  }
-  var defaults = {};
-  for (var i=0; i<definitions.length; i++) {
-      const param = definitions[i];
-      const id = param[keyIndex['id']];
-      const d = param[keyIndex['default']];
-      defaults[id] = d;
-  }
+  const defaults = definitions.reduce((ob, def) => {
+    // sanity check
+    if (def.length != keys.length) {
+      throw new Error('Invalid parameter definition for' + def[0]);
+    }
+    // add definition's name: defaultValue to object
+    return Object.assign(ob, { [def[0]]: def[3] })
+  }, {})
 
   return {
     definitions,
@@ -345,22 +334,22 @@ function geometrics(parameters) {
   return outputs;
 }
 
-function estimateCosts(metrics) {
-  // for pilots it ranged between 4-8 GBP per sqm.
-  // multiple stories -> cheaper
-  // thicker frame -> expensive
-  // taller -> expensive
-  const baseCostPerSqm = 8;
-  const chassisCosts = baseCostPerSqm * metrics.footprintArea;
-  return chassisCosts;
-}
+// function estimateCosts(metrics) {
+//   // for pilots it ranged between 4-8 GBP per sqm.
+//   // multiple stories -> cheaper
+//   // thicker frame -> expensive
+//   // taller -> expensive
+//   const baseCostPerSqm = 8;
+//   const chassisCosts = baseCostPerSqm * metrics.footprintArea;
+//   return chassisCosts;
+// }
 
 module.exports = {
   SVG,
   CSV,
   finShape,
   geometrics,
-  estimateCosts,
+  // estimateCosts,
   splitFinPieces,
   chassis,
   getParameters,
