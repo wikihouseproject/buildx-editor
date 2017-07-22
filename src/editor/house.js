@@ -1,6 +1,6 @@
 import { outline, frame, clone, connector, outerWall, roof, floor, ball, segment } from "./components"
 import { scene } from "./scene"
-import { removeDescendants } from "../lib/utils"
+import { removeDescendants } from "./utils"
 
 import BasicWren from "../lib/wren/basic_wren"
 
