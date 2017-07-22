@@ -13,3 +13,11 @@ npm install
 grunt
 npm run start
 ```
+
+# Directory Structure
+
+\- components - noflo components
+\- graphs - noflo graphs
+\- public - static files used by webpack-dev-server
+\- src
+\- tests
