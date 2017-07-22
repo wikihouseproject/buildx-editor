@@ -166,11 +166,11 @@ function chassis(params) {
 
   const bay = () => ({
     leftOuterWall: bayComponent(s, params, s.outer, s.sides.leftWall, {x: (params.width + params.frameWidth)/2 }, { y: Math.PI/2 }),
-    leftInnerWall: bayComponent(s, params, s.inner, s.sides.leftWall, {x: (params.width - params.frameWidth)/2 - params.plyThickness, y: params.frameWidth }, { y: Math.PI/2 }),
-    rightOuterWall: bayComponent(s, params, s.outer, s.sides.rightWall, {x: -(params.width + params.frameWidth)/2 - params.plyThickness }, { y: Math.PI/2 }),
+    leftInnerWall: bayComponent(s, params, s.inner, s.sides.leftWall, {x: (params.width - params.frameWidth)/2 - params.materialThickness, y: params.frameWidth }, { y: Math.PI/2 }),
+    rightOuterWall: bayComponent(s, params, s.outer, s.sides.rightWall, {x: -(params.width + params.frameWidth)/2 - params.materialThickness }, { y: Math.PI/2 }),
     rightInnerWall: bayComponent(s, params, s.inner, s.sides.rightWall, {x: -(params.width- params.frameWidth)/2, y: params.frameWidth }, { y: Math.PI/2 }),
     // rightOuterRoof: roofComponent(s, params, s.sides.rightRoof),
-    floor: floorComponent(s, params, s.inner, s.sides.underside, {y: params.frameWidth + params.plyThickness, z: -params.bayLength, x: params.width/2 - params.frameWidth/2 }, {x: Math.PI/2, z: Math.PI/2}),
+    floor: floorComponent(s, params, s.inner, s.sides.underside, {y: params.frameWidth + params.materialThickness, z: -params.bayLength, x: params.width/2 - params.frameWidth/2 }, {x: Math.PI/2, z: Math.PI/2}),
     roofConnector: bayComponent(s, params, s.outer, s.sides.leftWall, {x: (params.width + params.frameWidth)/2 }, { y: Math.PI/2 }),
     // rightInnerRoof: bayComponent(s, params, s.sides.rightRoof),
     leftOuterRoof: roofComponent(s, params, s.outer, s.sides.leftRoof, {y: params.height - s.outer[0][1]/100 + params.frameWidth/2 }),

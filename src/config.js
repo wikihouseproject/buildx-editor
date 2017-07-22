@@ -9,7 +9,7 @@ const config = {
   totalBays: 10,
   bayLength: 1.2,
   colors: [ 'yellow', 'green', 'pink', 'blue', 'orange'],
-  plyThickness: 0.018,
+  materialThickness: 0.018,
   frameDepth: 0.15,
   frameWidth: 0.264,
 

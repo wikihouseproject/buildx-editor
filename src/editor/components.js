@@ -49,37 +49,37 @@ const outline = (outerFramePoints, totalLength) => {
   return new THREE.Mesh(geometry, material)
 }
 
-const outerWall = ({bayLength, wallHeight, plyThickness}) => makePiece([
+const outerWall = ({bayLength, wallHeight, materialThickness}) => makePiece([
   [0,wallHeight],
   [bayLength/2,wallHeight],
   [bayLength/2,0],
   [-bayLength/2,0],
   [-bayLength/2,wallHeight]
-], plyThickness, 0x5A717E)
+], materialThickness, 0x5A717E)
 
-const connector = ({connectorWidth, connectorHeight, plyThickness}) => makePiece([
+const connector = ({connectorWidth, connectorHeight, materialThickness}) => makePiece([
   [0,connectorHeight],
   [connectorWidth,connectorHeight],
   [connectorWidth,0],
   [0,0]
-], plyThickness, '#777')
+], materialThickness, '#777')
 
-const roof = ({width, height, wallHeight, bayLength, plyThickness}) => {
+const roof = ({width, height, wallHeight, bayLength, materialThickness}) => {
   const roofLength = Math.hypot((width/2), (height-wallHeight))
   return makePiece([
     [0,roofLength],
     [bayLength,roofLength],
     [bayLength,0],
     [0,0]
-  ], plyThickness, '#777')
+  ], materialThickness, '#777')
 }
 
-const floor = ({width, bayLength, plyThickness}) => makePiece([
+const floor = ({width, bayLength, materialThickness}) => makePiece([
   [0,width],
   [bayLength,width],
   [bayLength,0],
   [0,0]
-], plyThickness, '#777')
+], materialThickness, '#777')
 
 const extrudeShape = (shape, extrudeSettings, color) => {
   // const geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
