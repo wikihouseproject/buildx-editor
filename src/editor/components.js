@@ -1,3 +1,12 @@
+const outlinedComponent = (obj, parameters, color='#E9E6C5') => {
+  const x = segment(obj[0], parameters, parameters.plyThickness, color)
+  const mesh = clone(x, obj[1], obj[2])
+  const geom = new THREE.EdgesGeometry(mesh.geometry);
+  const lines = new THREE.LineSegments(geom, new THREE.LineBasicMaterial( { color: 0xa09e88 }));
+  mesh.add(lines)
+  return mesh
+}
+
 const segment = (points, {frameDepth}, thickness, color) => {
   const normalizedPoints = points.map( ([x,y]) => [x/100, y/100] )
   return makePiece(normalizedPoints, thickness, color)
@@ -106,4 +115,17 @@ const ball = () => {
   return new THREE.Mesh(geometry, material)
 }
 
-module.exports = { ground, makePiece, clone, frame, connector, outerWall, roof, ball, floor, outline, segment }
+module.exports = {
+  ground,
+  makePiece,
+  clone,
+  frame,
+  connector,
+  outerWall,
+  roof,
+  ball,
+  floor,
+  outline,
+  segment,
+  outlinedComponent
+}

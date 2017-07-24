@@ -1,14 +1,11 @@
 import { ground } from "./components"
 import { renderer, container, scene, camera, orbitControls, stats, rendererStats, updateClippingPlane } from "./scene"
-import BasicWren from "../lib/wren/basic_wren"
 import * as w from "../lib/wren"
 import defaults from '../config'
 import Mouse from './mouse'
 import House from './house'
 
 let currentAction = "RESIZE"
-
-let wren = BasicWren(Object.assign({}, defaults, {totalBays: 6}))
 
 const mouse = Mouse(window,container)
 
@@ -17,7 +14,7 @@ const raycaster = new THREE.Raycaster()
 const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0),new THREE.Vector3(0,0,0))
 const plane = new THREE.Plane()
 
-const house = House(wren, w)
+const house = House(w)
 house.redraw()
 
 scene.add(ground(20,20))
