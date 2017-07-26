@@ -1,9 +1,8 @@
+import { renderer, container, scene, camera, orbitControls, stats, rendererStats, updateClippingPlane } from "./ui/scene"
 import { ground } from "./components"
-import { renderer, container, scene, camera, orbitControls, stats, rendererStats, updateClippingPlane } from "./scene"
+import House from './components/house'
+import Mouse from './ui/controls/mouse'
 import * as wren from "../lib/wren"
-import defaults from '../config'
-import Mouse from './mouse'
-import House from './house'
 
 let currentAction = "RESIZE"
 

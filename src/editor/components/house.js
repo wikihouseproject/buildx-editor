@@ -1,6 +1,6 @@
-import { outline, frame, clone, connector, outerWall, roof, floor, ball, segment, outlinedComponent } from "./components"
-import { scene } from "./scene"
-import { removeDescendants } from "./utils"
+import { outline, frame, clone, connector, outerWall, roof, floor, ball, segment, outlinedComponent } from "./index"
+import { scene } from "../ui/scene"
+import { removeDescendants } from "../utils"
 import { compose } from "ramda"
 
 const renderObj = obj =>
