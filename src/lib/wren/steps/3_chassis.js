@@ -32,8 +32,8 @@ function chassis(params) {
     leftOuterRoof: roofComponent(s, params, s.outer, s.sides.leftRoof, {y: params.height-s.outer[4][1]+ params.frameWidth/2, x: -params.width/2+s.outer[4][0], z: -params.bayLength }, {y: -Math.PI/2 }),
     leftInnerRoof: roofComponent(s, params, s.inner, s.sides.leftRoof, {y: params.height-s.inner[4][1]+ params.frameWidth/2, x: -params.width/2+s.inner[4][0], z: -params.bayLength }, {y: -Math.PI/2 }),
 
-    rightOuterRoof: roofComponent(s, params, s.outer, s.sides.rightRoof, {y: params.height-s.outer[1][1]+ params.frameWidth/2, x: s.outer[1][0]-params.width/2 }, {y: Math.PI/2 }),
-    rightInnerRoof: roofComponent(s, params, s.inner, s.sides.rightRoof, {y: params.height-s.inner[1][1]+ params.frameWidth/2, x: s.inner[1][0]-params.width/2 }, {y: Math.PI/2 })
+    rightOuterRoof: roofComponent(s, params, s.outer, s.sides.rightRoof, {y: params.height - s.outer[1][1] + params.frameWidth/2, x: s.outer[1][0] - params.width/2 }, {y: Math.PI/2 }),
+    rightInnerRoof: roofComponent(s, params, s.inner, s.sides.rightRoof, {y: params.height - s.inner[1][1] + params.frameWidth/2, x: s.inner[1][0] - params.width/2 }, {y: Math.PI/2 })
   })
 
   return {
