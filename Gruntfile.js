@@ -10,7 +10,7 @@ module.exports = function(grunt) {
       },
       build: {
         files: {
-          'public/noflo.js': ['package.json'],
+          'public/js/noflo.js': ['package.json'],
         },
       }
     },

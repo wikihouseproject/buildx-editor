@@ -47,7 +47,7 @@ jspm_packages
 
 build
 
-public/bundle.js
-public/noflo.js
+public/js/basic3d.bundle.js
+public/js/noflo.js
 
 src/lib/wren/nester/temp
