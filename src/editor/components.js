@@ -1,14 +1,17 @@
-const outlinedComponent = (obj, parameters, color='#E9E6C5') => {
-  const x = segment(obj[0], parameters, parameters.plyThickness, color)
-  const mesh = clone(x, obj[1], obj[2])
-  const geom = new THREE.EdgesGeometry(mesh.geometry);
-  const lines = new THREE.LineSegments(geom, new THREE.LineBasicMaterial( { color: 0xa09e88 }));
-  mesh.add(lines)
-  return mesh
+const outlinedComponent = (obj, parameters, position={}, rotation={}, color='#E9E6C5') => {
+  // const x = segment(obj[0], parameters, parameters.materialThickness, color)
+  const x = clone(makePiece(obj[0], parameters.materialThickness, color), position, rotation)
+  const geom = new THREE.EdgesGeometry(x.geometry)
+  const lines = new THREE.LineSegments(geom, new THREE.LineBasicMaterial( { color: '#ad9f83' }));
+  x.add(lines)
+  return x
 }
 
+const frame = (points, {frameDepth}) => makePiece(points, frameDepth)
+
 const segment = (points, {frameDepth}, thickness, color) => {
-  const normalizedPoints = points.map( ([x,y]) => [x/100, y/100] )
+  // const normalizedPoints = points.map( ([x,y]) => [x/100, y/100] )
+  const normalizedPoints = points.map( ([x,y]) => [x, y] )
   return makePiece(normalizedPoints, thickness, color)
 }
 
@@ -40,11 +43,11 @@ const clone = (sourceMesh, position={}, rotation={}, userData={}) => {
   mesh.rotation.x = (rotation.x || sourceMesh.rotation.x)
   mesh.rotation.y = (rotation.y || sourceMesh.rotation.y)
   mesh.rotation.z = (rotation.z || sourceMesh.rotation.z)
+  // console.log({position: mesh.position}, {rotation: mesh.rotation})
   mesh.userData = userData
   return mesh
 }
 
-const frame = (points, {frameDepth}) => makePiece(points, frameDepth)
 // const outlineMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.BackSide})
 const outline = (outerFramePoints, totalLength) => {
   const extrudeSettings = {
@@ -97,7 +100,7 @@ const extrudeShape = (shape, extrudeSettings, color) => {
   const material = new THREE.MeshBasicMaterial({ color });
   // const material = new THREE.MeshLambertMaterial({ color, side: THREE.DoubleSide });
   // const material = customShader;
-  return new THREE.Mesh(geometry, material)
+  return new THREE.Mesh(geometry, window.plyMaterial)
 }
 
 const makePiece = (points, amount, color=0x00ff00) => {

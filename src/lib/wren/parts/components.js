@@ -22,11 +22,11 @@ const math = require('mathjs')
 // }
 
 export const floorComponent = (s, params, arr, [from,to], position={}, rotation={}) => {
-  const floorLength = Math.min(arr[from][0]-arr[to][0], params.sheetLength*100)
+  const floorLength = Math.min(arr[from][0]-arr[to][0], params.sheetLength)
   const points = [
     [0,0],
-    [params.bayLength*100,0],
-    [params.bayLength*100, floorLength],
+    [params.bayLength,0],
+    [params.bayLength, floorLength],
     [0, floorLength],
   ]
   return [points, position, rotation]
@@ -35,23 +35,27 @@ export const floorComponent = (s, params, arr, [from,to], position={}, rotation=
 export const bayComponent = (s, params, arr, [from,to], position={}, rotation={}) => {
   const points = [
     [0,0],
-    [params.bayLength*100,0],
-    [params.bayLength*100, Math.abs(arr[from][1]-arr[to][1])],
+    [params.bayLength,0],
+    [params.bayLength, Math.abs(arr[from][1]-arr[to][1])],
     [0, Math.abs(arr[from][1]-arr[to][1])],
   ]
   return [points, position, rotation]
 }
 
 export const roofComponent = (s, params, arr, [from,to], position={}, rotation={}) => {
-  const roofLength = Math.min(math.distance(arr[from], arr[to]), params.sheetLength*100)
-
+  const roofLength = Math.min(math.distance(arr[from], arr[to]), params.sheetLength)
   const roofAngle = Math.atan2(params.width/2, (params.height-params.wallHeight))
-
   const points = [
     [0,0],
-    [params.bayLength*100,0],
-    [params.bayLength*100,roofLength],
+    [params.bayLength,0],
+    [params.bayLength,roofLength],
     [0,roofLength]
   ]
-  return [points, position, { z: Math.PI/2, x: -Math.PI/2, y: roofAngle-Math.PI/2 }]
+  const newRotation = {
+    x: (rotation.x||0)+-roofAngle,
+    y: rotation.y||0,
+    z: rotation.z||0,
+    order: 'ZYX'
+  }
+  return [points, position, newRotation]
 }

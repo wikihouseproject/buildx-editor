@@ -5,7 +5,7 @@
 */
 
 const { compose } = require('ramda')
-const { firstHalfPoints, secondHalfPoints, getPoints, firstPoints } = require('./points')
+const { firstHalfPoints, secondHalfPoints, getPoints, firstPoints } = require('./1_points')
 const List = require('../patterns/list')
 const Clipper = require('../patterns/clipper')
 const Points = require('../patterns/points')
@@ -27,10 +27,10 @@ function finShape(params) {
   var {width, height, wallHeight, frameWidth} = params;
 
   // Code below uses centimeters
-  width *= 100;
-  height *= 100;
-  wallHeight *= 100;
-  frameWidth *= 100;
+  // width *= 100;
+  // height *= 100;
+  // wallHeight *= 100;
+  // frameWidth *= 100;
 
   // const corners = [[150,50],[250,150],[250,250],[50,250],[50,150]]
   const corners = [
@@ -43,6 +43,10 @@ function finShape(params) {
 
   const outerCorners = Clipper.offset(corners, { DELTA: frameWidth/2 })
   const innerCorners = Clipper.offset(corners, { DELTA: -(frameWidth/2) })
+
+  // console.log('corners', JSON.stringify(corners))
+  // console.log('outer', JSON.stringify(outerCorners))
+  // console.log('inner', JSON.stringify(innerCorners))
 
   const clipperPointsToNormal = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 0 };
 

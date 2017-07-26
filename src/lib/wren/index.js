@@ -1,6 +1,8 @@
 const SVG = require('./outputs/svg')
 const CSV = require('./outputs/csv')
 const set = require('./utils/set')
+const Points = require('./patterns/points')
+const Clipper = require('./patterns/clipper')
 const { finShape } = require('./steps/2_fin')
 const { chassis } = require('./steps/3_chassis')
 
@@ -23,11 +25,14 @@ function getParameters() {
     ['frameDepth', "Frame depth", 'distance', 0.150, "Depth of spacer+fins+reinforcers"],
 
     // sheet
-    ['materialThickness', "Material thickness", 'distance', 18.0/1000, "Nominal thickness of plywood sheet"],
+    ['materialThickness', "Material thickness", 'distance', 0.018, "Nominal thickness of plywood sheet"],
     ['sheetWidth', "Sheet width", 'distance', 1.2, "Width of plywood sheet"],
     ['sheetLength', "Sheet height", 'distance', 2.4, "Length of plywood sheet"],
 
     ['pointDistanceCM', "Point distance", 'distance', 0.15, "Distance between wren fin points"],
+
+    ['connectorWidth', "", 'distance', 1.2, ""],
+    ['connectorHeight', "", 'distance', 0.25, ""]
 
     //['tolerance', "Fit tolerance", 'distance', 0.5/1000, "Tolerance for fitting parts"],
   ]

@@ -1,6 +1,6 @@
 import { ground } from "./components"
 import { renderer, container, scene, camera, orbitControls, stats, rendererStats, updateClippingPlane } from "./scene"
-import * as w from "../lib/wren"
+import * as wren from "../lib/wren"
 import defaults from '../config'
 import Mouse from './mouse'
 import House from './house'
@@ -14,11 +14,30 @@ const raycaster = new THREE.Raycaster()
 const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0),new THREE.Vector3(0,0,0))
 const plane = new THREE.Plane()
 
-const house = House(w)
-house.redraw()
+// scene.add(ground(20,20))
 
-scene.add(ground(20,20))
-scene.add(house.house)
+const house = House(wren)
+
+var loader = new THREE.TextureLoader();
+loader.load('img/materials/plywood/birch.jpg',
+  function (texture) {
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+
+    window.plyMaterial = new THREE.MeshBasicMaterial({map: texture, overdraw: 0.5});
+    // console.log(window.plyMaterial)
+    // console.log(house)
+    house.redraw()
+    scene.add(house.house)
+    requestAnimationFrame(render)
+  },
+  function ( xhr ) {
+    console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+  },
+  // Function called when download errors
+  function ( xhr ) {
+    console.log( 'An error happened' );
+  });
 
 // Control Inputs Events
 
@@ -27,14 +46,15 @@ function changeCurrentAction(event) {
 
   // hide balls unless resizing
   house.balls.forEach(ball => ball.visible = (currentAction === 'RESIZE'))
+
   // hide outline unless moving or rotating
   house.outlineMesh.visible = (currentAction === 'MOVE' || currentAction === 'ROTATE')
 
   // change activeState
-  document.querySelectorAll('li').forEach(li => li.classList.remove('active'))
+  // document.querySelectorAll('li').forEach(li => li.classList.remove('active'))
   event.target.classList.add('active')
 }
-document.querySelectorAll('li').forEach(li => li.addEventListener('click', changeCurrentAction))
+// document.querySelectorAll('li').forEach(li => li.addEventListener('click', changeCurrentAction))
 
 const controls = ['totalBays', 'width', 'height']
 controls.forEach( val =>
@@ -59,7 +79,7 @@ let hitTestObjects = [],
     intersects = [],
     intersectFn = undefined
 
-mouse.events.on('all', mouseEvent)
+// mouse.events.on('all', mouseEvent)
 
 function mouseEvent() {
   raycaster.setFromCamera(mouse.state.position, camera)
@@ -129,4 +149,6 @@ function render() {
   requestAnimationFrame(render)
 }
 
-requestAnimationFrame(render)
+// requestAnimationFrame(render)
+
+
