@@ -20,12 +20,11 @@ let balls = [
 
 const component = (chassis, parameters) => name => {
   const comps = chassis.bays[0][name]
-  if (comps[1]) {
-    console.log('----')
-    console.log(comps[0][1])
-    console.log(comps[1][1])
-  }
-
+  // if (comps[1]) {
+  //   console.log('----')
+  //   console.log(comps[0][1])
+  //   console.log(comps[1][1])
+  // }
   return comps.map(comp => outlinedComponent(comp, parameters, comp[1], comp[2]))
   // const comp = chassis.bays[0][name][0]
   // return outlinedComponent(comp, parameters, comp[1], comp[2])
@@ -71,14 +70,7 @@ const House = wren => {
     const chassis = wren.chassis(parameters)
 
     const pieces = name => {
-      const meshes = component(chassis, parameters)(name)
-
-      // const xArrow = new THREE.ArrowHelper( new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), 3, 'red')
-      // mesh.add(xArrow)
-      // const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 3, 'green')
-      // mesh.add(yArrow)
-      // const zArrow = new THREE.ArrowHelper( new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,0), 3, 'blue')
-      // mesh.add(zArrow)
+      let meshes = component(chassis, parameters)(name)
 
       // mesh.translateZ(2)
 
@@ -90,6 +82,15 @@ const House = wren => {
       // v.x += (avgVertexNormals[count].x * v.velocity * control.scale) * dir;
       // v.y += (avgVertexNormals[count].y * v.velocity * control.scale) * dir;
       // v.z += (avgVertexNormals[count].z * v.velocity * control.scale) * dir;
+
+      // return meshes.map(mesh => {
+      //   const xArrow = new THREE.ArrowHelper( new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), 3, 'red')
+      //   mesh.add(xArrow)
+      //   const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 3, 'green')
+      //   mesh.add(yArrow)
+      //   const zArrow = new THREE.ArrowHelper( new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,0), 3, 'blue')
+      //   mesh.add(zArrow)
+      // })
       return meshes
     }
 
@@ -105,8 +106,8 @@ const House = wren => {
         // bay.add(...pieces('rightOuterWall'))
         // bay.add(...pieces('floor'))
         // bay.add(...pieces('underboard'))
-        // bay.add(...pieces('leftOuterRoof'))
-        // bay.add(...pieces('leftInnerRoof'))
+        bay.add(...pieces('leftOuterRoof'))
+        bay.add(...pieces('leftInnerRoof'))
         bay.add(...pieces('rightOuterRoof'))
         bay.add(...pieces('rightInnerRoof'))
       }

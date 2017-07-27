@@ -42,7 +42,7 @@ function getParameters() {
     ['height', "Height", 'distance', 3.0, "Height to top of chassis"],
     ['width', "Width", 'distance', 1.2, "Width of chassis"],
     ['wallHeight', "Wall height", 'distance', 2.5, "Height of wall, where roof starts"],
-    ['totalBays', "Bays #", 'number', 6, "Number of bays (blocks inbetween frames)"],
+    ['totalBays', "Bays #", 'number', 1, "Number of bays (blocks inbetween frames)"],
 
     // internal
     ['bayLength', "Bay length", 'distance', 1.2, "Distance between each of the frames"],

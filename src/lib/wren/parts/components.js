@@ -21,38 +21,21 @@ const bayComponent = (s, params, arr, [from,to], position={}, rotation={}) => {
   return [[points, position, rotation]]
 }
 
-// const roofComponent = (s, params, arr, [from,to], position={}, rotation={}) => {
-//   const roofLength = Math.min(math.distance(arr[from], arr[to]), params.sheetLength)
-//   const roofAngle = Math.atan2(params.width/2, (params.height-params.wallHeight))
-//   const points = [
-//     [0,0],
-//     [params.bayLength,0],
-//     [params.bayLength,roofLength],
-//     [0,roofLength]
-//   ]
-//   const newPosition = {
-//     x: position.x||0,
-//     y: position.y||0,
-//     z: position.z||0
-//   }
-//   const newRotation = {
-//     x: (rotation.x||0)-roofAngle,
-//     y: rotation.y||0,
-//     z: rotation.z||0,
-//     order: 'ZYX'
-//   }
-//   return [[points, newPosition, newRotation]]
-// }
-
 const roofComponent = (s, params, arr, [from,to], position={}, rotation={}) => {
   const roofTotalLength = math.distance(arr[from], arr[to])
   const roofAngle = Math.atan2(params.width/2, (params.height-params.wallHeight))
-  const times = Math.ceil(roofTotalLength/params.sheetLength)
-
   const roofLength = Math.min(roofTotalLength, params.sheetLength)
 
+  const times = Math.ceil(roofTotalLength/params.sheetLength)
+
   let all = []
-  // i < times
+
+  let normalPosition = {
+    x: (position.x||0),
+    y: (position.y||0),
+    z: (position.z||0)
+  }
+
   for (let i = 0; i < times; i++) {
     const points = [
       [0,0],
@@ -60,18 +43,27 @@ const roofComponent = (s, params, arr, [from,to], position={}, rotation={}) => {
       [params.bayLength,roofLength],
       [0,roofLength]
     ]
-    const newPosition = {
-      x: (position.x||0) + i*roofLength,
-      y: (position.y||0),
-      z: (position.z||0)
-    }
     const newRotation = {
       x: (rotation.x||0)-roofAngle,
       y: rotation.y||0,
       z: rotation.z||0,
       order: 'ZYX'
     }
-    all.push([points, newPosition, newRotation])
+
+    const startPosition = new THREE.Vector3(...Object.values(normalPosition))
+
+    const direction = new THREE.Vector3({
+      x: newRotation.x,
+      y: newRotation.y,
+      z: newRotation.z
+    })
+    console.log(direction)
+    let newPos = new THREE.Vector3()
+    newPos.addVectors(startPosition, direction.multiplyScalar(params.sheetLength*(i+1)) );
+
+
+    // all.push([points, {x,y,z}, newRotation])
+    all.push([points, newPos, newRotation])
   }
 
   return all
