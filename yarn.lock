@@ -2,9 +2,18 @@
 # yarn lockfile v1
 
 
-"@cycle/dom@17.x", "@cycle/dom@^17.6.0":
+"@cycle/dom@17.x":
   version "17.6.0"
   resolved "https://registry.yarnpkg.com/@cycle/dom/-/dom-17.6.0.tgz#4512be5e5cd1ce90fa00e5674a31d0c2957a481d"
+  dependencies:
+    "@cycle/run" "*"
+    es6-map "^0.1.4"
+    snabbdom "0.6.9"
+    snabbdom-selector "1.2.0"
+
+"@cycle/dom@^18.0.0":
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/@cycle/dom/-/dom-18.0.0.tgz#605a70751f70658f0005504a03a0b6cbb5d1e68d"
   dependencies:
     "@cycle/run" "*"
     es6-map "^0.1.4"
@@ -2978,6 +2987,10 @@ portfinder@^1.0.9:
     async "^1.5.2"
     debug "^2.2.0"
     mkdirp "0.5.x"
+
+preact@^8.2.1:
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-8.2.1.tgz#674243df0c847884d019834044aa2fcd311e72ed"
 
 preserve@^0.2.0:
   version "0.2.0"

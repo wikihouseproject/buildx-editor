@@ -4,7 +4,9 @@ module.exports = {
   context: path.resolve(__dirname, './src'),
   entry: {
     app: './editor/index.js',
-    basic3d: './basic3d.js'
+    basic3d: './basic3d/index.js',
+    svg: './svg/index.js',
+    cycle: './cycle/index.js'
   },
   output: {
     filename: '[name].bundle.js',
@@ -22,7 +24,7 @@ module.exports = {
         use: [{
           loader: 'babel-loader',
           options: { presets: ['es2015'] },
-        }],
+        }]
       }
     ]
   }

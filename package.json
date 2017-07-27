@@ -8,7 +8,7 @@
   "main": "./src/editor/index.js",
   "homepage": "https://github.com/wikihouseproject/buildx-editor",
   "dependencies": {
-    "@cycle/dom": "^17.6.0",
+    "@cycle/dom": "^18.0.0",
     "@cycle/html": "^1.1.0",
     "@cycle/run": "^3.1.0",
     "clipper-js": "^1.0.2",
@@ -19,6 +19,7 @@
     "noflo-objects": "^0.3.0",
     "noflo-runtime-webrtc": "^0.8.0",
     "noflo-strings": "^0.3.0",
+    "preact": "^8.2.1",
     "ramda": "^0.24.1",
     "xstream": "^10.9.0"
   },
