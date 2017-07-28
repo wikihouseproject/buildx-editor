@@ -1,5 +1,6 @@
 import { outline, frame, clone, connector, outerWall, roof, floor, ball, segment, outlinedComponent } from "./index"
 import { scene } from "../ui/scene"
+import dimensionLines from "../ui/dimension_lines"
 import { removeDescendants } from "../utils"
 import { compose } from "ramda"
 
@@ -17,6 +18,8 @@ let balls = [
   clone(sourceBall, {}, {}, {boundVariable: 'width', bindFn: (x => x*2), dragAxis: 'x'}),
   clone(sourceBall, {}, {}, {boundVariable: 'width', bindFn: (x => -x*2), dragAxis: 'x'})
 ]
+
+// scene.add(dimensionLines(3, 2))
 
 const component = (chassis, parameters) => name => {
   const comps = chassis.bays[0][name]
