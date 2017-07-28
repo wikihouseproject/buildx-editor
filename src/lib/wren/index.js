@@ -39,8 +39,8 @@ function getParameters() {
   const keys = ['id', 'name', 'type', 'default', 'description'];
   const definitions = [
     // Commonly configured
-    ['height', "Height", 'distance', 3.0, "Height to top of chassis"],
-    ['width', "Width", 'distance', 1.2, "Width of chassis"],
+    ['height', "Height", 'distance', 4.0, "Height to top of chassis"],
+    ['width', "Width", 'distance', 5.2, "Width of chassis"],
     ['wallHeight', "Wall height", 'distance', 2.5, "Height of wall, where roof starts"],
     ['totalBays', "Bays #", 'number', 1, "Number of bays (blocks inbetween frames)"],
 

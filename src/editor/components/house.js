@@ -72,14 +72,14 @@ const House = wren => {
     const pieces = name => {
       let meshes = component(chassis, parameters)(name)
 
-      meshes.map(mesh => {
-        const xArrow = new THREE.ArrowHelper( new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), 3, 'red')
-        mesh.add(xArrow)
-        const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 3, 'green')
-        mesh.add(yArrow)
-        const zArrow = new THREE.ArrowHelper( new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,0), 3, 'blue')
-        mesh.add(zArrow)
-      })
+      // meshes.map(mesh => {
+      //   const xArrow = new THREE.ArrowHelper( new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), 3, 'red')
+      //   mesh.add(xArrow)
+      //   const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 3, 'green')
+      //   mesh.add(yArrow)
+      //   const zArrow = new THREE.ArrowHelper( new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,0), 3, 'blue')
+      //   mesh.add(zArrow)
+      // })
 
       // mesh.translateZ(2)
 
@@ -101,12 +101,13 @@ const House = wren => {
       bay.position.z = i*parameters.bayLength-(parameters.totalBays*parameters.bayLength)/2
       // only add a frame to the first bay
       if (i > 0) {
-        // bay.add(...pieces('leftInnerWall'))
-        // bay.add(...pieces('leftOuterWall'))
-        // bay.add(...pieces('rightInnerWall'))
-        // bay.add(...pieces('rightOuterWall'))
-        // bay.add(...pieces('floor'))
+        bay.add(...pieces('leftInnerWall'))
+        bay.add(...pieces('leftOuterWall'))
+        bay.add(...pieces('rightInnerWall'))
+        bay.add(...pieces('rightOuterWall'))
+        bay.add(...pieces('floor'))
         // bay.add(...pieces('underboard'))
+
         bay.add(...pieces('leftOuterRoof'))
         bay.add(...pieces('leftInnerRoof'))
         bay.add(...pieces('rightOuterRoof'))
