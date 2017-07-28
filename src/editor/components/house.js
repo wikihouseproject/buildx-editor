@@ -72,6 +72,15 @@ const House = wren => {
     const pieces = name => {
       let meshes = component(chassis, parameters)(name)
 
+      meshes.map(mesh => {
+        const xArrow = new THREE.ArrowHelper( new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), 3, 'red')
+        mesh.add(xArrow)
+        const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 3, 'green')
+        mesh.add(yArrow)
+        const zArrow = new THREE.ArrowHelper( new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,0), 3, 'blue')
+        mesh.add(zArrow)
+      })
+
       // mesh.translateZ(2)
 
       // mesh.updateMatrixWorld();
@@ -83,14 +92,6 @@ const House = wren => {
       // v.y += (avgVertexNormals[count].y * v.velocity * control.scale) * dir;
       // v.z += (avgVertexNormals[count].z * v.velocity * control.scale) * dir;
 
-      // return meshes.map(mesh => {
-      //   const xArrow = new THREE.ArrowHelper( new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), 3, 'red')
-      //   mesh.add(xArrow)
-      //   const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 3, 'green')
-      //   mesh.add(yArrow)
-      //   const zArrow = new THREE.ArrowHelper( new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,0), 3, 'blue')
-      //   mesh.add(zArrow)
-      // })
       return meshes
     }
 
