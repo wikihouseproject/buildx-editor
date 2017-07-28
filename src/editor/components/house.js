@@ -82,9 +82,10 @@ const House = wren => {
       //   mesh.add(yArrow)
       //   const zArrow = new THREE.ArrowHelper( new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,0), 3, 'blue')
       //   mesh.add(zArrow)
+
+      //   // mesh.translateZ(-1)
       // })
 
-      // mesh.translateZ(2)
 
       // mesh.updateMatrixWorld();
       // var normalMatrix = new THREE.Matrix3().getNormalMatrix(  mesh.matrixWorld )
@@ -102,6 +103,8 @@ const House = wren => {
 
       const bay = new THREE.Object3D()
       bay.position.z = i*parameters.bayLength-(parameters.totalBays*parameters.bayLength)/2
+
+      console.log()
       // only add a frame to the first bay
       if (i > 0) {
         bay.add(...pieces('leftInnerWall'))

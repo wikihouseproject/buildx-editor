@@ -33,7 +33,7 @@ const floorComponent = (s, params, arr, [from,to], _position={}, rotation={}) =>
       y: _position.y,
       z: _position.z
     }
-    all.push([points, position, rotation])
+    all.push([[points], position, rotation])
   }
   return all
 }
@@ -43,9 +43,9 @@ const bayComponent = (s, params, arr, [from,to], position={}, rotation={}) => {
     [0,0],
     [params.bayLength,0],
     [params.bayLength, Math.abs(arr[from][1]-arr[to][1])],
-    [0, Math.abs(arr[from][1]-arr[to][1])],
+    [0, Math.abs(arr[from][1]-arr[to][1])]
   ]
-  return [[points, position, rotation]]
+  return [[[points], position, rotation]]
 }
 
 const roofComponent = (s, params, arr, [from,to], _position={}, _rotation={}) => {
@@ -73,13 +73,26 @@ const roofComponent = (s, params, arr, [from,to], _position={}, _rotation={}) =>
 
   let roofLengths = pieces(roofTotalLength, params.sheetLength)
 
+  const hole = {
+    width: 1.050,
+    height: 1.695
+  }
+
   for (let i = 0; i < roofLengths.length; i++) {
     const roofLength = roofLengths[i]
     const points = [
-      [0,0],
-      [params.bayLength,0],
-      [params.bayLength,roofLength],
-      [0,roofLength]
+      [
+        [0,0],
+        [params.bayLength,0],
+        [params.bayLength,roofLength],
+        [0,roofLength],
+      ],
+      // [
+      //   [0.1, 0.2],
+      //   [0.1, 0.6],
+      //   [1, 0.6],
+      //   [1, 0.2],
+      // ]
     ]
 
     direction.z = 0 // position.z

@@ -26,7 +26,6 @@ function chassis(params) {
     // // rightOuterRoof: roofComponent(s, params, s.sides.rightRoof),
     floor: floorComponent(s, params, s.inner, s.sides.underside, {y: params.frameWidth + params.materialThickness, z: -params.bayLength, x: params.width/2 - params.frameWidth/2 }, {x: Math.PI/2, z: Math.PI/2}),
     // underboard: floorComponent(s, params, s.outer, s.sides.underside, {y: 0, z: -params.bayLength, x: s.outer[2][0]-params.width/2 }, {x: Math.PI/2, z: Math.PI/2}),
-
     // roofConnector: bayComponent(s, params, s.outer, s.sides.leftWall, {x: (params.width + params.frameWidth)/2 }, { y: Math.PI/2 }),
 
     leftOuterRoof: roofComponent(s, params, s.outer, s.sides.leftRoof, {

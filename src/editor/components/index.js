@@ -24,11 +24,15 @@ const ground = (width, height) => {
   return mesh
 }
 
-const createShape = points => {
-  let shape = new THREE.Shape()
-  shape.moveTo(...points[0])
-  points.slice(1).forEach( ([x,y]) => shape.lineTo(x,y))
-  shape.lineTo(...points[0])
+const createShape = _points => {
+  if (!Array.isArray(_points[0][0])) _points = [_points]
+
+  const shape = new THREE.Shape()
+  for (const points of _points) {
+    shape.moveTo(...points[0])
+    points.slice(1).forEach( ([x,y]) => shape.lineTo(x,y))
+    shape.lineTo(...points[0])
+  }
   return shape
 }
 
