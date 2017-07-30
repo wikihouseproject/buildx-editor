@@ -33,3 +33,81 @@
 // foundation
 
 // Export as .CSV / .json
+
+
+// const config = {
+//   width: 5,
+//   height: 3,
+//   wallHeight: 2,
+//   totalBays: 10,
+//   bayLength: 1.2,
+//   colors: [ 'yellow', 'green', 'pink', 'blue', 'orange'],
+//   materialThickness: 0.018,
+//   frameDepth: 0.15,
+//   frameWidth: 0.264,
+
+//   sheetWidth: 1.2,
+//   sheetHeight: 2.4,
+
+//   // only used in /src/lib/wren so far
+//     pointDistanceCM: 15, // distance to propagate points by when dedicing grip positions. Half of grip+nongrip (300mm)
+//     initialCameraPosition: { x: 0, y: 8, z: 8 },
+//     extrusion: 0.25,
+//     spacing: 1,
+
+//   // only used in /vanilla so far
+//     connectorWidth: 1.2,
+//     connectorHeight: 0.25
+// }
+
+
+
+
+
+
+
+
+dimensions:
+  width: 3900
+  length: 10800
+  leftWallHeight: 2400
+  rightWallHeight: 2400
+  roofApexHeight: 3900
+  roofApexOffset: 0
+
+  bays: 9
+
+materials:
+  plywood:
+    depth: 18
+    density: 510
+  plasterboard:
+    depth: 18
+    density: 510
+  undersidePanels:
+    depth: 6
+    density: 510
+  insulation:
+    depth: 250
+    density: 30
+
+calculatedMetrics:
+  dimensions:
+    internalWidth: 3553
+    externalWidth: 4486
+
+  areas:
+    footprint: 50.47
+    surface: 185.44
+    floor: 75.34
+    intWall: 88.89
+    intRoof: 49.24
+    openings: 14.66
+    endWall: 10.41
+
+  volumes:
+    insulation: 42.096
+
+  expectedSheets:
+    (frameVolume+connectorsVolume+endWallsVolume)*(cncWasteFactor+1)
+
