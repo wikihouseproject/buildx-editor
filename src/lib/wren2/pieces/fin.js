@@ -1,42 +1,20 @@
-const svg = points => {
-  const move = `M ${points[0]} L`
-  const lines = points.slice(1).reduce((str, point) => {
-    str += " " + point.join(",")
-    return str
-  }, "")
-  return `<svg><path d="${move}${lines}z"></svg>`
-}
-
-const draw = points => mapping => {
-  return [ points[mapping[1]], points[mapping[0]] ]
-}
+const _draw = points => (mapping, index) => points[mapping[index]]
 
 const fin = points => {
   const m = points.mapping
-  const o = draw(points.center)
-  const i = draw(points.center)
+  const o = _draw(points.outer)
+  const i = _draw(points.inner)
 
   const roof = [
-    ...o(m.leftRoof),
-    ...o(m.rightRoof),
-    ...i(m.rightRoof),
-    ...i(m.leftRoof)
+    o(m.leftRoof, 0),
+    o(m.leftRoof, 1),
+    o(m.rightRoof, 1),
+    i(m.rightRoof, 1),
+    i(m.rightRoof, 0),
+    i(m.leftRoof, 0),
   ]
 
-  // console.log(roof)
-
-  // const leftWall = [
-  //   o(m.leftWall),
-  //   i(m.leftWall),
-  // ]
-
-  // return {
-  //   roof,
-  //   // leftWall
-  // }
-
-  // return svg(roof)
-  return points.outer
+  return roof
 }
 
 module.exports = fin
