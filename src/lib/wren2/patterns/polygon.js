@@ -1,31 +1,5 @@
 const Clipper = require('./clipper');
 
-// function moveLeft(array) {
-//   const minMax = array.reduce( (ob, [X,Y]) => {
-//     if (X < ob.minX) {
-//       ob.minX = X
-//     } else if (X > ob.maxX) {
-//       ob.maxX = X
-//     }
-//     if (Y < ob.minY) {
-//       ob.minY = Y
-//     } else if (Y > ob.maxY) {
-//       ob.maxY = Y
-//     }
-//     return ob
-//   }, {
-//     minX: Infinity,
-//     maxX: -Infinity,
-//     minY: Infinity,
-//     maxY: -Infinity
-//   })
-
-//   const halfWidth = Math.abs(minMax.maxX-minMax.minX)/2
-//   const halfHeight = Math.abs(minMax.maxY-minMax.minY)/2
-
-//   return array.map( ([X,Y]) => [X-halfWidth, Y-halfHeight])
-// }
-
 function centroid(pts) {
    var first = pts[0], last = pts[pts.length-1];
 
@@ -53,17 +27,6 @@ function clockwiseSort(points, indexOfStartingPoint=0) {
   });
 };
 
-// Array.prototype.move = function (old_index, new_index) {
-//   if (new_index >= this.length) {
-//     var k = new_index - this.length;
-//     while ((k--) + 1) {
-//       this.push(undefined);
-//     }
-//   }
-//   this.splice(new_index, 0, this.splice(old_index, 1)[0]);
-//   return this; // for testing purposes
-// };
-
 function add1([x,y]) {
   return [x+1, y+1]
 }
@@ -73,35 +36,7 @@ function sub1([x,y]) {
 
 // return clockwise ordered array, bottom left first
 function normalize(points) {
-
   return Clipper.normalize(points)
-
-  // const firstItem = points.reduce( (prev, current) => {
-  //   if (current[1] === 0 && current[0] < prev[0]) {
-  //     return current
-  //   } else {
-  //     return prev
-  //   }
-  // }, [Infinity, 0])
-
-  // const indexOfFirstPoint = points.indexOf(firstItem)
-
-  // const sortedPoints = clockwiseSort(points.map(add1), indexOfFirstPoint).map(sub1).reverse()
-
-  // const groundPoints = sortedPoints
-  //   .filter( ([X,Y]) => Y === 0)
-  //   .sort( (a, b) => a[0] > b[0] )
-
-  // const raisedPoints = sortedPoints
-  //   .filter( ([X,Y]) => Y > 0)
-
-  // console.log(sortedPoints)
-
-  // // // const sortedPoints = clockwiseSort(points, indexOfFirstPoint)
-
-  // // const sortedPoints = clockwiseSort([...groundPoints, ...raisedPoints])
-
-  // return [...groundPoints, ...raisedPoints]
 }
 
 module.exports = {

@@ -34,15 +34,15 @@ function area(outline) {
   return Math.abs(rawArea/multiplier)/multiplier;
 }
 
-function normalize(points) {
-  const outlinePoints = points.map(toClipper);
-  const shape = new Shape([outlinePoints], true).reverse();
-  const outPath = shape.paths[0] || [];
-  return outPath.map(fromClipper)
-}
+// function normalize(points) {
+//   const outlinePoints = points.map(toClipper);
+//   const shape = new Shape([outlinePoints], true).reverse();
+//   const outPath = shape.paths[0] || [];
+//   return outPath.map(fromClipper)
+// }
 
 module.exports = {
   offset,
   area,
-  normalize
+  // normalize
 }

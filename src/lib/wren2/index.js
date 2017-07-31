@@ -1,16 +1,14 @@
 const defaults = require('./defaults')
-const Polygon = require('./patterns/polygon')
 const _points = require('./includes/points')
 const _dimensions = require('./includes/dimensions')
 const math = require('mathjs')
 const { merge } = require('lodash')
 
-const { fin, side } = require('./pieces')
+const Piece = require('./pieces')
 
 function Wren(overrides) {
 
   const inputs = merge(defaults, overrides)
-
   const points = _points(inputs.dimensions)
   const dimensions = _dimensions(inputs)
 
@@ -23,18 +21,18 @@ function Wren(overrides) {
   const _pieces = () => {
     return {
       fins: [
-        fin(points)
+        Piece.fin(points)
       ],
       sides: {
-        leftWall: side({
+        leftWall: Piece.side({
           width: inputs.dimensions.bayLength,
           height: inputs.dimensions.leftWallHeight
         }),
-        rightWall: side({
+        rightWall: Piece.side({
           width: inputs.dimensions.bayLength,
           height: inputs.dimensions.leftWallHeight
         }),
-        floor: side({
+        floor: Piece.side({
           width: inputs.dimensions.bayLength,
           height: dimensions.internal.width
         })

@@ -1,5 +1,7 @@
 const _draw = points => (mapping, index) => points[mapping[index]]
 
+const Point = require('../patterns/point')
+
 const fin = points => {
   const m = points.mapping
   const o = _draw(points.outer)
