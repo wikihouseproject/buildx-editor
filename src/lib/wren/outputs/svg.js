@@ -1,86 +1,55 @@
-import {h, div} from '@cycle/dom'
-import {run} from '@cycle/run'
-import {makeHTMLDriver} from '@cycle/html'
-import xs from 'xstream'
+const { compose } = require('ramda')
+const { chunk } = require('lodash')
+const Point = require('../utils/point')
+const List = require('../utils/list')
 
-const openPath = points => "M" + points.map(pair => pair.join(",")).join(" ")
-const closedPath = points => openPath(points) + "z"
-
-const frameCuts = (frame) => {
-  // TODO: include naming and grouping
-  var paths = [];
-  for (var i=0; i<5; i++) {
-    const p = closedPath(frame.points(i));
-    paths.push(p);
-  }
-  return paths;
+const _makeClosedPathFromPoints = points => {
+  const start = `M${points[0]} L`
+  const middle = points.slice(1).map(point => `${point}`).join(" ")
+  return `${start}${middle}z`
 }
 
-// SVG conventions
-// origin = top-left, positive Y downwards, clockwise points
-const rectangle = (width, height, o) => {
-  o = o || {};
-  o.x = o.x || 0;
-  o.y = o.y || 0;
+const _extractPointsFromString = string => chunk(string.match(/([\-0-9\.]+)/ig), 2)
+
+// const viewBoxFromPoints = compose(getViewBox, getBounds)
+const _calculateViewBox = (elements, padding=0) => {
+  const points = _extractPointsFromString(elements.toString())
+  const {minX, minY, maxX, maxY} = Point.getBounds(points)
   return [
-    [ o.x, o.y ],
-    [ o.x+width, o.y ],
-    [ o.x+width, o.y+height ],
-    [ o.x, o.y+height ],
-  ];
+    minX-padding,
+    minY-padding,
+    Math.abs(maxX-minX)+padding*2,
+    Math.abs(maxY-minY)+padding*2
+  ].join(" ")
 }
 
-// Render as a SVG vdom tree
-function renderSvg(geometry, options) {
-  options = options || {};
-  options.width = options.width || 600;
-  options.height = options.height || 6000;
-  options.gap = options.gap || 10;
-
-  // Cutlines for frames
-  const frames = geometry.frames.map( (frame, frameNo) => {
-    const paths = frameCuts(frame).map( (p) => {
-      return h('path', {attrs: { d: p }})
-    });
-    const totalHeight = geometry.parameters.height + geometry.parameters.frameWidth;
-    const positionY = frameNo * ((totalHeight*100) + options.gap);
-    return h('g', { attrs: { fill: 'none', stroke: 'red', transform: `translate(0, ${positionY})` }}, paths);
-  });
-
-  // Cutsheet outlines
-  const sheetPoints = rectangle(geometry.parameters.sheetWidth*100, geometry.parameters.sheetLength*100);
-  const sheet = h('path', { attrs: { fill: 'none', stroke: 'grey', d: closedPath(sheetPoints) }});
-
-  // Toplevel
-  const toplevels = frames.concat([sheet]);
-  var attrs = { xmlns: 'http://www.w3.org/2000/svg', width: options.width, height: options.height };
-  if (options.id) { attrs.id = options.id; }
-
-  return h('svg', {attrs: attrs}, toplevels);
+const svg = elements => {
+  let str = '<svg xmlns="http://www.w3.org/2000/svg"'
+  if (true) {
+    const viewBox = _calculateViewBox(elements)
+    str += ` viewBox="${viewBox}"`
+  }
+  //   return str + `>${adjustedElements.join("")}</svg>`
+  // } else {
+  return str + `>${elements.join("")}</svg>`
 }
 
+const g = elements => `<g>${elements.join("")}</g>`
 
-// Export as SVG string
-function exportSvg(geometry, options) {
-  const rendered = renderSvg(geometry, options);
+const path = points =>
+    `<path d="${_makeClosedPathFromPoints(points)}"></path>`
 
-  var svg = null;
-  const collectOutput = (out) => {
-    svg = out;
-  }
-  const drivers = {
-    HTML: makeHTMLDriver(collectOutput)
-  }
-  const outputRender = (sources) => {
-    const stream = xs.of(rendered);
-    return { HTML: stream };
-  }
-  run(outputRender, drivers);
-  return svg;
-}
+const drawSVG = compose(
+  svg,
+  List.wrap,
+  g,
+  List.wrap,
+  path
+)
 
 module.exports = {
-  export: exportSvg,
-  render: renderSvg,
-  closedPath
+  path,
+  g,
+  svg,
+  drawSVG
 }
