@@ -1,10 +1,10 @@
 const defaults = require('./defaults')
 const _points = require('./includes/points')
 const _dimensions = require('./includes/dimensions')
-const math = require('mathjs')
 const { merge } = require('lodash')
-
+const Point = require('./patterns/point')
 const Piece = require('./pieces')
+const SVG = require('./outputs/svg')
 
 function Wren(overrides) {
 
@@ -12,11 +12,11 @@ function Wren(overrides) {
   const points = _points(inputs.dimensions)
   const dimensions = _dimensions(inputs)
 
-  const _roof = () => {
-    const rightRoof = [points.inner[2], points.inner[3]]
-    const leftRoof = [points.inner[3], points.inner[4]]
-    return math.distance(...rightRoof)
-  }
+  // const _roof = () => {
+  //   const rightRoof = [points.inner[2], points.inner[3]]
+  //   const leftRoof = [points.inner[3], points.inner[4]]
+  //   return Point.distance(...rightRoof)
+  // }
 
   const _pieces = () => {
     return {
@@ -39,16 +39,19 @@ function Wren(overrides) {
       }
     }
   }
+  const pieces = _pieces()
+
+  const toSVG = () => pieces.fins[0].map(SVG.drawSVG).join("\n")
 
   const _outputs = () => {
-    const r = _roof()
+    // const r = _roof()
     return {
-      pieces: _pieces(),
+      pieces,
       dimensions,
       areas: {
         internal: {
           floor: dimensions.internal.width * dimensions.internal.length,
-          roof: (r * dimensions.internal.length)*2,
+          // roof: (r * dimensions.internal.length)*2,
           // wall: 88890,
         },
         external: {
@@ -67,7 +70,8 @@ function Wren(overrides) {
   return {
     inputs,
     outputs: _outputs(),
-    points
+    points,
+    toSVG
   }
 }
 

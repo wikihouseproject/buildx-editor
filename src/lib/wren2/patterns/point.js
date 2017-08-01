@@ -11,18 +11,19 @@ const getXY = (startX,startY,endX,endY) => [endX - startX, endY - startY]
 //   return amounts
 // }
 
-// const pointOnLine = (distance=1) => ([startX, startY], [endX, endY]) => {
-//   const [x,y] = getXY(startX,startY,endX,endY)
-//   const hypot = Math.hypot(x, y)
-//   return [x/hypot*distance,y/hypot*distance]
-// }
+const pointOnLine = distance => ([startX, startY], [endX, endY]) => {
+  const [x,y] = getXY(startX,startY,endX,endY)
+  const hypot = Math.hypot(x, y)
+  return [x/hypot*distance, y/hypot*distance]
+}
 
 // const movePointOnAngle = ([x,y], angle, delta) => [x + (Math.sin(angle) * delta), y - (Math.cos(angle) * delta)]
 
-// const length = ([startX, startY], [endX, endY]) => {
-//   const [x,y] = getXY(startX,startY,endX,endY)
-//   return Math.hypot(x, y)
-// }
+const distance = ([startX, startY], [endX, endY]) => { // was length
+  // or use require('mathjs').distance
+  const [x,y] = getXY(startX,startY,endX,endY)
+  return Math.hypot(x, y)
+}
 
 const percentageOnLine = (percentage=0.5) => ([startX, startY], [endX, endY]) => {
   const [x,y] = getXY(startX,startY,endX,endY)
@@ -44,45 +45,32 @@ const midpoint = percentageOnLine(0.5)
 //   ]
 // }
 
-// // Return bounding rectangle for a set of 2d points
-// const getBounds = (coords) => {
-//   return coords.reduce( (bounds, coords) => {
-//     // const [x, y] = coords.split(",")
-//     const [x, y] = coords
-//     bounds.minX = Math.min(bounds.minX, x)
-//     bounds.minY = Math.min(bounds.minY, y)
-//     bounds.maxX = Math.max(bounds.maxX, x)
-//     bounds.maxY = Math.max(bounds.maxY, y)
-//     return bounds
-//   }, {
-//     minX: Infinity,
-//     minY: Infinity,
-//     maxX: -Infinity,
-//     maxY: -Infinity
-//   })
-// }
-
-// // Pad a bounding box
-// const getViewBox = (bounds, padding=10) =>
-//   [
-//     bounds.minX-padding,
-//     bounds.minY-padding,
-//     bounds.maxX - bounds.minX+padding*2,
-//     bounds.maxY - bounds.minY+padding*2
-//   ].join(" ")
-
-// const viewBoxFromPoints = compose(getViewBox, getBounds)
+// Return bounding rectangle for a set of 2d points
+const getBounds = (coords) => {
+  return coords.reduce( (bounds, coords) => {
+    // const [x, y] = coords.split(",")
+    const [x, y] = coords
+    bounds.minX = Math.min(bounds.minX, x)
+    bounds.minY = Math.min(bounds.minY, y)
+    bounds.maxX = Math.max(bounds.maxX, x)
+    bounds.maxY = Math.max(bounds.maxY, y)
+    return bounds
+  }, {
+    minX: Infinity,
+    minY: Infinity,
+    maxX: -Infinity,
+    maxY: -Infinity
+  })
+}
 
 module.exports = {
   // angle,
   // split,
-  // length,
-  // pointOnLine,
+  distance,
+  pointOnLine,
   // movePointOnAngle,
   // percentageOnLine,
   // rotateAroundPoint,
-  // getBounds,
-  // getViewBox,
-  // viewBoxFromPoints,
+  getBounds,
   midpoint
 }

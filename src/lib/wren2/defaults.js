@@ -10,6 +10,10 @@ const dimensions = {
   finDepth: 250,
   battenHeight: 21,
   beamWidth: 150,
+
+  pointDistance: 150,
+  minPointsInReinforcer: 5,
+
   frame: {
     width: 286,
   }

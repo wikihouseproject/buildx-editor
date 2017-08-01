@@ -6,7 +6,8 @@ module.exports = {
     app: './editor/index.js',
     basic3d: './basic3d/index.js',
     svg: './svg/index.js',
-    cycle: './cycle/index.js'
+    cycle: './cycle/index.js',
+    wren2: './lib/wren2/browser.js'
   },
   output: {
     filename: '[name].bundle.js',

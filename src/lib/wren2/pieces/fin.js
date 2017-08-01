@@ -1,22 +1,45 @@
-const _draw = points => (mapping, index) => points[mapping[index]]
-
 const Point = require('../patterns/point')
+const List = require('../patterns/list')
+const { compose } = require('ramda')
+const { curry, zipObject } = require('lodash')
+
+const draw = points => {
+  const arrayLength = Object.values(points.outer).length
+  const si = List.safeIndex(arrayLength)
+
+  let shapes = []
+
+  for (let i = 0; i < arrayLength; i++) {
+    shapes.push([
+      points.outer[si(i-1)].MID,
+      points.outer[i].START,
+      points.outer[i].MID,
+      points.inner[i].MID,
+      points.inner[i].START,
+      points.inner[si(i-1)].MID,
+    ])
+  }
+
+  return shapes
+}
+
+const returnWithMidpoints = ([start,end]) => {
+  return ([start, Point.midpoint(start,end), end])
+}
 
 const fin = points => {
-  const m = points.mapping
-  const o = _draw(points.outer)
-  const i = _draw(points.inner)
 
-  const roof = [
-    o(m.leftRoof, 0),
-    o(m.leftRoof, 1),
-    o(m.rightRoof, 1),
-    i(m.rightRoof, 1),
-    i(m.rightRoof, 0),
-    i(m.leftRoof, 0),
-  ]
+  const withMidpoints = compose(
+    curry(zipObject)(['START', 'MID', 'END']),
+    returnWithMidpoints,
+  )
 
-  return roof
+  const pointsWithMidPoints = {
+    outer: List.loopifyInPairs(Object.values(points.outer)).map(withMidpoints),
+    inner: List.loopifyInPairs(Object.values(points.inner)).map(withMidpoints)
+  }
+
+  return draw(pointsWithMidPoints)
 }
 
 module.exports = fin

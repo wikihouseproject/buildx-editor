@@ -31,12 +31,10 @@
     "babel-jest": "^20.0.3",
     "babel-loader": "^7.1.1",
     "babel-preset-es2015": "^6.24.1",
-    "chai": "^4.1.0",
     "ghpages": "^0.0.10",
     "grunt": "^1.0.1",
     "grunt-noflo-browser": "^1.2.0",
     "jest": "^20.0.4",
-    "mocha": "^3.4.2",
     "noflo-runtime-iframe": "^0.8.0",
     "regenerator-runtime": "^0.10.5",
     "webpack": "^3.3.0",
@@ -46,7 +44,7 @@
     "start": "webpack-dev-server",
     "build": "grunt && cp -R public dist && webpack -p",
     "deploy": "npm run build && ghpages -p dist && rm -rf dist",
-    "test": "mocha --colors --compilers js:babel-core/register --reporter spec tests/**/*.js"
+    "test": "jest"
   },
   "keywords": [
     "wikihouse",
@@ -54,5 +52,8 @@
     "parametric",
     "3d"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "jest": {
+    "testEnvironment": "node"
+  }
 }

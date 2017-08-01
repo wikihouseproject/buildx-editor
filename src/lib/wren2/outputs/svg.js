@@ -1,22 +1,49 @@
 const { compose } = require('ramda')
+const { chunk } = require('lodash')
+const Point = require('../patterns/point')
+const List = require('../patterns/list')
 
-const makeClosedPathFromPoints = points => {
+const _makeClosedPathFromPoints = points => {
   const start = `M${points[0]} L`
   const middle = points.slice(1).map(point => `${point}`).join(" ")
   return `${start}${middle}z`
 }
 
-const svg = elements => `<svg xmlns="http://www.w3.org/2000/svg">${elements.join()}</svg>`
-const g = elements => `<g>${elements.join("")}</g>`
-const path = points => `<path d="${makeClosedPathFromPoints(points)}"></path>`
+const _extractPointsFromString = string => chunk(string.match(/([\-0-9\.]+)/ig), 2)
 
-const wrap = item => ([item])
+// const viewBoxFromPoints = compose(getViewBox, getBounds)
+const _calculateViewBox = (elements, padding=0) => {
+  const points = _extractPointsFromString(elements.toString())
+  const {minX, minY, maxX, maxY} = Point.getBounds(points)
+  return [
+    minX-padding,
+    minY-padding,
+    Math.abs(maxX-minX)+padding*2,
+    Math.abs(maxY-minY)+padding*2
+  ].join(" ")
+}
+
+const svg = elements => {
+  let str = '<svg xmlns="http://www.w3.org/2000/svg"'
+  if (true) {
+    const viewBox = _calculateViewBox(elements)
+    str += ` viewBox="${viewBox}"`
+  }
+  //   return str + `>${adjustedElements.join("")}</svg>`
+  // } else {
+  return str + `>${elements.join("")}</svg>`
+}
+
+const g = elements => `<g>${elements.join("")}</g>`
+
+const path = points =>
+    `<path d="${_makeClosedPathFromPoints(points)}"></path>`
 
 const drawSVG = compose(
   svg,
-  wrap,
+  List.wrap,
   g,
-  wrap,
+  List.wrap,
   path
 )
 

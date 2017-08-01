@@ -1,35 +1,40 @@
 const Clipper = require('../patterns/clipper')
+const List = require('../patterns/list')
+const { curry, zipObject } = require('lodash')
 
+/**
+ * Returns the three sets of points that dictate the shape of a WREN chassis.
+ * 0,0 is Top Left.
+ * @param {Number} finDepth
+ * @param {Number} width
+ * @param {Number} leftWallHeight
+ * @param {Number} rightWallHeight
+ * @param {Number} roofApexHeight
+ * @param {Number} roofApexOffset
+ * @return {Array} points
+ */
 const points = ({ finDepth, width, leftWallHeight, rightWallHeight, roofApexHeight, roofApexOffset }) => {
 
+  // NOTE: if these points are changed, it is likely that mapping below will break
   const _center = [
-    [0,0],
-    [width,0],
-    [width,rightWallHeight],
-    [width/2+roofApexOffset,roofApexHeight],
-    [0,leftWallHeight]
+    [0, roofApexHeight], // bottom left
+    [width, roofApexHeight], // bottom right
+    [width, roofApexHeight-rightWallHeight], // top right
+    [width/2+roofApexOffset, 0], // top
+    [0, roofApexHeight-leftWallHeight] // top left
   ]
+
   // order all of the points consistently
-  // output is ordered counterclockwise, starting from top-right
   const center = Clipper.offset(_center, {DELTA: 0})
   const inner = Clipper.offset(center, {DELTA: -finDepth/2})
   const outer = Clipper.offset(center, {DELTA: finDepth/2})
 
-  const TR = 0, T = 1, TL = 2, BL = 3, BR = 4
-
-  const mapping = {
-    rightRoof: [T,TR],
-    leftRoof: [TL,T],
-    leftWall: [BL,TL],
-    floor: [BL,BR],
-    rightWall: [BR,TR]
-  }
+  const mapToObject = curry(zipObject)(['TR', 'BR', 'BL', 'TL', 'T'])
 
   return {
-    center,
-    inner,
-    outer,
-    mapping
+    center: mapToObject(center),
+    inner: mapToObject(inner),
+    outer: mapToObject(outer)
   }
 }
 
