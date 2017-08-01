@@ -2,10 +2,11 @@ const Wren = require('../index')
 const SVG = require('../outputs/svg')
 const { shuffle } = require('lodash')
 
+const { defaultDimensions } = require('./fixtures')
+
 it('has default dimensions', () => {
   const wren = Wren();
-  const result = {"battenHeight": 21, "bayLength": 1200, "bays": 9, "beamWidth": 150, "finDepth": 250, "frame": {"width": 286}, "leftWallHeight": 2400, "length": 10800, "rightWallHeight": 2400, "roofApexHeight": 3900, "roofApexOffset": 0, "width": 3900}
-  expect(wren.inputs.dimensions).toEqual(result)
+  expect(wren.inputs.dimensions).toEqual(defaultDimensions)
 });
 
 it('can override default dimensions', () => {
@@ -29,10 +30,10 @@ describe('pieces', () => {
   // console.log(finPoints)
 })
 
-it('generates clockwise, TR-first set of points. 0,0 is the top left position.', () => {
-  //   4
-  // 3   0
-  // 2   1
+it('generates points with keys to indicate positions.', () => {
+  //    T
+  // TL   TR
+  // BL   BR
   const wren = new Wren({
     dimensions: {
       width: 5000,
@@ -43,13 +44,14 @@ it('generates clockwise, TR-first set of points. 0,0 is the top left position.',
     }
   });
 
-  expect(wren.points.center).toEqual([
-    [5000, 6000], // top right
-    [5000, 9000], // bottom right
-    [0, 9000], // bottom left
-    [0, 3000], // top left
-    [3500, 0] // top
-  ])
+  expect(wren.points.center).toEqual({
+    "BL": [0, 9000],
+    "BR": [5000, 9000],
+    "T": [3500, 0],
+    "TL": [0, 3000],
+    "TR": [5000, 6000]
+  })
+
 })
 
 describe('metrics', () => {
@@ -70,7 +72,7 @@ describe('metrics', () => {
       expect(external.footprint).toEqual(50467500)
       expect(internal.floor).toEqual(37676012)
 
-      expect(internal.roof).toEqual(46942843.634104006) //49240
+      // expect(internal.roof).toEqual(46942843.634104006) //49240
 
       // expect(outputs).toHaveProperty('areas.intRoof', 49240),
       // expect(outputs).toHaveProperty('areas.intWall', 88890),

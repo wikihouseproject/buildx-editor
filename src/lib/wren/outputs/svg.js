@@ -14,21 +14,24 @@ const _extractPointsFromString = string => chunk(string.match(/([\-0-9\.]+)/ig),
 // const viewBoxFromPoints = compose(getViewBox, getBounds)
 const _calculateViewBox = (elements, padding=0) => {
   const points = _extractPointsFromString(elements.toString())
-  const {minX, minY, maxX, maxY} = Point.getBounds(points)
-  return [
-    minX-padding,
-    minY-padding,
-    Math.abs(maxX-minX)+padding*2,
-    Math.abs(maxY-minY)+padding*2
-  ].join(" ")
+  if (points.length === 0) {
+    return ""
+  } else {
+    const {minX, minY, maxX, maxY} = Point.getBounds(points)
+    return [
+      minX-padding,
+      minY-padding,
+      Math.abs(maxX-minX)+padding*2,
+      Math.abs(maxY-minY)+padding*2
+    ].join(" ")
+  }
 }
 
 const svg = elements => {
   let str = '<svg xmlns="http://www.w3.org/2000/svg"'
-  if (true) {
-    const viewBox = _calculateViewBox(elements)
-    str += ` viewBox="${viewBox}"`
-  }
+
+  const viewBox = _calculateViewBox(elements)
+  if (viewBox !== "") str += ` viewBox="${viewBox}"`
   //   return str + `>${adjustedElements.join("")}</svg>`
   // } else {
   return str + `>${elements.join("")}</svg>`

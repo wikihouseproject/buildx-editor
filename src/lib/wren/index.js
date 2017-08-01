@@ -13,9 +13,9 @@ function Wren(overrides) {
   const dimensions = _dimensions(inputs)
 
   // const _roof = () => {
-  //   const rightRoof = [points.inner[2], points.inner[3]]
-  //   const leftRoof = [points.inner[3], points.inner[4]]
-  //   return Point.distance(...rightRoof)
+  //   // const rightRoof = [points.inner[2], points.inner[3]]
+  //   // const leftRoof = [points.inner[3], points.inner[4]]
+  //   // return Point.distance(...rightRoof)
   // }
 
   const _pieces = () => {
