@@ -1,6 +1,38 @@
 // const {compose} = require('ramda')
 
-const getXY = (startX,startY,endX,endY) => [endX - startX, endY - startY]
+const _getXY = (startX,startY,endX,endY) => [endX - startX, endY - startY]
+
+const pointOnLine = distance => ([startX, startY], [endX, endY]) => {
+  const [x,y] = _getXY(startX,startY,endX,endY)
+  const hypot = Math.hypot(x, y)
+  return [x/hypot*distance, y/hypot*distance]
+}
+
+/**
+ * Calculates the straight-line distance between two points
+ * @returns {Array}
+ */
+const distance = ([startX, startY], [endX, endY]) => { // was length
+  // or use require('mathjs').distance
+  const [x,y] = _getXY(startX,startY,endX,endY)
+  return Math.hypot(x, y)
+}
+
+/**
+ * Calculates the point at a % distance between two points
+ * @returns {Array}
+ */
+const percentageOnLine = (percentage=0.5) => ([startX, startY], [endX, endY]) => {
+  const [x,y] = _getXY(startX,startY,endX,endY)
+  return [startX+x*percentage,startY+y*percentage]
+}
+
+/**
+ * Calculates the point between two points
+ * @returns {Array}
+ */
+const midpoint = percentageOnLine(0.5)
+
 
 // const split = (amount=1) => ([startX, startY], [endX, endY]) => {
 //   const [x,y] = getXY(startX,startY,endX,endY)
@@ -11,31 +43,12 @@ const getXY = (startX,startY,endX,endY) => [endX - startX, endY - startY]
 //   return amounts
 // }
 
-const pointOnLine = distance => ([startX, startY], [endX, endY]) => {
-  const [x,y] = getXY(startX,startY,endX,endY)
-  const hypot = Math.hypot(x, y)
-  return [x/hypot*distance, y/hypot*distance]
-}
-
-// const movePointOnAngle = ([x,y], angle, delta) => [x + (Math.sin(angle) * delta), y - (Math.cos(angle) * delta)]
-
-const distance = ([startX, startY], [endX, endY]) => { // was length
-  // or use require('mathjs').distance
-  const [x,y] = getXY(startX,startY,endX,endY)
-  return Math.hypot(x, y)
-}
-
-const percentageOnLine = (percentage=0.5) => ([startX, startY], [endX, endY]) => {
-  const [x,y] = getXY(startX,startY,endX,endY)
-  return [startX+x*percentage,startY+y*percentage]
-}
-
-const midpoint = percentageOnLine(0.5)
-
 // const angle = ([startX, startY], [endX, endY]) => {
-//   const [x,y] = getXY(startX,startY,endX,endY)
+//   const [x,y] = _getXY(startX,startY,endX,endY)
 //   return Math.atan2(y,x)
 // }
+
+// const movePointOnAngle = ([x,y], angle, delta) => [x + (Math.sin(angle) * delta), y - (Math.cos(angle) * delta)]
 
 // const rotateAroundPoint = ([pointX, pointY], [originX, originY], angle) => {
 //   // angle = angle * Math.PI / 180.0;
@@ -45,7 +58,10 @@ const midpoint = percentageOnLine(0.5)
 //   ]
 // }
 
-// Return bounding rectangle for a set of 2d points
+/**
+ * Calculates the bounding box of a set of points
+ * @returns {Object}
+ */
 const getBounds = (coords) => {
   return coords.reduce( (bounds, coords) => {
     // const [x, y] = coords.split(",")

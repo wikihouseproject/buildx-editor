@@ -5,12 +5,7 @@ const { curry, zipObject } = require('lodash')
 /**
  * Returns the three sets of points that dictate the shape of a WREN chassis.
  * 0,0 is Top Left.
- * @param {Number} finDepth
- * @param {Number} width
- * @param {Number} leftWallHeight
- * @param {Number} rightWallHeight
- * @param {Number} roofApexHeight
- * @param {Number} roofApexOffset
+ * @param {Object}
  * @return {Array} points
  */
 const points = ({ finDepth, width, leftWallHeight, rightWallHeight, roofApexHeight, roofApexOffset }) => {

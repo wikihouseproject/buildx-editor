@@ -1,4 +1,4 @@
-const dimensions = (inputs) => {
+const dimensions = inputs => {
   const d = inputs.dimensions
   const m = inputs.materials
   return {

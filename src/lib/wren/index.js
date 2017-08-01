@@ -12,11 +12,11 @@ function Wren(overrides) {
   const points = _points(inputs.dimensions)
   const dimensions = _dimensions(inputs)
 
-  // const _roof = () => {
-  //   // const rightRoof = [points.inner[2], points.inner[3]]
-  //   // const leftRoof = [points.inner[3], points.inner[4]]
-  //   // return Point.distance(...rightRoof)
-  // }
+  const _roof = () => {
+    const rightRoof = [points.inner.T, points.inner.TR]
+    const leftRoof = [points.inner.T, points.inner.TL]
+    return Point.distance(...rightRoof)
+  }
 
   const _pieces = () => {
     return {
@@ -44,14 +44,14 @@ function Wren(overrides) {
   const toSVG = () => pieces.fins[0].map(SVG.drawSVG).join("\n")
 
   const _outputs = () => {
-    // const r = _roof()
+    const r = _roof()
     return {
       pieces,
       dimensions,
       areas: {
         internal: {
           floor: dimensions.internal.width * dimensions.internal.length,
-          // roof: (r * dimensions.internal.length)*2,
+          roof: (r * dimensions.internal.length)*2,
           // wall: 88890,
         },
         external: {

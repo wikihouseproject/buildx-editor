@@ -10,6 +10,13 @@ Please check soon if you want something that's relatively stable.
 
 ```javascript
 npm install
+
+// run grunt to compile noflo files into public/basic3d/js/noflo.js
 grunt
+
 npm run start
 ```
+
+## Wren
+
+See [Wren README](src/lib/wren/README.md)

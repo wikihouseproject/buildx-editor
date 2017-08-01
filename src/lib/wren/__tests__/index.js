@@ -72,7 +72,7 @@ describe('metrics', () => {
       expect(external.footprint).toEqual(50467500)
       expect(internal.floor).toEqual(37676012)
 
-      // expect(internal.roof).toEqual(46942843.634104006) //49240
+      expect(internal.roof).toEqual(48830972.21805112) //49240
 
       // expect(outputs).toHaveProperty('areas.intRoof', 49240),
       // expect(outputs).toHaveProperty('areas.intWall', 88890),

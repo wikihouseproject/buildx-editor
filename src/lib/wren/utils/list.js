@@ -12,6 +12,7 @@
  * @returns {Array}
  */
 const loopify = array => {
+  // NOTE: function name was previously 'wrapped'
   return [...array, array[0]]
 }
 

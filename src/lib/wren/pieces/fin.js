@@ -1,3 +1,5 @@
+// The fin is the shape of the frame of a wikihouse.
+
 const Point = require('../utils/point')
 const List = require('../utils/list')
 const { compose } = require('ramda')

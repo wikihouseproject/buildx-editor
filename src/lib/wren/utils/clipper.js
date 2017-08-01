@@ -2,6 +2,8 @@ const Shape = require('clipper-js').default
 
 // Convert between our conventions for points [x, y]
 // and Clipper convention { X: x, Y: y }
+
+// NOTE: multiplier was needed for keeping precision, might not be necessary now
 const multiplier = 1e6
 function toClipper(p) {
   return { X: p[0]*multiplier, Y: p[1]*multiplier };
