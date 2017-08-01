@@ -1,6 +1,6 @@
 const EventEmitter = require('eventemitter3')
 
-const Mouse = (_window, container) => {
+const Mouse = (_window, camera, container) => {
 
   let state = {
     target: undefined,
@@ -15,6 +15,15 @@ const Mouse = (_window, container) => {
   container.addEventListener('mousemove', onMouseMove)
   container.addEventListener('mousedown', onMouseDown)
   container.addEventListener('mouseup', onMouseUp)
+
+  const orbitControls = new THREE.OrbitControls(camera, container)
+  orbitControls.minDistance = 10;
+  orbitControls.maxDistance = 30;
+  orbitControls.maxPolarAngle = Math.PI/2.1
+  // orbitControls.enableDamping = true;
+  // orbitControls.dampingFactor = 0.125;
+  // orbitControls.enableZoom = false
+  // renderer.domElement.addEventListener('mousewheel', mousewheel)
 
   function onMouseUp(event) {
     state.isDown = false
@@ -78,7 +87,8 @@ const Mouse = (_window, container) => {
     state,
     events,
     setCursor,
-    handleIntersects
+    handleIntersects,
+    orbitControls
   }
 
 }

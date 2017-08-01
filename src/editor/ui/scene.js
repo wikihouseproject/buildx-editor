@@ -27,18 +27,9 @@ camera.position.z = 10
 camera.position.x = 6
 camera.lookAt(new THREE.Vector3(0,0,0))
 
-const orbitControls = new THREE.OrbitControls(camera, renderer.domElement)
-orbitControls.minDistance = 10;
-orbitControls.maxDistance = 30;
-orbitControls.maxPolarAngle = Math.PI/2.1
-// orbitControls.enableDamping = true;
-// orbitControls.dampingFactor = 0.125;
-// orbitControls.enableZoom = false
-// renderer.domElement.addEventListener('mousewheel', mousewheel)
-
 const updateClippingPlane = (height) => {
   const clippingPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,-1,0), new THREE.Vector3(0,height,0));
   renderer.clippingPlanes = [ clippingPlane ];
 }
 
-module.exports = { container, stats, rendererStats, renderer, scene, camera, orbitControls, updateClippingPlane }
+module.exports = { container, stats, rendererStats, renderer, scene, camera, updateClippingPlane }
