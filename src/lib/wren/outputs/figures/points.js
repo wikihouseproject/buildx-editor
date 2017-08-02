@@ -1,5 +1,5 @@
-const Clipper = require('../utils/clipper')
-const List = require('../utils/list')
+const Clipper = require('../../utils/clipper')
+const List = require('../../utils/list')
 const { curry, zipObject } = require('lodash')
 
 /**
@@ -9,7 +9,6 @@ const { curry, zipObject } = require('lodash')
  * @return {Array} points
  */
 const points = ({ finDepth, width, leftWallHeight, rightWallHeight, roofApexHeight, roofApexOffset }) => {
-
   // NOTE: if these points are changed, it is likely that mapping below will break
   const _center = [
     [0, roofApexHeight], // bottom left

@@ -3,8 +3,9 @@ const dimensions = {
   width: 3900,
   length: 10800,
   roofApexHeight: 3900, // Height to top of chassis
-  roofApexOffset: 0,
-  leftWallHeight: 2400, // Height of wall, where roof starts
+
+  roofApexOffset: 0, // Offset to left or right, negative value to move left, positive right
+  leftWallHeight: 2400, // Height of wall, where the roof starts
   rightWallHeight: 2400, // "" ""
 
   bays: 9, // Number of bays (blocks inbetween frames)

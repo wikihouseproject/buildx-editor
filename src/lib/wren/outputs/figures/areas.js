@@ -1,3 +1,18 @@
+const areas = dimensions => {
+  return {
+    internal: {
+      floor: dimensions.internal.width * dimensions.internal.length,
+      // roof: (r * dimensions.internal.length)*2,
+      // wall: 88890,
+    },
+    external: {
+      footprint: dimensions.external.width * dimensions.external.length,
+    }
+  }
+}
+
+module.exports = areas
+
 // function calculateAreas(profile, length) {
 
 //   // Features we care about

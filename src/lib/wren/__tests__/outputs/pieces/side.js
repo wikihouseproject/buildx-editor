@@ -1,4 +1,4 @@
-const side = require('../../pieces/side')
+const side = require('../../../outputs/pieces/side')
 
 it('generates a side', () => {
   const params = {

@@ -1,4 +1,4 @@
-const SVG = require('../../outputs/svg')
+const SVG = require('../../../outputs/formats/svg')
 
 it('outputs SVG <path /> from points', () => {
   const points = [

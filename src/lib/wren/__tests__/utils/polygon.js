@@ -1,10 +1,6 @@
 // const { shuffle } = require('lodash')
 const Polygon = require('../../utils/polygon');
 
-it('should not exist', () => {
-  expect(false).toEqual(true)
-})
-
 describe.skip('normalize', () => {
   it('returns points anticlockwise ordered, with bottom-left point first', () => {
     let shape = [

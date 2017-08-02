@@ -1,6 +1,5 @@
 const Angle = require('../../utils/angle');
 
-
 it('converts degrees to radians', () => {
   expect(Angle.rad2Deg(2)).toEqual(114.59155902616465)
 });

@@ -1,3 +1,11 @@
+const volumes = () => {
+  return {
+    insulation: 420960
+  }
+}
+
+module.exports = volumes
+
 // function calculateVolumes(profile, length, params) {
 
 //   // FIXME: don't use centimeters

@@ -1,3 +1,5 @@
+// NOTE: remove this file and its tests, merge with clipper
+
 const Clipper = require('./clipper');
 
 function centroid(pts) {
