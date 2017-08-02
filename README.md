@@ -44,11 +44,6 @@ npm run start
   └── lib
       └── wren                 - Wren, will be extracted eventually
           ├── __tests__          - tests, mirror the main dir structure
-          │   ├── outputs
-          │   │   ├── figures
-          │   │   ├── formats
-          │   │   └── pieces
-          │   └── utils
           ├── outputs            - things that Wren spits out
           │   ├── figures          - numbers, areas, volumes, polygon points
           │   ├── formats          - svg and csv for now
