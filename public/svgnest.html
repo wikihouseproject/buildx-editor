@@ -18,6 +18,12 @@
   <script>
   console.log('s', window.SVGNest);
   console.log('j', window.jsJobRun);
+
+  var svg = null;
+  var options = {};
+  window.jsJobRun(svg, options, function(err, res, details) {
+    console.log('jsjob done', err, res, details);
+  });
   </script>
 </body>
 </html>

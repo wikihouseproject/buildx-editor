@@ -155,7 +155,7 @@ function loadSvg() {
 }
 
 
-function runSvgNest() {
+function runSvgNest(svgData, callback) {
   var config = {
     spacing: 0,
     curveTolerance: 0.3,
@@ -166,17 +166,14 @@ function runSvgNest() {
     exploreConcave: false,
   };
 
-  window.SvgNest.config(c);
+  window.SvgNest.config(config);
 
-	try{
-		var svg = window.SvgNest.parsesvg(display.innerHTML);
-		display.innerHTML = '';
-		display.appendChild(svg);
+  var svg = null;
+	try {
+		svg = window.SvgNest.parsesvg(svgData);
 	}
 	catch(e){
-		message.innerHTML = e;
-		message.className = 'error animated bounce';
-		return;
+		return callback(e);
 	}			
 	
 	attachSvgListeners(svg);
@@ -184,6 +181,17 @@ function runSvgNest() {
   var iterations = 0;
   var lastResult = null;
   var startTime = new Date();
+
+  function done(err) {
+    SvgNest.stop();
+    var result = lastResult.svglist;
+    // TODO: verify that numplaced == number-of-parts
+    var details = {
+      efficiency: lastResult.efficiency,
+      numplaced: lastResult.numplaced,
+    };
+    return callback(err, result, details);
+  }
 
   function onIteration(svglist, efficiency, numplaced) {
     console.log("Efficiency: ", efficiency);
@@ -193,22 +201,37 @@ function runSvgNest() {
       efficiency: efficiency,
       numplaced: numplaced
     };
+
+    // TODO: wait until placed with
+    var goodResult = true;
+    if (goodResult) {
+      return done(null);
+    }
   }
 
   function onProgress(percent) {
     var elapsedMs = (new Date()).getTime()-startTime.getTime();
     console.log("Running: ", (elapsedMs/1000).toFixed(2));
+    // TODO: handle timeout
+    var timedOut = false;
+    if (timedOut) {
+      return done(null);
+    }
   }		
 
-	SvgNest.start(onProgress, onIteration);
-
-
-  SvgNest.stop();
+  SvgNest.start(onProgress, onIteration);
 }
 
 window.jsJobRun = function(inputdata, options, callback) {
-  var err = null;
-  var result = {'hello': 'jsjob'};
-  var details = {'meta': 'data'}; // Can be used for information about the execution or results
-  return callback(err, result, details);
+
+  // Verify environment setup
+  try {
+    checkSupport();
+  } catch (e) {
+    return callback(e);
+  }
+
+  // TODO: read and validate input data
+
+  return runSvgNest(inputdata, callback);
 };
