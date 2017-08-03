@@ -1,5 +1,5 @@
-const Clipper = require('../../utils/clipper')
-const List = require('../../utils/list')
+const Clipper = require('../utils/clipper')
+const List = require('../utils/list')
 const { curry, zipObject } = require('lodash')
 
 /**

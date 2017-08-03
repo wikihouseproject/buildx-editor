@@ -1,7 +1,7 @@
-const areas = require('./figures/areas')
+const _areas = require('./figures/areas')
 const estimates = require('./figures/estimates')
 const volumes = require('./figures/volumes')
-const _points = require('./figures/points')
+const _points = require('./points')
 const _dimensions = require('./figures/dimensions')
 const _pieces = require('./pieces')
 // const Point = require('../utils/point')
@@ -12,14 +12,20 @@ const outputs = inputs => {
   const dimensions = _dimensions(inputs)
   const points = _points(inputs.dimensions)
   const pieces = _pieces(points, dimensions)
+  const areas = _areas(inputs, dimensions, points)
   return {
+    figures: {
+      areas,
+      dimensions,
+      estimates: estimates(dimensions),
+      volumes: volumes(inputs, dimensions, points, areas)
+    },
+    formats: {
+      csv: null,
+      svg: () => pieces.fins[0].map(SVG.drawSVG).join("\n")
+    },
     pieces,
-    dimensions,
-    points,
-    areas: areas(dimensions),
-    volumes: volumes(dimensions),
-    estimates: estimates(dimensions),
-    svg: () => pieces.fins[0].map(SVG.drawSVG).join("\n")
+    points
   }
 }
 

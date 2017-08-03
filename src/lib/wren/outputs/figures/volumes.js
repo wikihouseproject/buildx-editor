@@ -1,28 +1,27 @@
-const volumes = () => {
-  return {
-    insulation: 420960
+const O = require('../../utils/object')
+const { unit } = require('mathjs')
+
+const volumes = (inputs, dimensions, points, areas, _unit="mm3") => {
+
+  const inputDimensions = inputs.dimensions
+
+  const iEndWallVolume = inputDimensions.finDepth * areas.internal.endWall; // endwall sits inside frame
+  const eEndWallVolume = inputDimensions.finDepth * areas.external.endWall; // endwall sits inside frame
+  const frameVolume = eEndWallVolume - iEndWallVolume
+
+  const _volumes = {
+    internal: {
+      total: dimensions.internal.length * areas.internal.endWall,
+      endWall: iEndWallVolume,
+      insulation: frameVolume + (iEndWallVolume * 2), // rough est for insulation needed
+    },
+    external: {
+      total: dimensions.external.length * areas.external.endWall,
+      endWall: eEndWallVolume
+    }
   }
+
+  return O.mutatingMap(_volumes, v => unit(v, 'mm3').toNumber(_unit))
 }
 
 module.exports = volumes
-
-// function calculateVolumes(profile, length, params) {
-
-//   // FIXME: don't use centimeters
-//   const endWallArea = points => Clipper.area(points)/(100*100)
-
-//   const endWallThickness = params.frameDepth;
-
-//   const innerArea = endWallArea(profile.inner);
-//   const outerArea = endWallArea(profile.outer);
-//   const frameSection = outerArea - innerArea;
-//   const frameVolume = frameSection * length.outer;
-//   const endWallVolume = endWallThickness * innerArea; // endwall sits inside frame
-
-//   const volumes = {
-//     'insulationVolume': frameVolume + 2*endWallVolume, // rough est for insulation needed
-//     'innerVolume': length.inner * innerArea,
-//     'outerVolume': length.outer * outerArea,
-//   };
-//   return volumes;
-// }

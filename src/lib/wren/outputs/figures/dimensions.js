@@ -11,11 +11,15 @@ const dimensions = inputs => {
   return {
     internal: {
       width: iWidth,
-      length: iLength
+      length: iLength,
+      leftRoofLength: 1,
+      rightRoofLength: 1,
     },
     external: {
       width: eWidth,
-      length: eLength
+      length: eLength,
+      leftRoofLength: 1,
+      rightRoofLength: 1,
     }
   }
 }
