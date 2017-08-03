@@ -8,7 +8,6 @@
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
   <script src="assets/svgnest.bundle.js"></script>
-
   <title>SvgNest test</title>
 
 </head>
@@ -16,13 +15,28 @@
   <div id="app"></div>
 
   <script>
+  function loadFile(url, callback) {
+    var req = new XMLHttpRequest();
+    req.addEventListener("load", function() {
+      return callback(null, req.responseText);
+    });
+    req.addEventListener("error", function(e) {
+      return callback(e);
+    }); 
+    req.open("GET", url);
+    req.send();
+  }
+
   console.log('s', window.SVGNest);
   console.log('j', window.jsJobRun);
 
-  var svg = null;
-  var options = {};
-  window.jsJobRun(svg, options, function(err, res, details) {
-    console.log('jsjob done', err, res, details);
+  loadFile('test.svg', function(err, svgData) {
+    if (err) { throw err; }
+
+    var options = {};
+    window.jsJobRun(svgData, options, function(err, res, details) {
+      console.log('jsjob done', err, res, details);
+    });
   });
   </script>
 </body>

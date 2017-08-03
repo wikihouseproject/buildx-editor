@@ -30,36 +30,6 @@ function checkSupport() {
 
 }
 
-
-function attachSvgListeners(svg){
-	// attach event listeners
-	for(var i=0; i<svg.childNodes.length; i++){
-		var node = svg.childNodes[i];
-		if(node.nodeType == 1){
-			node.onclick = function(){
-				if(display.className == 'disabled'){
-					return;
-				}
-				var currentbin = document.querySelector('#select .active');
-				if(currentbin){
-					var className = currentbin.getAttribute('class').replace('active', '').trim();
-					if(!className)
-						currentbin.removeAttribute('class');
-					else
-						currentbin.setAttribute('class', className);
-				}
-				
-				window.SvgNest.setbin(this);
-				this.setAttribute('class',(this.getAttribute('class') ? this.getAttribute('class')+' ' : '') + 'active');
-				
-				start.className = 'button start animated bounce';
-				message.className = '';
-			}
-		}
-	}
-}
-
-
 function exportSvg() {
 
 	if(download.className == 'button download disabled'){
@@ -114,47 +84,6 @@ function exportSvg() {
 }
 
 
-function loadSvg() {
-
-	if(reader.result){
-		try{
-			var svg = window.SvgNest.parsesvg(reader.result);
-			{
-				var wholeSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-				// Copy relevant scaling info
-				wholeSVG.setAttribute('width',svg.getAttribute('width'));
-				wholeSVG.setAttribute('height',svg.getAttribute('height'));
-				wholeSVG.setAttribute('viewBox',svg.getAttribute('viewBox'));
-				var rect = document.createElementNS(wholeSVG.namespaceURI,'rect');
-				rect.setAttribute('x', wholeSVG.viewBox.baseVal.x);
-				rect.setAttribute('y', wholeSVG.viewBox.baseVal.x);
-				rect.setAttribute('width', wholeSVG.viewBox.baseVal.width);
-				rect.setAttribute('height', wholeSVG.viewBox.baseVal.height);
-				rect.setAttribute('class', 'fullRect');
-				wholeSVG.appendChild(rect);
-			}
-			display.innerHTML = '';
-			display.appendChild(wholeSVG); // As a default bin in background
-			display.appendChild(svg);
-		}
-		catch(e){
-			message.innerHTML = e;
-			message.className = 'error animated bounce';
-			return;
-		}					
-		
-		hideSplash();
-		message.innerHTML = 'Click on the outline to use as the bin';
-		message.className = 'active animated bounce';
-		start.className = 'button start disabled';
-		
-		attachSvgListeners(svg);
-		attachSvgListeners(wholeSVG);
-	}
-
-}
-
-
 function runSvgNest(svgData, callback) {
   var config = {
     spacing: 0,
@@ -175,8 +104,9 @@ function runSvgNest(svgData, callback) {
 	catch(e){
 		return callback(e);
 	}			
-	
-	attachSvgListeners(svg);
+
+  // FIXME: find/create/set the bin
+  // window.SvgNest.setbin(this);
 
   var iterations = 0;
   var lastResult = null;
