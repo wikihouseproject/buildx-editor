@@ -30,53 +30,27 @@ function checkSupport() {
 
 }
 
-function exportSvg() {
-
-	if(download.className == 'button download disabled'){
-		return false;
+function exportSvg(outputElement, baseSvg) {
+	
+	if (!baseSvg){
+		baseSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 	}
 	
-  // FIXME: take as input to function
-	var bins = document.getElementById('bins');
-	
-	if(bins.children.length == 0){
-		message.innerHTML = 'No SVG to export';
-		message.className = 'error animated bounce';
-		return
-	}
-	
-	var svg;
-	svg = display.querySelector('svg');
-	
-	if(!svg){
-		svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-	}
-	
-	svg = svg.cloneNode(false);
+	var svg = baseSvg.cloneNode(false);
 	
 	// maintain stroke, fill etc of input
-	if(SvgNest.style){
+	if (SvgNest.style) {
 		svg.appendChild(SvgNest.style);
 	}
-	
-	var binHeight = parseInt(bins.children[0].getAttribute('height'));
-	
-	for(var i=0; i<bins.children.length; i++){
-		var b = bins.children[i];
-		var group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-		group.setAttribute('transform', 'translate(0 '+binHeight*1.1*i+')');
-		for(var j=0; j<b.children.length; j++){
-			group.appendChild(b.children[j].cloneNode(true));
-		}
-		
-		svg.appendChild(group);
+
+	for(var j=0; j<outputElement.children.length; j++) {
+		svg.appendChild(outputElement.children[j].cloneNode(true));
 	}
 	
 	var output;
-	if(typeof XMLSerializer != 'undefined'){
+	if (typeof XMLSerializer != 'undefined') {
 		output = (new XMLSerializer()).serializeToString(svg);
-	}
-	else{
+	} else {
 		output = svg.outerHTML;
 	}
 	
@@ -123,13 +97,13 @@ function runSvgNest(svgData, binId, callback) {
 
   function done(err) {
     SvgNest.stop();
-    var result = lastResult.svglist;
+    var results = lastResult.svglist.map(function(e) { return exportSvg(e) } );
     // TODO: verify that numplaced == number-of-parts
     var details = {
       efficiency: lastResult.efficiency,
       numplaced: lastResult.numplaced,
     };
-    return callback(err, result, details);
+    return callback(err, results, details);
   }
 
   function onIteration(svglist, efficiency, numplaced) {
