@@ -3,13 +3,13 @@
 require('script-loader!../SVGnest/util/pathsegpolyfill.js');
 require('script-loader!../SVGnest/util/matrix.js');
 require('script-loader!../SVGnest/util/clipper.js');
-require('script-loader!../SVGnest/util/parallel.js');
 require('script-loader!../SVGnest/util/geometryutil.js');
 require('script-loader!../SVGnest/util/placementworker.js');
 require('script-loader!../SVGnest/svgparser.js');
+require('script-loader!../SVGnest/util/parallel.js');
 require('script-loader!../SVGnest/svgnest.js');
-require('script-loader!../SVGnest/util/filesaver.js');
-
+//require('script-loader!../SVGnest/util/filesaver.js');
+console.log("all loads done");
 
 function checkSupport() {
 	if(!document.createElementNS || !document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect){
@@ -43,8 +43,8 @@ function exportSvg(outputElement, baseSvg) {
 		svg.appendChild(SvgNest.style);
 	}
 
-	for(var j=0; j<outputElement.children.length; j++) {
-		svg.appendChild(outputElement.children[j].cloneNode(true));
+	for(var j=0; j<outputElement.childNodes.length; j++) {
+		svg.appendChild(outputElement.childNodes[j].cloneNode(true));
 	}
 	
 	var output;
@@ -80,8 +80,8 @@ function runSvgNest(svgData, binId, callback) {
 	}			
 
   var binElement = null;
-  for (var i=0; i<svg.children.length; i++) {
-    var child = svg.children[i];
+  for (var i=0; i<svg.childNodes.length; i++) {
+    var child = svg.childNodes[i];
     if (child.id == binId) {
       binElement = child;
     }
@@ -138,7 +138,7 @@ function runSvgNest(svgData, binId, callback) {
     }
   }		
 
-  console.log('starting nesting');
+  console.log('starting nesting 22');
   SvgNest.start(onProgress, onIteration);
 }
 
