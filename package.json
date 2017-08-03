@@ -18,6 +18,7 @@
     "noflo-runtime-webrtc": "^0.8.0",
     "noflo-strings": "^0.3.0",
     "ramda": "^0.24.1",
+    "script-loader": "^0.7.0",
     "xstream": "^10.9.0"
   },
   "devDependencies": {
