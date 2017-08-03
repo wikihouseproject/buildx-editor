@@ -11,6 +11,7 @@
     "@cycle/run": "^3.1.0",
     "clipper-js": "^1.0.2",
     "eventemitter3": "^2.0.3",
+    "jsjob": "^0.10.12",
     "mathjs": "^3.14.2",
     "noflo": "^0.8.3",
     "noflo-core": "^0.4.0",
