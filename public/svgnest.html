@@ -33,8 +33,12 @@
   loadFile('test.svg', function(err, svgData) {
     if (err) { throw err; }
 
+    var job = {
+      svg: svgData,
+      bin: 'rect5794',
+    };
     var options = {};
-    window.jsJobRun(svgData, options, function(err, res, details) {
+    window.jsJobRun(job, options, function(err, res, details) {
       console.log('jsjob done', err, res, details);
     });
   });

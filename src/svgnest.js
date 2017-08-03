@@ -84,7 +84,7 @@ function exportSvg() {
 }
 
 
-function runSvgNest(svgData, callback) {
+function runSvgNest(svgData, binId, callback) {
   var config = {
     spacing: 0,
     curveTolerance: 0.3,
@@ -105,8 +105,18 @@ function runSvgNest(svgData, callback) {
 		return callback(e);
 	}			
 
-  // FIXME: find/create/set the bin
-  // window.SvgNest.setbin(this);
+  var binElement = null;
+  for (var i=0; i<svg.children.length; i++) {
+    var child = svg.children[i];
+    console.log('c', child.id);
+    if (child.id == binId) {
+      binElement = child;
+    }
+  }
+  if (!binElement) {
+    throw new Error("Could not find bin to fit into: " + binId);
+  }
+  window.SvgNest.setbin(binElement);
 
   var iterations = 0;
   var lastResult = null;
@@ -139,9 +149,15 @@ function runSvgNest(svgData, callback) {
     }
   }
 
+  var lastReport = new Date();
   function onProgress(percent) {
     var elapsedMs = (new Date()).getTime()-startTime.getTime();
-    console.log("Running: ", (elapsedMs/1000).toFixed(2));
+    var sinceReport = (new Date()).getTime()-lastReport.getTime();
+    if (sinceReport > 2*1000) {
+      console.log("Running: ", percent, (elapsedMs/1000).toFixed(2));      
+      lastReport = new Date();
+    }
+
     // TODO: handle timeout
     var timedOut = false;
     if (timedOut) {
@@ -149,6 +165,7 @@ function runSvgNest(svgData, callback) {
     }
   }		
 
+  console.log('starting nesting');
   SvgNest.start(onProgress, onIteration);
 }
 
@@ -163,5 +180,5 @@ window.jsJobRun = function(inputdata, options, callback) {
 
   // TODO: read and validate input data
 
-  return runSvgNest(inputdata, callback);
+  return runSvgNest(inputdata.svg, inputdata.bin, callback);
 };
