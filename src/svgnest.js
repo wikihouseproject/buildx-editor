@@ -108,7 +108,6 @@ function runSvgNest(svgData, binId, callback) {
   var binElement = null;
   for (var i=0; i<svg.children.length; i++) {
     var child = svg.children[i];
-    console.log('c', child.id);
     if (child.id == binId) {
       binElement = child;
     }
@@ -178,7 +177,11 @@ window.jsJobRun = function(inputdata, options, callback) {
     return callback(e);
   }
 
-  // TODO: read and validate input data
+  // TODO: validate input data
 
-  return runSvgNest(inputdata.svg, inputdata.bin, callback);
+  try {
+    return runSvgNest(inputdata.svg, inputdata.bin, callback);
+  } catch (e) {
+    return callback(e);
+  }
 };
