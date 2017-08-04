@@ -36,7 +36,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "grunt && webpack -p",
+    "build": "webpack -p",
     "test": "mocha --colors --compilers js:babel-core/register --reporter spec tests/**/*.js"
   },
   "keywords": ["wikihouse", "wren", "parametric", "3d"],
