@@ -1,0 +1,3 @@
+[submodule "SVGnest"]
+	path = SVGnest
+	url = https://github.com/wikihouseproject/SVGnest.git
