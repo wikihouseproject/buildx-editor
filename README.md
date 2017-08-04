@@ -33,7 +33,7 @@ npm run start
 │   │   └── js
 │   ├── vendor                 - JS scripts that are shared between pages
 │   │   └── js
-│   └── wren2d                 - SVG output of Wren
+│   └── wrendebug              - Debug output of Wren
 └── src
   ├── editor                   - 3D editor
   │   ├── components             - the house model
