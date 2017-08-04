@@ -5,3 +5,5 @@ node_js:
 - '6'
 before_script:
 - npm run build
+- cd dist && ../node_modules/.bin/serve --port 8080 --cors --silent &
+- cd -
