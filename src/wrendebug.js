@@ -1,49 +1,49 @@
 const Wren = require('./lib/wren')
 const { h, render, Component } = require('preact')
 
-const w = new Wren()
-
-class Input extends Component {
-  render({name, value, updateInputs}) {
-    return (
-      <div className="input">
-        <label>{name}</label>
-        <input type="text" value={value} onInput={updateInputs}></input>
-      </div>
-    )
-  }
-}
-
-class Form extends Component {
+class App extends Component {
   constructor() {
     super()
-    this.state = {
-      inputs: []
-    }
-  }
-  componentDidMount() {
-    const {ob} = this.props
-    const keys = Object.keys(ob).filter(k => typeof ob[k] === "number")
-    this.setState({inputs: keys.map(k => ([k, ob[k]]))})
+
+    const defaultDimensions = new Wren().inputs.dimensions
+    // ignore any keys that don't point to a number
+    const keys = Object.keys(defaultDimensions).filter(k => typeof defaultDimensions[k] === "number")
+    // return new object of key,value pairs
+    const defaults = keys.reduce( (obj, key) => {
+      obj[key] = defaultDimensions[key]
+      return obj
+    }, {})
+
+    this.state = defaults
   }
   updateInputs(e) {
-    console.log(e.target.value)
+    this.setState({[e.target.name]: Number(e.target.value)})
   }
-  render(props, state) {
-    return (
-      <form>
-        {state.inputs.map(([name, value]) =>
-          <Input name={name} value={value} updateInputs={this.updateInputs} />
-        )}
-      </form>
-    )
+  render(props, {inputs}) {
+    const w = new Wren({dimensions: this.state})
+    document.getElementById('svgs').innerHTML = w.toSVG()
+    document.getElementById('outputs').innerHTML = JSON.stringify(w.outputs, null, 2)
+    return (<Form inputs={this.state} updateInputs={this.updateInputs.bind(this)}/>)
   }
 }
 
+const Form = ({inputs, updateInputs}) => {
+  return (
+    <form>
+      {Object.keys(inputs).map(name =>
+        <Input name={name} value={inputs[name]} updateInputs={updateInputs} />
+      )}
+    </form>
+  )
+}
 
-document.getElementById('svgs').innerHTML = w.toSVG()
+const Input = ({name, value, updateInputs}) => {
+  return (
+    <div className="input">
+      <label>{name}</label>
+      <input type="number" name={name} value={value} onInput={updateInputs}></input>
+    </div>
+  )
+}
 
-// document.getElementById('inputs').innerHTML = JSON.stringify(w.inputs.dimensions, null, 2)
-document.getElementById('outputs').innerHTML = JSON.stringify(w.outputs, null, 2)
-
-render(<Form ob={w.inputs.dimensions} />, document.getElementById('inputs'));
+render(<App />, document.getElementById('inputs'))
