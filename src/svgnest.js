@@ -9,7 +9,13 @@ require('script-loader!../SVGnest/svgparser.js');
 require('script-loader!../SVGnest/util/parallel.js');
 require('script-loader!../SVGnest/svgnest.js');
 //require('script-loader!../SVGnest/util/filesaver.js');
-console.log("all loads done");
+
+console.log("all deps loaded");
+
+import workerCode from './svgnestworker';
+window.SvgNest.workerCode = workerCode;
+
+console.log("worker code loaded");
 
 function checkSupport() {
 	if(!document.createElementNS || !document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect){
@@ -97,6 +103,11 @@ function runSvgNest(svgData, binId, callback) {
 
   function done(err) {
     SvgNest.stop();
+
+    if (!lastResult) {
+      return callback(new Error("Timeout without result"), null, {});
+    }
+
     var results = lastResult.svglist.map(function(e) { return exportSvg(e) } );
     // TODO: verify that numplaced == number-of-parts
     var details = {
@@ -132,7 +143,7 @@ function runSvgNest(svgData, binId, callback) {
     }
 
     // TODO: handle timeout
-    var timedOut = false;
+    var timedOut = elapsedMs > 30*1000;
     if (timedOut) {
       return done(null);
     }

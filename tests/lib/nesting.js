@@ -7,7 +7,7 @@ describe('Nesting', () => {
   const pluginUrl = 'http://localhost:8080/assets/svgnest.bundle.js';
 
   describe('on svgnest example', () => {
-    const svgData = fs.readFileSync('./public/test.svg', 'utf-8');
+    const svgData = fs.readFileSync('./public/smallsimple.svg', 'utf-8');
 
     it('should output areas', function (done) { 
       this.timeout(60*1000);
@@ -28,7 +28,7 @@ describe('Nesting', () => {
           chai.expect(r).to.be.a('string');
           chai.expect(r).to.include('</svg>');
 
-          runner.stop(function(err) { });
+          runner.stop(function(err) { return done(err); });
         });
       });
     });
