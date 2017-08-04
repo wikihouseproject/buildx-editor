@@ -18,7 +18,7 @@ describe('Nesting', () => {
         if (err) return done(err)
 
         var inputData = { svg: svgData, bin: 'rect5794'};
-        var jobOptions = {};
+        var jobOptions = { maxTime: 15 };
         runner.runJob(pluginUrl, inputData, jobOptions, function(err, result, details) {
           if (err) return done(err)
 

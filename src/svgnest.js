@@ -64,7 +64,12 @@ function exportSvg(outputElement, baseSvg) {
 }
 
 
-function runSvgNest(svgData, binId, callback) {
+function runSvgNest(svgData, binId, options, callback) {
+
+  options.efficiencyTarget = options.efficiencyTarget || 1.0; // 1=unreachable=run until maxTime
+  options.maxTime = options.maxTime || 60.0; // seconds
+  options.SvgNest = options.SvgNest || {};
+
   var config = {
     spacing: 0,
     curveTolerance: 0.3,
@@ -74,14 +79,16 @@ function runSvgNest(svgData, binId, callback) {
     useHoles: false,
     exploreConcave: false,
   };
+  for (key in options.SvgNest) {
+    config[key] = options.SvgNest[key];
+  }
 
   window.SvgNest.config(config);
 
   var svg = null;
 	try {
 		svg = window.SvgNest.parsesvg(svgData);
-	}
-	catch(e){
+	} catch(e){
 		return callback(e);
 	}			
 
@@ -99,57 +106,82 @@ function runSvgNest(svgData, binId, callback) {
 
   var iterations = 0;
   var lastResult = null;
+  var lastProgress = null;
   var startTime = new Date();
 
   function done(err) {
     SvgNest.stop();
 
-    if (!lastResult) {
-      return callback(new Error("Timeout without result"), null, {});
-    }
-
-    var results = lastResult.svglist.map(function(e) { return exportSvg(e) } );
-    // TODO: verify that numplaced == number-of-parts
+    // Extra info that can be useful for debugging and/or performance monitoring
     var details = {
       efficiency: lastResult.efficiency,
-      numplaced: lastResult.numplaced,
+      placedParts: lastResult.placedParts,
+      totalParts: lastResult.totalParts,
+      placementProgress: lastProgress.placementPercent,
+      iterations: iterations,
     };
+
+    // Check the various error cases
+    if (err) {
+      return callback(err, null, details);
+    }
+    if (!lastResult) {
+      return callback(new Error("Timeout without a single placement"), null, details);
+    }
+    if (details.totalParts != details.placedParts) {
+      const placed = `${details.totalParts}/${details.totalPlaced}`;
+      return callback(new Error(`Not all parts were placed: ${placed}`), null, details); 
+    }
+
+    console.log('la', lastResult, lastProgress);
+    const results = lastResult.svglist.map(function(e) { return exportSvg(e) } );
+    if (!(results.length >= 1)) {
+      return callback(new Error("No sheets where returned from nesting"), null, details);
+    }
+
     return callback(err, results, details);
   }
 
-  function onIteration(svglist, efficiency, numplaced) {
-    console.log("Efficiency: ", efficiency);
-    console.log("Placed: ", numplaced);
+  function onIteration(svglist, efficiency, placed, total) {
+    console.log('iteration', iterations, svglist, efficiency, placed, total);
+    iterations += 1;
+
+    if (!svglist) {
+      return; // iteration did not yield new result
+    }
+
     lastResult = {
       svglist: svglist,
+      placedParts: placed,
+      totalParts: total,
       efficiency: efficiency,
-      numplaced: numplaced
     };
 
-    // TODO: wait until placed with
-    var goodResult = true;
-    if (goodResult) {
+    const goodEnough = efficiency >= options.efficiencyTarget;
+    if (goodEnough) {
       return done(null);
     }
   }
 
   var lastReport = new Date();
   function onProgress(percent) {
-    var elapsedMs = (new Date()).getTime()-startTime.getTime();
-    var sinceReport = (new Date()).getTime()-lastReport.getTime();
+    lastProgress = {
+      placementPercent: percent,
+    }
+
+    const elapsedMs = (new Date()).getTime()-startTime.getTime();
+    const sinceReport = (new Date()).getTime()-lastReport.getTime();
     if (sinceReport > 2*1000) {
       console.log("Running: ", percent, (elapsedMs/1000).toFixed(2));      
       lastReport = new Date();
     }
 
-    // TODO: handle timeout
-    var timedOut = elapsedMs > 30*1000;
+    const timedOut = elapsedMs > (options.maxTime*1000);
     if (timedOut) {
       return done(null);
     }
-  }		
+  }
 
-  console.log('starting nesting 22');
   SvgNest.start(onProgress, onIteration);
 }
 
@@ -165,7 +197,7 @@ window.jsJobRun = function(inputdata, options, callback) {
   // TODO: validate input data
 
   try {
-    return runSvgNest(inputdata.svg, inputdata.bin, callback);
+    return runSvgNest(inputdata.svg, inputdata.bin, options, callback);
   } catch (e) {
     return callback(e);
   }
