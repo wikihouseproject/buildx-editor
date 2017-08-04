@@ -1,4 +1,5 @@
 const EventEmitter = require('eventemitter3')
+require('./manipulations')
 
 const Mouse = (_window, camera, container) => {
 
@@ -26,6 +27,7 @@ const Mouse = (_window, camera, container) => {
   // renderer.domElement.addEventListener('mousewheel', mousewheel)
 
   function onMouseUp(event) {
+    orbitControls.enabled = true
     state.isDown = false
     state.activeTarget = undefined
     events.emit('up')
@@ -40,6 +42,7 @@ const Mouse = (_window, camera, container) => {
   function onMouseDown(event) {
     state.isDown = true
     if (state.target) {
+      orbitControls.enabled = false
       state.activeTarget = state.target
       state.activeTargetOffset = state.activeTarget.point.sub(state.activeTarget.object.position)
     } else {
