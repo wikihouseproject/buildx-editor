@@ -18,6 +18,8 @@ const dimensions = {
   pointDistance: 150,
   minPointsInReinforcer: 5,
 
+  cncWasteFactor: 0.30,
+
   frame: {
     width: 286,
   }
@@ -26,7 +28,9 @@ const dimensions = {
 const materials = {
   plywood: {
     depth: 18,
-    density: 510
+    density: 510,
+    width: 1220,
+    height: 2440
   },
   plasterboard: {
     thickness: 9.5,

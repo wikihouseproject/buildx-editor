@@ -1,4 +1,4 @@
-const dimensions = inputs => {
+const dimensions = (inputs, points) => {
   const d = inputs.dimensions
   const m = inputs.materials
 
@@ -8,18 +8,22 @@ const dimensions = inputs => {
   const eWidth = d.width + d.finDepth + (m.plywood.depth + m.cladding.thickness + m.cladding.horizontalBattenWidth + m.cladding.verticalBattenWidth)*2
   const eLength = d.length + d.beamWidth + (m.cladding.thickness + m.cladding.horizontalBattenWidth + m.cladding.verticalBattenWidth)*2
 
+  const eHeight = d.roofApexHeight + d.finDepth + ((m.plywood.depth + m.cladding.thickness + m.cladding.horizontalBattenWidth + m.cladding.verticalBattenWidth) * 2)
+
   return {
     internal: {
       width: iWidth,
       length: iLength,
-      leftRoofLength: 1,
-      rightRoofLength: 1,
+      // height: 10,
+      // leftRoofLength: 1,
+      // rightRoofLength: 1,
     },
     external: {
       width: eWidth,
       length: eLength,
-      leftRoofLength: 1,
-      rightRoofLength: 1,
+      height: eHeight,//points.outer.BR[1],
+      // leftRoofLength: 1,
+      // rightRoofLength: 1,
     }
   }
 }

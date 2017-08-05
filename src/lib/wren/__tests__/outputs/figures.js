@@ -6,48 +6,48 @@ const _areas = require('../../outputs/figures/areas')
 const _volumes = require('../../outputs/figures/volumes')
 const _estimates = require('../../outputs/figures/estimates')
 
-const dimensions = _dimensions(defaults)
+const dimensions = _dimensions(defaults, points)
+const areas = _areas(defaults, dimensions, points, 'm2')
 
 describe('dimensions', () => {
   it('outputs dimensions in mm', () => {
-    const { internal, external } = dimensions;
-    expect(internal.width).toEqual(3553)
-    expect(external.width).toEqual(4486)
-    expect(internal.length).toEqual(10604)
-    expect(external.length).toEqual(11250)
+    expect(dimensions).toEqual({
+      internal: {
+        width: 3553,
+        length: 10604
+      },
+      external: {
+        width: 4486,
+        length: 11250,
+        height: 4486
+      }
+    })
   });
 })
 
 describe('areas', () => {
-  const { internal, external } = _areas(defaults, dimensions, points, 'm2')
   it('calculates areas in m²', () => {
-    //   Footprint Area
-    expect(external.footprint).toEqual(50.4675)
-
-    //   Ext Surface Area
-    // expect(external.surface).toEqual(185.44)
-
-    //   Int Floor Area
-    expect(internal.floor).toEqual(37.676012) // 75.34
-
-    //   Int Wall Area
-    expect(internal.walls).toEqual(72.18142209335001) // 88.89
-
-    //   Int Roof Area
-    expect(internal.roof).toEqual(48.830972218051116) // 49.24
-
-    //   Area of Openings
-    // expect(openings.total).toEqual(14.66)
-
-    //   End wall area
-    expect(internal.endWall).toEqual(10.641111046675002) // 10.41
-    // expect(internal.materials.plasterboard).toEqual(80988)
-    // expect(internal.materials.cladding).toEqual(83991)
-    // expect(materials.wallCladding).toEqual(1466)
+    expect(areas).toEqual({
+      internal: {
+        floor: 37.676012, // 75.34
+        walls: 72.18142209335001, // 88.89
+        roof: 48.830972218051116, // 49.24
+        endWall: 10.641111046675002, // 10.41
+        // ceilingHeight: x (if more than 1 storey)
+      },
+      external: {
+        footprint: 50.4675,
+        endWall: 14.046202506499998
+        // surface: 185.44,
+      }
+    })
   });
-  // external.footprint
-
-  // building
+  // openings: {
+  //   total: 14.66
+  // }
+  // expect(internal.materials.plasterboard).toEqual(80988)
+  // expect(internal.materials.cladding).toEqual(83991)
+  // expect(materials.wallCladding).toEqual(1466)
 
   // materials
   //   Internal lining - Plasterboard
@@ -60,19 +60,32 @@ describe('areas', () => {
 
 describe('volumes', () => {
   const areas = _areas(defaults, dimensions, points)
-  // console.log(areas)
-  const { internal, external } = _volumes(defaults, dimensions, points, areas, 'm3')
-  describe('internal volumes', () => {
-    it('outputs volumes in mm³', () => {
-      // expect(internal.insulation).toEqual(42.090)
-      expect(internal.total).toEqual(112.83834153894173)
-      expect(internal.endWall).toEqual(2.660277761668751)
-    });
-  })
+  const volumes = _volumes(defaults, dimensions, points, areas, 'm3')
+
+  it('calculates volumes in m³', () => {
+    expect(volumes).toEqual({
+      internal: {
+        total: 112.83834153894173,
+        endWall: 2.660277761668751,
+        insulation: 6.1718283882937515,
+      },
+      external: {
+        total: 158.01977819812498,
+        endWall: 3.5115506266249996
+      },
+      materials: {
+        singleSheet: 0.0535824
+      }
+    })
+  });
 })
 
-// // describe('estimates', () => {
-// //   it('estimates number of sheets required', () => {
-// //     expect(estimates.sheets).toEqual(200)
-// //   });
-// // })
+describe('estimates', () => {
+  const areas = _areas(defaults, dimensions, points)
+  const volumes = _volumes(defaults, dimensions, points, areas)
+  const estimates = _estimates(defaults, volumes)
+  // const estimates
+  it('estimates number of sheets required', () => {
+    expect(estimates.sheets).toEqual(200)
+  });
+})
