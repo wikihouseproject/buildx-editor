@@ -4,17 +4,28 @@ import Mouse from './ui/controls/mouse'
 import HUD from './ui/controls/hud'
 // import Sidebar from './ui/controls/sidebar'
 import House from './components/house'
-import Wren from "../lib/wren"
 import { merge } from "lodash"
+import Wren from "../lib/wren"
+import WrenWorker from "worker-loader!../lib/wren/worker"
 
-let wren = Wren({dimensions})
+const CONFIG = {
+  WEBWORKERS: true
+}
+
+// --------
+
+const USING_WEBWORKERS = (window.Worker && CONFIG.WEBWORKERS)
+
+var wrenWorker = (USING_WEBWORKERS) ? new WrenWorker : null
+
 let dimensions = Wren().inputs.dimensions
-
 const changeDimensions = house => newDimensions => {
-  // console.log(newDimensions)
   dimensions = merge(dimensions, newDimensions)
-  wren = Wren({dimensions})
-  house.update(wren.outputs.pieces)
+  if (USING_WEBWORKERS) {
+    wrenWorker.postMessage({dimensions})
+  } else {
+    house.update(Wren({dimensions}).outputs.pieces)
+  }
 }
 
 let currentAction = "RESIZE"
@@ -33,13 +44,7 @@ loader.load('img/materials/plywood/birch.jpg',
     texture.wrapT = THREE.RepeatWrapping;
     window.plyMaterial = new THREE.MeshBasicMaterial({map: texture, overdraw: 0.5});
 
-    const house = House(wren.outputs.pieces)
-    scene.add(ground(10,10))
-    scene.add(house.output)
-
-    const hud = HUD(wren.inputs.dimensions, changeDimensions(house))
-
-    requestAnimationFrame(render)
+    prerender()
   },
   function(xhr) {
     console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
@@ -48,6 +53,22 @@ loader.load('img/materials/plywood/birch.jpg',
     console.error('An error occurred');
   }
 )
+
+function prerender() {
+  let initialPieces = Wren({dimensions}).outputs.pieces
+  const house = House(initialPieces)
+
+  if (USING_WEBWORKERS) {
+    wrenWorker.onmessage = event => house.update(event.data.pieces)
+  }
+
+  const hud = HUD(dimensions, changeDimensions(house))
+
+  scene.add(ground(10,10))
+  scene.add(house.output)
+
+  requestAnimationFrame(render)
+}
 
 function render() {
   stats.begin()
