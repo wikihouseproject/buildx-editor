@@ -6,7 +6,7 @@ import HUD from './ui/controls/hud'
 import House from './components/house'
 import { merge } from "lodash"
 import Wren from "../lib/wren"
-import WrenWorker from "worker-loader!../lib/wren/worker"
+import WrenWorker from "worker-loader?inline!../lib/wren/worker"
 
 const CONFIG = {
   WEBWORKERS: true
