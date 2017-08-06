@@ -18,7 +18,7 @@ const pieces = (points, inputs) => {
     sides: {
       leftInnerWall: s(
         [points.inner.TL, points.inner.BL],
-        { x: points.inner.BL[0]/1000 - halfWidth, y: plyThickness },
+        { x: points.inner.BL[0]/1000 - halfWidth, y: (points.outer.BR[1] - points.inner.BR[1])/1000 },
         { y: Math.PI/2 }
       ),
       leftOuterWall: s(
@@ -28,7 +28,7 @@ const pieces = (points, inputs) => {
       ),
       rightInnerWall: s(
         [points.inner.TR, points.inner.BR],
-        { x: points.inner.BR[0]/1000 - halfWidth, y: plyThickness },
+        { x: points.inner.BR[0]/1000 - halfWidth, y: (points.outer.BR[1] - points.inner.BR[1])/1000 },
         { y: Math.PI/2 }
       ),
       rightOuterWall: s(
@@ -38,7 +38,7 @@ const pieces = (points, inputs) => {
       ),
       leftInnerRoof: s(
         [points.inner.TL, points.inner.T],
-        { x: points.inner.TL[0]/1000 - halfWidth, y: (points.inner.BL[1]-points.inner.TL[1])/1000 + plyThickness*2 },
+        { x: points.inner.TL[0]/1000 - halfWidth, y: (points.outer.BR[1] - points.inner.BR[1])/1000 + (points.inner.BL[1]-points.inner.TL[1])/1000 },
         { y: Math.PI/2, z: Math.PI }
       ),
       leftOuterRoof: s(
@@ -48,7 +48,7 @@ const pieces = (points, inputs) => {
       ),
       rightInnerRoof: s(
         [points.inner.TR, points.inner.T],
-        { x: points.inner.TR[0]/1000 - halfWidth, y: (points.inner.BR[1]-points.inner.TR[1])/1000 + plyThickness*2, z: -bayLength },
+        { x: points.inner.TR[0]/1000 - halfWidth, y: (points.outer.BR[1] - points.inner.BR[1])/1000 + (points.inner.BR[1]-points.inner.TR[1])/1000, z: -bayLength },
         { y: -Math.PI/2, z: Math.PI }
       ),
       rightOuterRoof: s(
@@ -57,8 +57,8 @@ const pieces = (points, inputs) => {
         { y: -Math.PI/2, z: Math.PI }
       ),
       floor: s(
-        [points.outer.BL,points.outer.BR],
-        { x: points.outer.BR[0]/1000 - halfWidth },
+        [points.inner.BL,points.inner.BR],
+        { x: points.inner.BR[0]/1000 - halfWidth, y: (points.outer.BR[1] - points.inner.BR[1])/1000 },
         { y: Math.PI/2 }
       ),
     }

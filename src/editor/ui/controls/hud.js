@@ -9,7 +9,7 @@ const HUD = (dimensions, changeDimensionsFn) => {
 
   addControl('width', 1000, 5000, 1)
   addControl('roofApexHeight', 2000, 5000, 1)
-  addControl('roofApexOffset', -1000, 1000, 1)
+  addControl('roofApexOffset', -3000, 3000, 1)
   addControl('leftWallHeight', 1000, 5500, 1)
   addControl('rightWallHeight', 1000, 5500, 1)
 }

@@ -52,6 +52,7 @@ loader.load('img/materials/plywood/birch.jpg',
 function render() {
   stats.begin()
   renderer.render(scene, camera)
+  mouse.orbitControls.update() // needed because of damping
   // clippingPlane.position.y -= 0.01
   stats.end()
   rendererStats.update(renderer)

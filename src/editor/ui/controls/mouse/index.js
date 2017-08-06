@@ -21,8 +21,9 @@ const Mouse = (_window, camera, container) => {
   orbitControls.minDistance = 1;
   orbitControls.maxDistance = 30;
   orbitControls.maxPolarAngle = Math.PI/2.1
-  // orbitControls.enableDamping = true;
-  // orbitControls.dampingFactor = 0.125;
+  orbitControls.enableDamping = true;
+  orbitControls.dampingFactor = 0.1;
+  orbitControls.rotateSpeed = 0.2;
   // orbitControls.enableZoom = false
   // renderer.domElement.addEventListener('mousewheel', mousewheel)
 
