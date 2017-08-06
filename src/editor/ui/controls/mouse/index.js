@@ -28,6 +28,8 @@ const Mouse = (_window, camera, container) => {
   // renderer.domElement.addEventListener('mousewheel', mousewheel)
 
   function onMouseUp(event) {
+    setCursor('ROTATE_UP')
+
     orbitControls.enabled = true
     state.isDown = false
     state.activeTarget = undefined
@@ -41,6 +43,8 @@ const Mouse = (_window, camera, container) => {
   }
 
   function onMouseDown(event) {
+    setCursor('ROTATE_DOWN')
+
     state.isDown = true
     if (state.target) {
       orbitControls.enabled = false
@@ -75,17 +79,25 @@ const Mouse = (_window, camera, container) => {
   const setCursor = type => {
     let cursor;
     switch(type) {
+      case 'ROTATE_UP':
+        cursor = 'grab'
+        break
+      case 'ROTATE_DOWN':
+        cursor = 'grabbing'
+        break
       case 'GRAB':
-        cursor = '-webkit-grab'
+        cursor = 'grab'
         break
       case 'GRABBING':
-        cursor = '-webkit-grabbing'
+        cursor = 'grabbing'
         break
       default:
         cursor = 'default'
     }
-    container.style.cursor = cursor
+    container.dataset.cursor = cursor
   }
+
+  setCursor('ROTATE_UP')
 
   return {
     state,
