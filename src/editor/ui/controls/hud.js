@@ -12,6 +12,8 @@ const HUD = (dimensions, changeDimensionsFn) => {
   addControl('roofApexOffset', -3000, 3000, 1)
   addControl('leftWallHeight', 1000, 5500, 1)
   addControl('rightWallHeight', 1000, 5500, 1)
+
+  addControl('bays', 3, 15, 1)
 }
 
 module.exports = HUD
