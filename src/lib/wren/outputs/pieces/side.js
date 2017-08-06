@@ -12,22 +12,21 @@ const THREE = require('three')
 const { unit } = require('mathjs')
 
 const side = (params, _unit='mm') => ([start, end], pos={ x: 0, y: 0, z: 0 }, rotationOverrides={}) => {
+
   const length = Point.distance(start, end)
   const angle = Point.angle(start, end)
 
-  const rot = { x: 0, y: 0, z: 0, order: 'ZYX' }
-  const newRot = merge(rot, rotationOverrides)
-
-  // const newRot = {
-  //   x: rot.x + rotationOverrides.x,
-  //   y: rot.y + rotationOverrides.y,
-  //   z: rot.y + rotationOverrides.z,
-  //   order: rot.order
-  // }
+  const rot = { x: 0, y: 0, z: Math.PI/2 - angle, order: 'ZYX' }
+  let newRot = {
+    x: rotationOverrides.x || rot.x,
+    y: rotationOverrides.y || rot.y,
+    z: rotationOverrides.z ? rot.z + rotationOverrides.z : rot.z,
+    order: rot.order
+  }
 
   const startPosition = new THREE.Vector3(pos.x,pos.y,pos.z)
 
-  const euler = new THREE.Euler(rot.x, rot.y, rot.z, rot.order)
+  const euler = new THREE.Euler(newRot.x, newRot.y, newRot.z, newRot.order)
   const direction = startPosition.clone().applyEuler(euler).normalize()
 
   const pieceLengths = WrenHelpers.pieces(length, params.materials.plywood.maxHeight)

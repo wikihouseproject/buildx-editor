@@ -5,9 +5,17 @@ import HUD from './ui/controls/hud'
 // import Sidebar from './ui/controls/sidebar'
 import House from './components/house'
 import Wren from "../lib/wren"
+import { merge } from "lodash"
 
-const wren = Wren()
-const hud = HUD(wren)
+let wren = Wren({dimensions})
+let dimensions = Wren().inputs.dimensions
+
+const changeDimensions = house => newDimensions => {
+  // console.log(newDimensions)
+  dimensions = merge(dimensions, newDimensions)
+  wren = Wren({dimensions})
+  house.update(wren.outputs.pieces)
+}
 
 let currentAction = "RESIZE"
 
@@ -28,6 +36,9 @@ loader.load('img/materials/plywood/birch.jpg',
     const house = House(wren.outputs.pieces)
     scene.add(ground(10,10))
     scene.add(house.output)
+
+    const hud = HUD(wren.inputs.dimensions, changeDimensions(house))
+
     requestAnimationFrame(render)
   },
   function(xhr) {
