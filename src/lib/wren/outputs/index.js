@@ -11,7 +11,7 @@ const SVG = require('./formats/svg')
 const outputs = inputs => {
   const points = _points(inputs.dimensions)
   const dimensions = _dimensions(inputs, points)
-  const pieces = _pieces(points, dimensions)
+  const pieces = _pieces(points, inputs)
   const areas = _areas(inputs, dimensions, points)
   const volumes = _volumes(inputs, dimensions, points, areas)
   return {

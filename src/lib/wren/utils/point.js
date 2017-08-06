@@ -43,10 +43,10 @@ const midpoint = percentageOnLine(0.5)
 //   return amounts
 // }
 
-// const angle = ([startX, startY], [endX, endY]) => {
-//   const [x,y] = _getXY(startX,startY,endX,endY)
-//   return Math.atan2(y,x)
-// }
+const angle = ([startX, startY], [endX, endY]) => {
+  const [x,y] = _getXY(startX,startY,endX,endY)
+  return Math.atan2(y,x)
+}
 
 // const movePointOnAngle = ([x,y], angle, delta) => [x + (Math.sin(angle) * delta), y - (Math.cos(angle) * delta)]
 
@@ -80,7 +80,7 @@ const getBounds = (coords) => {
 }
 
 module.exports = {
-  // angle,
+  angle,
   // split,
   distance,
   pointOnLine,

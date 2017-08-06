@@ -38,6 +38,8 @@
     "jest": "^20.0.4",
     "noflo-runtime-iframe": "^0.8.0",
     "regenerator-runtime": "^0.10.5",
+    "sazerac": "^0.4.1",
+    "three": "^0.86.0",
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.5.1"
   },

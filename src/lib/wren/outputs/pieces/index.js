@@ -1,26 +1,18 @@
 const side = require('./side')
 const fin = require('./fin')
 
-// const r = _roof(points)
+const pieces = (points, inputs) => {
+  const s = side(inputs)
 
-const pieces = (points, dimensions) => {
   return {
     fins: [
       fin(points)
     ],
     sides: {
-      leftWall: side({
-        width: dimensions.bayLength,
-        height: dimensions.leftWallHeight
-      }),
-      rightWall: side({
-        width: dimensions.bayLength,
-        height: dimensions.leftWallHeight
-      }),
-      floor: side({
-        width: dimensions.bayLength,
-        height: dimensions.internal.width
-      })
+      leftWall: s([points.outer.TL,points.outer.BL]),
+      rightWall: s([points.outer.TR,points.outer.BR]),
+      floor: s([points.outer.BL,points.outer.BR])
+      // floor: side(points, [])
     }
   }
 }

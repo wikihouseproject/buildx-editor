@@ -5,32 +5,45 @@
  * @return {Array} side
  */
 
-// s = finShape(params)
-// roofComponent(s, params, s.inner, s.sides.rightRoof, {y: params.height - s.inner[0][1]/100 + params.frameWidth/2 }),
-// const roofComponent = (params, arr, [from,to], position={}, rotation={}) => {
-//   const roofLength = Math.min(math.distance(arr[from], arr[to]), params.sheetLength*100)
-//   const roofAngle = Math.atan2(params.width/2, (params.height-params.wallHeight))
-//   const rotation = { z: Math.PI/2, x: -Math.PI/2, y: roofAngle-Math.PI/2 }
-//   const points = [
-//     [0,roofLength],
-//     [params.bayLength*100,roofLength],
-//     [params.bayLength*100,0],
-//     [0,0]
-//   ]
-//   return [points, position, rotation]
-// }
+const Point = require('../../utils/point')
+const WrenHelpers = require('../../utils/wrenhelpers')
+const { merge } = require('lodash')
+const THREE = require('three')
 
+const side = params => ([start, end], positionOverrides={}, rotationOverrides={}) => {
+  const length = Point.distance(start, end)
+  const angle = Point.angle(start, end)
 
-const side = ({height, width}) => {
-  const pos = { x: 0, y: 0, z: 0 }
-  const rot = { x: 0, y: 0, z: 0 }
-  const pts = [
-    [0, height],
-    [width, height],
-    [width, 0],
-    [0, 0]
-  ]
-  return {pts, pos, rot}
+  const defaultPosition = { x: 0, y: 0, z: 0 }
+  const defaultRotation = { x: 0, y: 0, z: 0, order: 'XYZ' }
+
+  const rot = merge(defaultRotation, rotationOverrides)
+  const pos = merge(defaultPosition, positionOverrides)
+
+  const startPosition = new THREE.Vector3(pos.x,pos.y,pos.z)
+
+  const euler = new THREE.Euler(rot.x, rot.y, rot.z, rot.order)
+  const direction = startPosition.clone().applyEuler(euler).normalize()
+
+  const pieceLengths = WrenHelpers.pieces(length, params.materials.plywood.maxHeight)
+
+  let allPieces = []
+  for (let i = 0; i < pieceLengths.length; i++) {
+    const pieceLength = pieceLengths[i]
+    const pts = [
+      [0, pieceLength],
+      [params.dimensions.bayLength, pieceLength],
+      [params.dimensions.bayLength, 0],
+      [0, 0]
+    ]
+    let newPos = startPosition.clone().add(
+      new THREE.Vector3(0,params.materials.plywood.maxHeight*i,0).applyEuler(euler)
+    )
+    allPieces.push({ pts, pos, rot })
+  }
+  return allPieces
 }
 
 module.exports = side
+
+

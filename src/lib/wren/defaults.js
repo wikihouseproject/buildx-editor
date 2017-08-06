@@ -30,7 +30,9 @@ const materials = {
     depth: 18,
     density: 510,
     width: 1220,
-    height: 2440
+    height: 2440,
+    maxWidth: 1200,
+    maxHeight: 2400
   },
   plasterboard: {
     thickness: 9.5,
