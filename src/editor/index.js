@@ -1,9 +1,13 @@
 import { renderer, container, scene, camera, stats, rendererStats, updateClippingPlane } from "./ui/scene"
 import { ground } from "./components"
 import Mouse from './ui/controls/mouse'
+import HUD from './ui/controls/hud'
 // import Sidebar from './ui/controls/sidebar'
 import House from './components/house'
 import Wren from "../lib/wren"
+
+const wren = Wren()
+const hud = HUD(wren)
 
 let currentAction = "RESIZE"
 
@@ -14,21 +18,17 @@ const groundPlane = new THREE.Plane([0,1,0])
 
 const mouse = Mouse(window, camera, renderer.domElement)
 
-scene.add(ground(20,20))
-
-// const house = House(wren)
-
 var loader = new THREE.TextureLoader();
 loader.load('img/materials/plywood/birch.jpg',
   function(texture) {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     window.plyMaterial = new THREE.MeshBasicMaterial({map: texture, overdraw: 0.5});
-    // // console.log(window.plyMaterial)
-    // // console.log(house)
-    // house.redraw()
-    // scene.add(house.house)
-    // requestAnimationFrame(render)
+
+    const house = House(wren.outputs.pieces)
+    scene.add(ground(10,10))
+    scene.add(house.output)
+    requestAnimationFrame(render)
   },
   function(xhr) {
     console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
@@ -47,4 +47,4 @@ function render() {
   requestAnimationFrame(render)
 }
 
-requestAnimationFrame(render)
+// requestAnimationFrame(render)

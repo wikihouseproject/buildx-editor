@@ -18,7 +18,7 @@ const Mouse = (_window, camera, container) => {
   container.addEventListener('mouseup', onMouseUp)
 
   const orbitControls = new THREE.OrbitControls(camera, container)
-  orbitControls.minDistance = 10;
+  orbitControls.minDistance = 1;
   orbitControls.maxDistance = 30;
   orbitControls.maxPolarAngle = Math.PI/2.1
   // orbitControls.enableDamping = true;
