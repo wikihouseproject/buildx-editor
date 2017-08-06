@@ -1,6 +1,12 @@
 {
   "name": "buildx-editor",
   "description": "A 3D editor for designing a WikiHouse using the WREN building engine",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "grunt && cp -R public dist && webpack -p",
+    "deploy": "npm run build && ghpages -p dist && rm -rf dist",
+    "test": "jest"
+  },
   "bugs": {
     "url": "https://github.com/wikihouseproject/buildx-editor/issues"
   },
@@ -43,12 +49,6 @@
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.5.1",
     "worker-loader": "^0.8.1"
-  },
-  "scripts": {
-    "start": "webpack-dev-server",
-    "build": "grunt && cp -R public dist && webpack -p",
-    "deploy": "npm run build && ghpages -p dist && rm -rf dist",
-    "test": "jest"
   },
   "keywords": [
     "wikihouse",

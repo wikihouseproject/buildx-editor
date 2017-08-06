@@ -23,7 +23,7 @@ const outputs = inputs => {
     },
     formats: {
       csv: null,
-      svg: () => pieces.fins[0].map(SVG.drawSVG).join("\n")
+      svg: () => pieces.bays[0].fins[0].map(SVG.drawSVG).join("\n")
     },
     pieces,
     points
