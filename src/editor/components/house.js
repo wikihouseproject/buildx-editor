@@ -28,21 +28,19 @@ const House = pieces => {
   const addFramePiece = _add(house, 0.250)
 
   const draw = pieces => {
-    pieces.bays.map(bay => {
-      bay.sides.leftInnerWall.map( addBayPiece )
-      bay.sides.leftOuterWall.map( addBayPiece )
-      bay.sides.rightInnerWall.map( addBayPiece )
-      bay.sides.rightOuterWall.map( addBayPiece )
-      bay.sides.floor.map( addBayPiece )
-      bay.sides.leftInnerRoof.map( addBayPiece )
-      bay.sides.leftOuterRoof.map( addBayPiece )
-      bay.sides.rightInnerRoof.map( addBayPiece )
-      bay.sides.rightOuterRoof.map( addBayPiece )
-    })
-
-    pieces.frames.map(frame => {
-      frame.fins.map( addFramePiece )
-    })
+    const positions = ['inner', 'outer']
+    for (const bay of pieces.bays) {
+      for (const position of positions) {
+        bay.sides[position].leftWall.map( addBayPiece )
+        bay.sides[position].rightWall.map( addBayPiece )
+        bay.sides[position].floor.map( addBayPiece )
+        bay.sides[position].leftRoof.map( addBayPiece )
+        bay.sides[position].rightRoof.map( addBayPiece )
+      }
+    }
+    for (const frame of pieces.frames) {
+      frame.fins[0].map( addFramePiece )
+    }
   }
 
   const update = pieces => {

@@ -1,4 +1,4 @@
-const fin = require('../../../outputs/pieces/fin')
+const fin = require('../../../outputs/pieces/frame/fin')
 const Wren = require('../../../index')
 const wren = Wren({
   dimensions: {

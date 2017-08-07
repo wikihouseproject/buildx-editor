@@ -1,15 +1,42 @@
-describe.skip('pieces', () => {
+const Wren = require('../../../index')
+
+const sortedKeys = ob => Object.keys(ob).sort()
+
+describe('pieces', () => {
   const wren = Wren();
-  it('generates fin pieces', () => {
-    expect(wren.outputs.pieces.fins).toBeInstanceOf(Array)
+
+  it('generates frame pieces', () => {
+    expect(sortedKeys(wren.outputs.pieces.frames[0])).toEqual([
+      'fins',
+      'reinforcers',
+      'skis',
+      'spacers'
+    ])
   })
-  it('generates side pieces', () => {
-    expect(wren.outputs.pieces.fins).toBeInstanceOf(Array)
+
+  describe('bays', () => {
+
+    it('generates bay pieces', () => {
+      expect(sortedKeys(wren.outputs.pieces.bays[0])).toEqual([
+        'connectors',
+        'sides',
+        'skis',
+        'underboards'
+      ])
+    })
+
+    const positions = ['inner', 'outer']
+    for (const position of positions) {
+      it(`generates side.${position} pieces`, () => {
+        expect(sortedKeys(wren.outputs.pieces.bays[0].sides[position])).toEqual([
+          'floor',
+          'leftRoof',
+          'leftWall',
+          'rightRoof',
+          'rightWall'
+        ])
+      })
+    }
+
   })
-  // console.log(SVG.svg([SVG.g(Object.values(wren.outputs.pieces.sides).map(SVG.path))]))
-  // console.log(wren.outputs.pieces.fins.map(SVG.path))
-  // console.log(SVG.svg([SVG.g(Object.values(wren.outputs.pieces.fins[0]).map(SVG.path))]))
-  const finPoints = Object.values(wren.outputs.pieces.fins[0])
-  // console.log(SVG.drawSVG(finPoints))
-  // console.log(finPoints)
 })

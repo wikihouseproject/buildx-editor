@@ -5,8 +5,8 @@
  * @return {Array} side
  */
 
-const Point = require('../../utils/point')
-const WrenHelpers = require('../../utils/wrenhelpers')
+const Point = require('../../../utils/point')
+const WrenHelpers = require('../../../utils/wrenhelpers')
 const { merge } = require('lodash')
 const THREE = require('three')
 const { unit } = require('mathjs')

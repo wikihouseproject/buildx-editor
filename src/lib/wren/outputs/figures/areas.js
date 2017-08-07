@@ -1,6 +1,6 @@
 const Clipper = require('../../utils/clipper')
 const Point = require('../../utils/point')
-const roof = require('../../outputs/pieces/side')
+const roof = require('../../outputs/pieces/bay/side')
 const O = require('../../utils/object')
 
 const { unit } = require('mathjs')

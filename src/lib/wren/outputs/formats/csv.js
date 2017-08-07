@@ -1,3 +1,5 @@
+// CURRENTLY NOT BEING USED
+
 const defaultParameterOrder = ['footprintArea', 'floorArea'];
 
 function orderKeys(keys, order) {

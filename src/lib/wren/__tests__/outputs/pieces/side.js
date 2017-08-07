@@ -1,6 +1,6 @@
 const defaults = require('../../../defaults')
 // const points = require('../../../outputs/points')(defaults.dimensions)
-const side = require('../../../outputs/pieces/side')
+const side = require('../../../outputs/pieces/bay/side')
 
 it('generates a side', () => {
 
