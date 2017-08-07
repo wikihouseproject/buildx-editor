@@ -20,10 +20,10 @@ A javascript-based interpretation of [Wren](https://github.com/wikihouseproject/
 `bay.skis` | lateral ski | ...
 `bay.inner.floor` | ... | floorboards inside the building
 `bay.outer.floor` | underboard | lie beneath the frame (NOTE: maybe change to underboard)
-`bay.inner.(left|right)Roof` | ceiling | the inside roof
-`bay.outer.(left|right)Wall` | external sheathing | the outer walls
-`bay.outer.(left|right)Roof` | external sheathing | the outer roof
-`bay.inner.(left|right)Roof` | internal sheathing | the inner walls
+`bay.inner.(left-right)Roof` | ceiling | the inside roof
+`bay.outer.(left-right)Wall` | external sheathing | the outer walls
+`bay.outer.(left-right)Roof` | external sheathing | the outer roof
+`bay.inner.(left-right)Roof` | internal sheathing | the inner walls
 
 ## Usage
 
