@@ -1,7 +1,6 @@
 const side = require('./side')
-const fin = require('./fin')
 
-const bay = (points, inputs, index=0) => {
+const Bay = (points, inputs, index=0) => {
 
   const s = side(inputs, 'm')
   const halfWidth = ((points.outer.BR[0] - points.outer.BL[0])/2)/1000
@@ -10,9 +9,6 @@ const bay = (points, inputs, index=0) => {
   const bayZ = (bayLength * index) - (bayLength * inputs.dimensions.bays)/2
 
   return {
-    fins: [
-      fin(points)
-    ],
     sides: {
       leftInnerWall: s(
         [points.inner.TL, points.inner.BL],
@@ -63,4 +59,4 @@ const bay = (points, inputs, index=0) => {
   }
 }
 
-module.exports = bay
+module.exports = Bay

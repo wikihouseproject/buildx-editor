@@ -1,8 +1,8 @@
 import { makePiece } from "./index"
 import { removeDescendants } from "../utils"
 
-const _add = parent => side => {
-  const piece = makePiece(side.pts, 0.018)
+const _add = (parent, thickness) => side => {
+  const piece = makePiece(side.pts, thickness)
   piece.position.copy(side.pos)
   piece.rotation.x = side.rot.x
   piece.rotation.y = side.rot.y
@@ -24,19 +24,24 @@ const _add = parent => side => {
 
 const House = pieces => {
   const house = new THREE.Object3D()
-  const addPiece = _add(house)
+  const addBayPiece = _add(house, 0.018)
+  const addFramePiece = _add(house, 0.250)
 
   const draw = pieces => {
     pieces.bays.map(bay => {
-      bay.sides.leftInnerWall.map( _add(house) )
-      bay.sides.leftOuterWall.map( _add(house) )
-      bay.sides.rightInnerWall.map( _add(house) )
-      bay.sides.rightOuterWall.map( _add(house) )
-      bay.sides.floor.map( _add(house) )
-      bay.sides.leftInnerRoof.map( _add(house) )
-      bay.sides.leftOuterRoof.map( _add(house) )
-      bay.sides.rightInnerRoof.map( _add(house) )
-      bay.sides.rightOuterRoof.map( _add(house) )
+      bay.sides.leftInnerWall.map( addBayPiece )
+      bay.sides.leftOuterWall.map( addBayPiece )
+      bay.sides.rightInnerWall.map( addBayPiece )
+      bay.sides.rightOuterWall.map( addBayPiece )
+      bay.sides.floor.map( addBayPiece )
+      bay.sides.leftInnerRoof.map( addBayPiece )
+      bay.sides.leftOuterRoof.map( addBayPiece )
+      bay.sides.rightInnerRoof.map( addBayPiece )
+      bay.sides.rightOuterRoof.map( addBayPiece )
+    })
+
+    pieces.frames.map(frame => {
+      frame.fins.map( addFramePiece )
     })
   }
 
