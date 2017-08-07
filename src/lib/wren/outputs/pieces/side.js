@@ -48,7 +48,7 @@ const side = (params, _unit='mm') => ([start, end], pos={ x: 0, y: 0, z: 0 }, ro
         0
       ).applyEuler(euler)
     )
-    allPieces.push({ pts, pos: newPos, rot: newRot })
+    allPieces.push({ pts, pos: {x: newPos.x, y: newPos.y, z: newPos.z}, rot: newRot })
   }
   return allPieces
 }
