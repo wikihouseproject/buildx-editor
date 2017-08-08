@@ -1,8 +1,4 @@
-// duplicate (jest) version of this file in __tests__/SVGnest/index.js
-
-import chai from 'chai';
 import jsjob from 'jsjob';
-
 import fs from 'fs';
 
 describe('Nesting', () => {
@@ -11,8 +7,15 @@ describe('Nesting', () => {
   describe('on svgnest example', () => {
     const svgData = fs.readFileSync('./public/svgnest/smallsimple.svg', 'utf-8');
 
+    let originalInterval = 0;
+
+    beforeEach(() => {
+      originalInterval = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = 60*1000;
+    });
+
     it('should output areas', function (done) {
-      this.timeout(60*1000);
+      // this.timeout(60*1000);
 
       var options = {};
       var runner = new jsjob.Runner(options);
@@ -24,15 +27,19 @@ describe('Nesting', () => {
         runner.runJob(pluginUrl, inputData, jobOptions, function(err, result, details) {
           if (err) return done(err)
 
-          chai.expect(result).to.be.an('array');
-          chai.expect(result).to.have.length(1);
+          expect(result).toBeInstanceOf(Array);
+          expect(result).toHaveLength(1);
           const r = result[0];
-          chai.expect(r).to.be.a('string');
-          chai.expect(r).to.include('</svg>');
+          expect(r).toMatch('</svg>');
 
           runner.stop(function(err) { return done(err); });
         });
       });
     });
+
+    afterEach(() => {
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = originalInterval;
+    });
+
   });
 });

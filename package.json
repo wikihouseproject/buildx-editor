@@ -5,7 +5,7 @@
     "start": "webpack-dev-server",
     "build": "webpack -p",
     "deploy": "npm run build && ghpages -p dist && rm -rf dist",
-    "test": "mocha --colors --compilers js:babel-core/register --reporter spec tests/**/*.js && jest"
+    "test": "jest"
   },
   "bugs": {
     "url": "https://github.com/wikihouseproject/buildx-editor/issues"
@@ -41,6 +41,7 @@
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "chai": "^4.1.1",
+    "coffee-script": "^1.12.7",
     "ghpages": "^0.0.10",
     "grunt": "^1.0.1",
     "grunt-noflo-browser": "^1.2.0",
@@ -63,6 +64,12 @@
   ],
   "license": "MIT",
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleFileExtensions": [
+      "js",
+      "coffee"
+    ],
+    "transformIgnorePatterns": [ ],
+    "transform": {".*": "./jest-preprocessor.js"}
   }
 }
