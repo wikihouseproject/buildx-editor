@@ -102,9 +102,7 @@ const outputs = inputs => {
           return part
         }
         const svgPart = (part) => {
-          var path = SVG.path(part.geometry.pts)
-          path = path.replace('<path', `<path id=${part.id}`) // XXX: crack. Should operate on vdom elements or pass in attributes
-          return path
+          return SVG.path(part.geometry.pts, { id: part.id })
         }
 
         // TODO: check that no parts are too big to be produced

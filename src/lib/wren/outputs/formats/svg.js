@@ -21,8 +21,16 @@ function svg(elements, attributes) {
 
 const g = elements => `<g>${elements.join("")}</g>`
 
-const path = points =>
-    `<path d="${_makeClosedPathFromPoints(points)}"></path>`
+const path = (points, attributes={}) => {
+  var str = `<path d="${_makeClosedPathFromPoints(points)}"`
+
+  for (var key in attributes) {
+    var val = attributes[key].toString()
+    str += `${key}="${val}"`
+  }
+
+  return str + `></path>`
+}
 
 const drawSVG = compose(
   svg,
