@@ -37,7 +37,6 @@ npm run start
 └── src
   ├── editor                   - 3D editor
   │   ├── components             - the house model
-  │   │   └── caps_shader          - unused for now
   │   ├── ui                     - visual elements and things that affect them
   │   │   └── controls             - just the mouse controls for now
   │   └── utils                  - general utilities for 3D editor
