@@ -1,6 +1,7 @@
 # Buildx Editor
 
-[![Join the chat at https://gitter.im/buildx-sprint/Lobby](https://badges.gitter.im/buildx-sprint/Lobby.svg)](https://gitter.im/buildx-editor/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Travis](https://img.shields.io/travis/wikihouseproject/buildx-editor.svg)](https://travis-ci.org/wikihouseproject/buildx-editor)
+[![Gitter](https://img.shields.io/gitter/room/buildx-sprint/Lobby.svg)](http://gitter.im/buildx-sprint/Lobby)
 
 This repository is currently undergoing a lot of development.
 
