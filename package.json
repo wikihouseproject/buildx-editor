@@ -10,7 +10,7 @@
   "bugs": {
     "url": "https://github.com/wikihouseproject/buildx-editor/issues"
   },
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "./src/editor/index.js",
   "homepage": "https://github.com/wikihouseproject/buildx-editor",
   "dependencies": {
