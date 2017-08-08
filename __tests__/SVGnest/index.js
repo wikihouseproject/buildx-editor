@@ -1,48 +1,54 @@
-import jsjob from 'jsjob';
-import fs from 'fs';
+import fs from 'fs'
+import http from 'http'
+import superagent from 'superagent'
+
+import nestingserver from '../../src/nestingserver'
 
 describe('Nesting', () => {
-  const pluginUrl = 'http://localhost:8080/js/svgnest.bundle.js';
 
-  describe('on svgnest example', () => {
-    const svgData = fs.readFileSync('./public/svgnest/smallsimple.svg', 'utf-8');
+  const serverOptions = {
+    port: 9999,
+  }
+  let app = null;
 
-    let originalInterval = 0;
+  // Setup HTTP server
+  beforeAll((done) => {
+    nestingserver.setupServer(serverOptions, (err, a) => {
+      app = a
+      return done()
+    }); 
+  }) 
+  afterAll((done) => {
+    app.stop()
+    return done()
+  })
 
-    beforeEach(() => {
-      originalInterval = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 60*1000;
-    });
+  // Increase timeout for tests
+  let originalInterval = 0;
+  beforeEach(() => {
+    originalInterval = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60*1000;
+  });
+  afterEach(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalInterval;
+  });
 
-    it('should output areas', function (done) {
-      // this.timeout(60*1000);
+  describe('sending svgnest example to API', () => {
+    const svgData = fs.readFileSync('./public/svgnest/smallsimple.svg');
 
-      var options = {};
-      var runner = new jsjob.Runner(options);
-      runner.start(function(err) {
-        expect(err).not.toBeTruthy();
-
-        var inputData = { svg: svgData, bin: 'rect5794'};
-        var jobOptions = { maxTime: 15 };
-        runner.runJob(pluginUrl, inputData, jobOptions, function(err, result, details) {
-          expect(err).not.toBeTruthy();
-
-          expect(result).toBeInstanceOf(Array);
-          expect(result).toHaveLength(1);
-          const r = result[0];
-          expect(r).toMatch('</svg>');
-
-          runner.stop(function(err) {
-            expect(err).not.toBeTruthy();
-            return done();
-          });
-        });
+    it('should return cutsheets', function (done) {
+      const req = superagent
+        .post(`http://localhost:${serverOptions.port}/nest`)
+        .field('bin', 'rect5794')
+        .attach('svg', svgData, 'svg')
+      req.end((err, res) => {
+        expect(err).not.toBeTruthy()
+        expect(res.body.files).toBeInstanceOf(Array)
+        expect(res.body.files).toHaveLength(1)
+        const r = res.body.files[0]
+        expect(r).toMatch('</svg>')
+        return done();
       });
     });
-
-    afterEach(() => {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = originalInterval;
-    });
-
   });
 });
