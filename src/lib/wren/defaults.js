@@ -20,6 +20,11 @@ const dimensions = {
 
   cncWasteFactor: 0.30,
 
+  // if this is greater than zero then a filter will be added to the shapes to make them
+  // more complex. The complex shape will be smaller than the simple shape, but the main convex
+  // vertices should generally be the same for both shapes.
+  complex: 0,
+
   frame: {
     width: 286,
   }

@@ -8,6 +8,19 @@ const pointOnLine = distance => ([startX, startY], [endX, endY]) => {
   return [x/hypot*distance, y/hypot*distance]
 }
 
+const squigglify = _delta => (start, end) => {
+  let points = [start]
+  const lineAngle = angle(start, end)
+
+  for (var i = 1; i < 10; i++) {
+    const delta = (i % 2 == 0) ? _delta : _delta*2
+    const point = percentageOnLine(i/10)(start, end)
+    points.push(movePointOnAngle(point, lineAngle, -delta))
+  }
+  points.push(end)
+  return points
+}
+
 /**
  * Calculates the straight-line distance between two points
  * @returns {Array}
@@ -48,7 +61,7 @@ const angle = ([startX, startY], [endX, endY]) => {
   return Math.atan2(y,x)
 }
 
-// const movePointOnAngle = ([x,y], angle, delta) => [x + (Math.sin(angle) * delta), y - (Math.cos(angle) * delta)]
+const movePointOnAngle = ([x,y], angle, delta) => [x + (Math.sin(angle) * delta), y - (Math.cos(angle) * delta)]
 
 // const rotateAroundPoint = ([pointX, pointY], [originX, originY], angle) => {
 //   // angle = angle * Math.PI / 180.0;
@@ -88,5 +101,6 @@ module.exports = {
   // percentageOnLine,
   // rotateAroundPoint,
   getBounds,
-  midpoint
+  midpoint,
+  squigglify
 }
