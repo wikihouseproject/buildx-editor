@@ -1,15 +1,15 @@
 import chai from 'chai';
 import jsjob from 'jsjob';
 
-import fs from 'fs'; 
+import fs from 'fs';
 
 describe('Nesting', () => {
-  const pluginUrl = 'http://localhost:8080/assets/svgnest.bundle.js';
+  const pluginUrl = 'http://localhost:8080/js/svgnest.bundle.js';
 
   describe('on svgnest example', () => {
-    const svgData = fs.readFileSync('./public/smallsimple.svg', 'utf-8');
+    const svgData = fs.readFileSync('./public/svgnest/smallsimple.svg', 'utf-8');
 
-    it('should output areas', function (done) { 
+    it('should output areas', function (done) {
       this.timeout(60*1000);
 
       var options = {};
