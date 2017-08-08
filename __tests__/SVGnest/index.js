@@ -20,19 +20,22 @@ describe('Nesting', () => {
       var options = {};
       var runner = new jsjob.Runner(options);
       runner.start(function(err) {
-        if (err) return done(err)
+        expect(err).not.toBeTruthy();
 
         var inputData = { svg: svgData, bin: 'rect5794'};
         var jobOptions = { maxTime: 15 };
         runner.runJob(pluginUrl, inputData, jobOptions, function(err, result, details) {
-          if (err) return done(err)
+          expect(err).not.toBeTruthy();
 
           expect(result).toBeInstanceOf(Array);
           expect(result).toHaveLength(1);
           const r = result[0];
           expect(r).toMatch('</svg>');
 
-          runner.stop(function(err) { return done(err); });
+          runner.stop(function(err) {
+            expect(err).not.toBeTruthy();
+            return done();
+          });
         });
       });
     });
