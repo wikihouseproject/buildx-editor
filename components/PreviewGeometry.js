@@ -2,7 +2,7 @@ const noflo = require('noflo');
 
 //import * as components from '../src/components'; // XXX: using import makes 'exports' go away
 
-const components = require('../src/components');
+const components = require('../src/editor/components');
 
 exports.getComponent = function() {
   var c = new noflo.Component();
