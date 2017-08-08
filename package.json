@@ -3,7 +3,7 @@
   "description": "A 3D editor for designing a WikiHouse using the Wren building engine",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "webpack -p",
+    "build": "grunt && cp -R public dist && webpack -p",
     "deploy": "npm run build && ghpages -p dist && rm -rf dist",
     "test": "jest"
   },
