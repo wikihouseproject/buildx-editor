@@ -3,14 +3,15 @@ const webpack = require('webpack');
 module.exports = {
   context: path.resolve(__dirname, './src'),
   entry: {
-    app: './editor/index.js',
+    editor: './editor/index.js',
     basic3d: './basic3d.js',
-    svgnest: './svgnest.js',
+    wrendebug: './wrendebug.js',
+    svgnest: './svgnest.js'
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, './dist/assets'),
-    publicPath: '/assets'
+    path: path.resolve(__dirname, './dist/js/'),
+    publicPath: '/js/'
   },
   devServer: {
     contentBase: path.resolve(__dirname, './public')
@@ -23,7 +24,7 @@ module.exports = {
         use: [{
           loader: 'babel-loader',
           options: { presets: ['es2015'] },
-        }],
+        }]
       }
     ]
   }

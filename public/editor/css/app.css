@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+  line-height: 2;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+#controls {
+  position: absolute;
+  right: 0;
+  top: 200px;
+  padding: 20px;
+}
+input {
+  width: 100%;
+}
+tr td:last-child {
+  text-align: right;
+}
+li {
+  cursor: pointer;
+  list-style: none;
+}
+li.active {
+  background: red;
+}
+
+canvas[data-cursor] {
+  cursor: move; /* fallback: no `url()` support or images disabled */
+  cursor: url(images/grab.cur); /* fallback: Internet Explorer */
+  cursor: -webkit-grab; /* Chrome 1-21, Safari 4+ */
+  cursor:    -moz-grab; /* Firefox 1.5-26 */
+  cursor:         grab; /* W3C standards syntax, should come least */
+}
+
+canvas[data-cursor='grabbing'] {
+  cursor: url(images/grabbing.cur);
+  cursor: -webkit-grabbing;
+  cursor:    -moz-grabbing;
+  cursor:         grabbing;
+}

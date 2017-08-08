@@ -1,8 +1,9 @@
 // From https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set
+
 export function isSuperset(self, subset) {
   for (var elem of subset) {
     if (!self.has(elem)) {
-        return false;
+      return false;
     }
   }
   return true;
@@ -23,7 +24,6 @@ export function unionAll(self, ...others) {
       union.add(elem);
     }
   }
-
   return union;
 }
 

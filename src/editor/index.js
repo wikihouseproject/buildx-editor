@@ -1,135 +1,83 @@
+import { renderer, container, scene, camera, stats, rendererStats, updateClippingPlane } from "./ui/scene"
 import { ground } from "./components"
-import { renderer, container, scene, camera, orbitControls, stats, rendererStats, updateClippingPlane } from "./scene"
-import BasicWren from "../lib/wren/basic_wren"
-import * as w from "../lib/wren"
-import defaults from '../config'
-import Mouse from './mouse'
-import House from './house'
+import Mouse from './ui/controls/mouse'
+import HUD from './ui/controls/hud'
+// import Sidebar from './ui/controls/sidebar'
+import House from './components/house'
+import { merge } from "lodash"
+import Wren from "../lib/wren"
+import WrenWorker from "worker-loader?inline!../lib/wren/worker"
+
+const CONFIG = {
+  WEBWORKERS: true
+}
+
+// --------
+
+const USING_WEBWORKERS = (window.Worker && CONFIG.WEBWORKERS)
+
+var wrenWorker = (USING_WEBWORKERS) ? new WrenWorker : null
+
+let dimensions = Wren().inputs.dimensions
+const changeDimensions = house => newDimensions => {
+  dimensions = merge(dimensions, newDimensions)
+  if (USING_WEBWORKERS) {
+    wrenWorker.postMessage({dimensions})
+  } else {
+    house.update(Wren({dimensions}).outputs.pieces)
+  }
+}
 
 let currentAction = "RESIZE"
 
-let wren = BasicWren(Object.assign({}, defaults, {totalBays: 6}))
-
-const mouse = Mouse(window,container)
-
 const raycaster = new THREE.Raycaster()
+const raycastPlane = new THREE.Plane()
+const groundPlane = new THREE.Plane([0,1,0])
+// const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0),new THREE.Vector3(0,0,0))
 
-const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0),new THREE.Vector3(0,0,0))
-const plane = new THREE.Plane()
+const mouse = Mouse(window, camera, renderer.domElement)
 
-const house = House(wren, w)
-house.redraw()
+var loader = new THREE.TextureLoader();
+loader.load('img/materials/plywood/birch.jpg',
+  function(texture) {
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    window.plyMaterial = new THREE.MeshBasicMaterial({map: texture, overdraw: 0.5});
 
-scene.add(ground(20,20))
-scene.add(house.house)
-
-// Control Inputs Events
-
-function changeCurrentAction(event) {
-  currentAction = event.target.id
-
-  // hide balls unless resizing
-  house.balls.forEach(ball => ball.visible = (currentAction === 'RESIZE'))
-  // hide outline unless moving or rotating
-  house.outlineMesh.visible = (currentAction === 'MOVE' || currentAction === 'ROTATE')
-
-  // change activeState
-  document.querySelectorAll('li').forEach(li => li.classList.remove('active'))
-  event.target.classList.add('active')
-}
-document.querySelectorAll('li').forEach(li => li.addEventListener('click', changeCurrentAction))
-
-const controls = ['totalBays', 'width', 'height']
-controls.forEach( val =>
-  document.getElementById(val).addEventListener('input', event => house.redraw({ [val]: Number(event.target.value) }))
+    prerender()
+  },
+  function(xhr) {
+    console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+  },
+  function(xhr) {
+    console.error('An error occurred');
+  }
 )
 
-document.getElementById('clippingHeight').addEventListener('input', event => {
-  updateClippingPlane(Number(event.target.value))
-})
+function prerender() {
+  let initialPieces = Wren({dimensions}).outputs.pieces
+  const house = House(initialPieces)
 
-// Mouse Events
-
-mouse.events.on('down', () => {
-  if (mouse.state.target) orbitControls.enabled = false
-})
-
-mouse.events.on('up', () => {
-  orbitControls.enabled = true
-})
-
-let hitTestObjects = [],
-    intersects = [],
-    intersectFn = undefined
-
-mouse.events.on('all', mouseEvent)
-
-function mouseEvent() {
-  raycaster.setFromCamera(mouse.state.position, camera)
-
-  if (currentAction === 'RESIZE') {
-    hitTestObjects = house.balls
-    intersectFn = handleResize
-  } else if (currentAction === 'MOVE') {
-    hitTestObjects = [house.outlineMesh]
-    intersectFn = handleMove
-  } else if (currentAction === 'ROTATE') {
-    hitTestObjects = [house.outlineMesh]
-    intersectFn = handleRotate
+  if (USING_WEBWORKERS) {
+    wrenWorker.onmessage = event => house.update(event.data.pieces)
   }
 
-  intersects = raycaster.intersectObjects(hitTestObjects)
-  mouse.handleIntersects(intersects)
-  intersectFn(intersects, new THREE.Vector3())
-}
+  const hud = HUD(dimensions, changeDimensions(house))
 
-function handleOutlineMesh(intersects) {
-  if (intersects.length > 0) {
-    house.outlineMesh.material.visible = true
-  } else {
-    if (!mouse.state.isDown) house.outlineMesh.material.visible = false
-  }
-}
+  scene.add(ground(10,10))
+  scene.add(house.output)
 
-function handleMove(intersects, intersection) {
-  handleOutlineMesh(intersects)
-  if (mouse.state.activeTarget) {
-    if (raycaster.ray.intersectPlane(groundPlane, intersection)) {
-      house.house.position.x = intersection.x
-      house.house.position.z = intersection.z
-    }
-  }
-}
-
-function handleRotate(intersects, intersection) {
-  handleOutlineMesh(intersects)
-  if (mouse.state.activeTarget) {
-    house.house.rotation.y = mouse.state.position.x * 4
-  }
-}
-
-function handleResize(intersects, intersection) {
-  if (mouse.state.activeTarget) {
-    const ball = mouse.state.activeTarget.object
-    plane.setFromNormalAndCoplanarPoint(
-      camera.getWorldDirection(plane.normal),
-      ball.position
-    )
-    if (raycaster.ray.intersectPlane(plane, intersection)) {
-      // ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
-      house.redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) })
-      document.getElementById(ball.userData.boundVariable).value = intersection[ball.userData.dragAxis].toFixed(1)
-    }
-  }
+  requestAnimationFrame(render)
 }
 
 function render() {
   stats.begin()
   renderer.render(scene, camera)
+  mouse.orbitControls.update() // needed because of damping
   // clippingPlane.position.y -= 0.01
   stats.end()
   rendererStats.update(renderer)
   requestAnimationFrame(render)
 }
 
-requestAnimationFrame(render)
+// requestAnimationFrame(render)
