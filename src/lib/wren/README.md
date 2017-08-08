@@ -10,20 +10,20 @@ A javascript-based interpretation of [Wren](https://github.com/wikihouseproject/
 
 `Wren().outputs.piece` | part name in video | piece(s) description
 ------|--------------------|------------
-`frame` |... | group of 2 sets of fins, 2 sets of reinforcers and multiple spacers
-`frame.fins` | fin | basic polygon shaped building supports
-`frame.reinforcers` | reinforces [sic] | edges of fin
-`frame.spacers` | spacer | ...
-`frame.skis` | ski | lies beneath the frames
-`bay` | ... | collection of components that are inbetween 2 frames
-`bay.connectors` | connectors | joins 2 frames together
-`bay.skis` | lateral ski | ...
-`bay.inner.floor` | ... | floorboards inside the building
-`bay.outer.floor` | underboard | lie beneath the frame (NOTE: maybe change to underboard)
-`bay.inner.(left-right)Roof` | ceiling | the inside roof
-`bay.outer.(left-right)Wall` | external sheathing | the outer walls
-`bay.outer.(left-right)Roof` | external sheathing | the outer roof
-`bay.inner.(left-right)Roof` | internal sheathing | the inner walls
+`frames` |... | group of 2 sets of fins, 2 sets of reinforcers and multiple spacers
+`frames.fins` | fin | basic polygon shaped building supports
+`frames.reinforcers` | reinforces [sic] | edges of fin
+`frames.spacers` | spacer | ...
+`frames.skis` | ski | lies beneath the frames
+`bays` | ... | collection of components that are inbetween 2 frames
+`bays.connectors` | connectors | joins 2 frames together
+`bays.skis` | lateral ski | ...
+`bays.sides.inner.floor` | ... | floorboards inside the building
+`bays.sides.outer.floor` | underboard | lie beneath the frame (NOTE: maybe change to underboard)
+`bays.sides.inner.(left-right)Roof` | ceiling | the inner/underside of the roof
+`bays.sides.inner.(left-right)Roof` | internal sheathing | the inner walls
+`bays.sides.outer.(left-right)Wall` | external sheathing | the outer walls
+`bays.sides.outer.(left-right)Roof` | external sheathing | the outer roof
 
 ## Usage
 
