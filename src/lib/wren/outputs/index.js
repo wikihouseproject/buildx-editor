@@ -4,9 +4,11 @@ const _volumes = require('./figures/volumes')
 const _points = require('./points')
 const _dimensions = require('./figures/dimensions')
 const _pieces = require('./pieces')
-// const Point = require('../utils/point')
+const Point = require('../utils/point')
 const SVG = require('./formats/svg')
 // const CSV = require('./formats/csv')
+
+const { flatMap } = require('lodash')
 
 function isPartGeometry(o) {
   const hasPoints = o.pts && Array.isArray(o.pts) && o.pts.length > 0 
@@ -57,6 +59,16 @@ function getParts(pieces) {
   return ret
 }
 
+function calculateViewBox(points, padding=0) {
+    const {minX, minY, maxX, maxY} = Point.getBounds(points)
+    return [
+      minX-padding,
+      minY-padding,
+      Math.abs(maxX-minX)+padding*2,
+      Math.abs(maxY-minY)+padding*2
+    ].join(" ")
+}
+
 const outputs = inputs => {
   const points = _points(inputs.dimensions)
   const dimensions = _dimensions(inputs, points)
@@ -98,9 +110,11 @@ const outputs = inputs => {
         // TODO: check that no parts are too big to be produced
         // FIXME: inject geometry for board, used when nesting
 
+
         const parts = getParts(pieces).map(assignId).map(throwAround)
 
-        const document = SVG.svg(parts.map(svgPart));
+        const viewBox = calculateViewBox(flatMap(parts, (p) => p.geometry.pts));
+        const document = SVG.svg(parts.map(svgPart), { viewBox });
 
         return document
 
