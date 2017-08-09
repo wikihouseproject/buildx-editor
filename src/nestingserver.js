@@ -107,7 +107,7 @@ function setupServer(options, callback) {
   const port = options.port || 3000
   const jsjobOptions = {}
   const config = {
-    maxJobTime: 15, // seconds
+    maxJobTime: 30, // seconds
     pluginUrl: 'http://localhost:8080/js/svgnest.bundle.js', // TODO: serve ourselves
     jsjob: {},
   }
