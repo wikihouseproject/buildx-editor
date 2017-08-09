@@ -107,7 +107,7 @@ function setupServer(options, callback) {
   const port = options.port || 3000
   const jsjobOptions = {}
   const config = {
-    jobTime: 30, // seconds
+    jobTime: 3*60, // seconds
     pluginUrl: 'http://localhost:8080/js/svgnest.bundle.js', // TODO: serve ourselves
     jsjob: {
       timeout: 30*60*1000, // hard cutoff

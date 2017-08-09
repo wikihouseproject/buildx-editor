@@ -71,13 +71,13 @@ function runSvgNest(svgData, binId, options, callback) {
   options.SvgNest = options.SvgNest || {};
 
   var config = {
-    spacing: 0,
-    curveTolerance: 0.3,
+    spacing: 0.012, // give space for milling bit
+    curveTolerance: 0.005,
     rotations: 4,
     populationSize: 10,
     mutationRate: 10,
     useHoles: false,
-    exploreConcave: false,
+    exploreConcave: false, // most of the shapes are concave, L/V-like shapes
   };
   for (key in options.SvgNest) {
     config[key] = options.SvgNest[key];
