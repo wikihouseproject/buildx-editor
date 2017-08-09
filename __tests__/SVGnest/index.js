@@ -60,7 +60,7 @@ describe('Nesting', () => {
   let originalInterval = 0;
   beforeEach(() => {
     originalInterval = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60*1000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 6*60*1000;
   });
   afterEach(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalInterval;
