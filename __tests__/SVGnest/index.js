@@ -48,25 +48,6 @@ describe('Nesting', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalInterval;
   });
 
-  describe('sending svgnest example to API', () => {
-    const svgData = fs.readFileSync('./public/svgnest/smallsimple.svg');
-
-    it('should return cutsheets', function (done) {
-      const req = superagent
-        .post(`http://localhost:${serverOptions.port}/nest`)
-        .field('bin', 'rect5794')
-        .attach('svg', svgData, 'svg')
-      req.end((err, res) => {
-        expect(err).not.toBeTruthy()
-        expect(res.body.files).toBeInstanceOf(Array)
-        expect(res.body.files).toHaveLength(1)
-        const r = res.body.files[0]
-        expect(r).toMatch('</svg>')
-        return done();
-      });
-    });
-  });
-
   describe('sending default Wren outlines', () => {
     const wrenSvg = Wren().toSVG()
     const binId = 'cutsheet'
