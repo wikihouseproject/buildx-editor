@@ -71,24 +71,25 @@ describe('Nesting', () => {
     const binId = 'cutsheet'
     
     const sheetStyle = "fill:none;stroke:#ff0000;stroke-opacity:1;stroke-width:0.00377953"
-    const cutsheet = SVG.path(rectangle(2.0, 3.0), { id: binId, style: sheetStyle }) // FIXME: make cutsheet 1.2 x 2.4m
+    const cutsheet = SVG.path(rectangle(5.0, 5.0), { id: binId, style: sheetStyle }) // FIXME: make cutsheet 1.2 x 2.4m
     const svgData = new Buffer(wrenSvg.replace('</svg>', cutsheet+'</svg>'))
 
     it('should return cutsheets', function (done) {
       const req = superagent
         .post(`http://localhost:${serverOptions.port}/nest`)
         .field('bin', binId)
+        .timeout(6*60*1000)
         .attach('svg', svgData, 'svg')
       req.end((err, res) => {
-        if (err) err.message += `: ${JSON.stringify(res.text)}`
+        if (err && res) err.message += `: ${JSON.stringify(res.text)}`
         expect(err).not.toBeTruthy()
         expect(res.body.files).toBeInstanceOf(Array)
-        expect(res.body.files.length).toBeGreaterThan(50)
+        expect(res.body.files.length).toBeGreaterThan(10)
         expect(res.body.files.length).toBeLessThan(200)
         const r = res.body.files[0]
         expect(r).toMatch('</svg>')
 
-        return writeFilesToNewDirectory(res.body.files, 'temp/nested/').then(done)
+        return writeFilesToNewDirectory(res.body.files, 'public/svgnest/wren-defaults-nested').then(done)
       });
     });
   });
