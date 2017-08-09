@@ -66,7 +66,6 @@ function doNestingSync(req, res) {
 
     const svgData = files.svg.toString('utf-8')
     const binId =  fields.bin
-    console.log('s', svgData.slice(0,10), binId)
 
     // XXX: ugly API that the cutsheet must exist as a SVG path already
     const inputData = { svg: svgData, bin: binId };
@@ -91,8 +90,6 @@ function setupJsJob(options, callback) {
 
 function setupApp(runner, config) {
   const app = express()
-
-  console.log('shehhee')
 
   // Inject the JsJob Runner instance request handlers using a middleware
   app.use((req, res, next) => {
