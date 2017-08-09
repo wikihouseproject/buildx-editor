@@ -1,6 +1,10 @@
 import fs from 'fs'
 import http from 'http'
+import path from 'path'
+
 import superagent from 'superagent'
+import bluebird from 'bluebird'
+import rimraf from 'rimraf'
 
 import SVG from '../../src/lib/wren/outputs/formats/svg'
 import Wren from '../../src/lib/wren'
@@ -17,6 +21,20 @@ const rectangle = (width, height, o) => {
     [ o.x+width, o.y+height ],
     [ o.x, o.y+height ],
   ];
+}
+
+const writeFile = bluebird.promisify(fs.writeFile)
+const mkdirDir = bluebird.promisify(fs.mkdir)
+const rmrf = bluebird.promisify(rimraf)
+
+function writeFilesToNewDirectory(files, directory) {
+  return rmrf(directory).then(() =>
+    mkdirDir(directory)
+  ).then(() =>
+   bluebird.map(files, (contents, idx) => {
+    const filePath = path.join(directory, `sheet-${idx}.svg`)
+    return writeFile(filePath, contents)
+  }))
 }
 
 describe('Nesting', () => {
@@ -69,7 +87,8 @@ describe('Nesting', () => {
         expect(res.body.files.length).toBeLessThan(200)
         const r = res.body.files[0]
         expect(r).toMatch('</svg>')
-        return done();
+
+        return writeFilesToNewDirectory(res.body.files, 'temp/nested/').then(done)
       });
     });
   });
