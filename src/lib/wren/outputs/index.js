@@ -26,7 +26,10 @@ function getParts(pieces) {
       throw new Error("Not a proper part: " + JSON.stringify(geometry));
     }
     const p = {
-      geometry: geometry,
+      geometry: {
+        pts: geometry.pts.slice(0) // ensure unique
+        // don't care about other things
+      },
       path: ancestors,
     }
     ret.push(p)
@@ -59,6 +62,32 @@ function getParts(pieces) {
   return ret
 }
 
+const addPoints = (a, b) => {
+  return [ a[0] + b[0], a[1] + b[1] ]
+}
+
+function layoutPartsWithoutOverlap(parts, separation=0.1) {
+  // Can make this as complicated as one wants, right up to full-blown nesting...
+  // So doing a trivial 1-column vertical layout
+  // NOTE: SVG coordinate conventions, downwards = positive Y
+  var currentY = 0
+  var maxWidth = 0
+  for (var part of parts) {
+    const bounds = Point.getBounds(part.geometry.pts)
+    const moveY = currentY - bounds.minY
+    const displacement = [0, moveY]
+    const movedPoints = part.geometry.pts.map((xy) => addPoints(xy, displacement))
+
+    const height = bounds.maxY - bounds.minY
+    const width = bounds.maxX - bounds.minX
+    maxWidth = (width > maxWidth) ? width : maxWidth
+    currentY += (height + separation)
+    part.geometry.pts = movedPoints
+  }
+
+  console.log('parts layout aspect ratio', currentY/maxWidth)
+}
+
 function calculateViewBox(points, padding=0) {
     const {minX, minY, maxX, maxY} = Point.getBounds(points)
     return [
@@ -89,25 +118,14 @@ const outputs = inputs => {
           part.id = part.path.reverse().join("-")
           return part
         }
-        const throwAround = (part) => {
-          const range = 5;
-          const displacement = [
-            Math.random()*range,
-            Math.random()*range,
-          ]
-          const addPoints = (a, b) => {
-            return [ a[0] + b[0], a[1] + b[1] ]
-          }
-          part.geometry.pts = part.geometry.pts.map((xy) => addPoints(xy, displacement))
-          return part
-        }
         const svgPart = (part) => {
           const style = "fill:none;stroke:#000000;stroke-opacity:1;stroke-width:0.00377953"
           return SVG.path(part.geometry.pts, { id: part.id, style })
         }
 
         // TODO: check that no parts are too big to be produced
-        const parts = getParts(pieces).map(assignId).map(throwAround)
+        var parts = getParts(pieces).map(assignId)
+        layoutPartsWithoutOverlap(parts)
 
         const viewBox = calculateViewBox(flatMap(parts, (p) => p.geometry.pts));
         const document = SVG.svg(parts.map(svgPart), { viewBox });
