@@ -1,6 +1,7 @@
 import fs from 'fs'
 import http from 'http'
 import superagent from 'superagent'
+import { catchErrors } from '../../jest-hotfixes'
 
 import nestingserver from '../../src/nestingserver'
 
@@ -16,8 +17,8 @@ describe('Nesting', () => {
     nestingserver.setupServer(serverOptions, (err, a) => {
       app = a
       return done()
-    }); 
-  }) 
+    });
+  })
   afterAll((done) => {
     app.stop()
     return done()
@@ -37,18 +38,20 @@ describe('Nesting', () => {
     const svgData = fs.readFileSync('./public/svgnest/smallsimple.svg');
 
     it('should return cutsheets', function (done) {
+
       const req = superagent
         .post(`http://localhost:${serverOptions.port}/nest`)
         .field('bin', 'rect5794')
         .attach('svg', svgData, 'svg')
-      req.end((err, res) => {
+
+      req.end(catchErrors(done, (err, res) => {
         expect(err).not.toBeTruthy()
         expect(res.body.files).toBeInstanceOf(Array)
         expect(res.body.files).toHaveLength(1)
         const r = res.body.files[0]
         expect(r).toMatch('</svg>')
         return done();
-      });
+      }));
     });
   });
 });
