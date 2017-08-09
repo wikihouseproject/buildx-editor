@@ -112,6 +112,10 @@ function runSvgNest(svgData, binId, options, callback) {
   function done(err) {
     SvgNest.stop();
 
+    if (!lastResult) {
+      return callback(new Error("Timeout without a single placement"), null, {});
+    }
+
     // Extra info that can be useful for debugging and/or performance monitoring
     var details = {
       efficiency: lastResult.efficiency,
@@ -125,11 +129,8 @@ function runSvgNest(svgData, binId, options, callback) {
     if (err) {
       return callback(err, null, details);
     }
-    if (!lastResult) {
-      return callback(new Error("Timeout without a single placement"), null, details);
-    }
     if (details.totalParts != details.placedParts) {
-      const placed = `${details.totalParts}/${details.totalPlaced}`;
+      const placed = `${details.placedParts}/${details.totalParts}`;
       return callback(new Error(`Not all parts were placed: ${placed}`), null, details); 
     }
 
