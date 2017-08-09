@@ -53,3 +53,8 @@ public/basic3d/js/noflo.js
 src/lib/wren/nester/temp
 
 public/basic3d/js/noflo.js
+
+# aware that this is against advice of yarn
+# https://stackoverflow.com/questions/39990017/should-i-commit-the-yarn-lock-file-and-what-is-it-for
+# but ignoring yarn.lock for the moment, might revisit in future.
+yarn.lock
