@@ -102,13 +102,11 @@ const outputs = inputs => {
           return part
         }
         const svgPart = (part) => {
-          return SVG.path(part.geometry.pts, { id: part.id })
+          const style = "fill:none;stroke:#000000;stroke-opacity:1;stroke-width:0.00377953"
+          return SVG.path(part.geometry.pts, { id: part.id, style })
         }
 
         // TODO: check that no parts are too big to be produced
-        // FIXME: inject geometry for board, used when nesting
-
-
         const parts = getParts(pieces).map(assignId).map(throwAround)
 
         const viewBox = calculateViewBox(flatMap(parts, (p) => p.geometry.pts));

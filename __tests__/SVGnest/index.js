@@ -52,7 +52,8 @@ describe('Nesting', () => {
     const wrenSvg = Wren().toSVG()
     const binId = 'cutsheet'
     
-    const cutsheet = SVG.path(rectangle(2.0, 3.0), { id: binId }) // FIXME: make cutsheet 1.2 x 2.4m
+    const sheetStyle = "fill:none;stroke:#ff0000;stroke-opacity:1;stroke-width:0.00377953"
+    const cutsheet = SVG.path(rectangle(2.0, 3.0), { id: binId, style: sheetStyle }) // FIXME: make cutsheet 1.2 x 2.4m
     const svgData = new Buffer(wrenSvg.replace('</svg>', cutsheet+'</svg>'))
 
     it('should return cutsheets', function (done) {
