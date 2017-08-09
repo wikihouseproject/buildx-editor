@@ -20,8 +20,7 @@ describe('Nesting', () => {
     });
   })
   afterAll((done) => {
-    app.stop()
-    return done()
+    nestingserver.closeServer(app, done)
   })
 
   // Increase timeout for tests

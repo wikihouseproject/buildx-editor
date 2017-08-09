@@ -73,6 +73,7 @@ function doNestingSync(req, res) {
 
     req.runner.runJob(req.config.pluginUrl, inputData, jobOptions, (err, results, details) => {
       if (err) {
+        // QUESTION: stop jsjob and return res.end() here?
         return res.status(500).send(`Unable to nest file: ${err.message}`)
       }
       return res.json({files: results})
@@ -102,8 +103,14 @@ function setupApp(runner, config) {
   return app
 }
 
-function setupServer(options, callback) {
+function closeServer(server, done) {
+  server.close( () => {
+    // QUESTION: does jsjob need closing before calling done here?
+    done()
+  })
+}
 
+function setupServer(options, callback) {
   const port = options.port || 3000
   const jsjobOptions = {}
   const config = {
@@ -116,8 +123,9 @@ function setupServer(options, callback) {
     if (err) return callback(err)
 
     const app = setupApp(runner, config);
-    app.listen(port, (err) => {
-      return callback(err, app, port)
+    const server = app.listen(port, (err) => {
+      // return callback(err, app, port)
+      return callback(err, server, port)
     })
   })
 }
@@ -140,4 +148,5 @@ if (!module.parent) {
 module.exports = {
   main,
   setupServer,
+  closeServer
 }
