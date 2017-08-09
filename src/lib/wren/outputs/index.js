@@ -88,6 +88,21 @@ function layoutPartsWithoutOverlap(parts, separation=0.1) {
   console.log('parts layout aspect ratio', currentY/maxWidth)
 }
 
+// https://stackoverflow.com/questions/19269545/how-to-get-n-no-elements-randomly-from-an-array
+function getRandom(arr, n) {
+    var result = new Array(n),
+        len = arr.length,
+        taken = new Array(len);
+    if (n > len)
+        throw new RangeError("getRandom: more elements taken than available");
+    while (n--) {
+        var x = Math.floor(Math.random() * len);
+        result[n] = arr[x in taken ? taken[x] : x];
+        taken[x] = --len;
+    }
+    return result;
+}
+
 function calculateViewBox(points, padding=0) {
     const {minX, minY, maxX, maxY} = Point.getBounds(points)
     return [
@@ -113,7 +128,7 @@ const outputs = inputs => {
     },
     formats: {
       csv: null,
-      svg: () => {
+      svg: (options={}) => {
         const assignId = (part) => {
           part.id = part.path.reverse().join("-")
           return part
@@ -125,6 +140,11 @@ const outputs = inputs => {
 
         // TODO: check that no parts are too big to be produced
         var parts = getParts(pieces).map(assignId)
+
+        if (options.onlyN) {
+          parts = getRandom(parts, options.onlyN)
+        }
+
         layoutPartsWithoutOverlap(parts)
 
         const viewBox = calculateViewBox(flatMap(parts, (p) => p.geometry.pts));

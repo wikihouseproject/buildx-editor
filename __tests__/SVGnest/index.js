@@ -41,6 +41,7 @@ describe('Nesting', () => {
 
   const serverOptions = {
     port: 9999,
+    jobTime: 30,
   }
   let app = null;
 
@@ -60,32 +61,32 @@ describe('Nesting', () => {
   let originalInterval = 0;
   beforeEach(() => {
     originalInterval = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 6*60*1000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 2*60*1000;
   });
   afterEach(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalInterval;
   });
 
   describe('sending default Wren outlines', () => {
-    const wrenSvg = Wren().toSVG()
+    const wrenSvg = Wren().toSVG({onlyN: 50})
     const binId = 'cutsheet'
     
     const sheetStyle = "fill:none;stroke:#ff0000;stroke-opacity:1;stroke-width:0.00377953"
-    const cutsheet = SVG.path(rectangle(5.0, 5.0), { id: binId, style: sheetStyle }) // FIXME: make cutsheet 1.2 x 2.4m
+    const cutsheet = SVG.path(rectangle(4.0, 5.0), { id: binId, style: sheetStyle }) // FIXME: make cutsheet 1.2 x 2.4m
     const svgData = new Buffer(wrenSvg.replace('</svg>', cutsheet+'</svg>'))
 
     it('should return cutsheets', function (done) {
       const req = superagent
         .post(`http://localhost:${serverOptions.port}/nest`)
         .field('bin', binId)
-        .timeout(6*60*1000)
+        .timeout(1*60*1000)
         .attach('svg', svgData, 'svg')
       req.end((err, res) => {
         if (err && res) err.message += `: ${JSON.stringify(res.text)}`
         expect(err).not.toBeTruthy()
         expect(res.body.files).toBeInstanceOf(Array)
-        expect(res.body.files.length).toBeGreaterThan(10)
-        expect(res.body.files.length).toBeLessThan(200)
+        expect(res.body.files.length).toBeGreaterThan(5)
+        expect(res.body.files.length).toBeLessThan(15)
         const r = res.body.files[0]
         expect(r).toMatch('</svg>')
 
