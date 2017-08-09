@@ -77,7 +77,7 @@ function runSvgNest(svgData, binId, options, callback) {
     populationSize: 10,
     mutationRate: 10,
     useHoles: false,
-    exploreConcave: false, // most of the shapes are concave, L/V-like shapes
+    exploreConcave: true, // most of the shapes are concave, L/V-like shapes
   };
   for (key in options.SvgNest) {
     config[key] = options.SvgNest[key];

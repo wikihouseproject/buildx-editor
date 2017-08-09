@@ -68,7 +68,7 @@ describe('Nesting', () => {
   });
 
   describe('sending default Wren outlines', () => {
-    const wrenSvg = Wren().toSVG({onlyN: 50})
+    const wrenSvg = Wren().toSVG({onlyN: 15})
     const binId = 'cutsheet'
     
     const sheetStyle = "fill:none;stroke:#ff0000;stroke-opacity:1;stroke-width:0.00377953"
@@ -85,7 +85,7 @@ describe('Nesting', () => {
         if (err && res) err.message += `: ${JSON.stringify(res.text)}`
         expect(err).not.toBeTruthy()
         expect(res.body.files).toBeInstanceOf(Array)
-        expect(res.body.files.length).toBeGreaterThan(5)
+        expect(res.body.files.length).toBeGreaterThan(2)
         expect(res.body.files.length).toBeLessThan(15)
         const r = res.body.files[0]
         expect(r).toMatch('</svg>')
