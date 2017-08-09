@@ -34,7 +34,7 @@ it('draws SVG from points', () => {
     [1,1],
     [2,2]
   ]
-  const result = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><g>' +
+  const result = '<svg xmlns="http://www.w3.org/2000/svg"><g>' +
     '<path d="M0,0 L1,1 2,2z"></path></g></svg>'
   expect(SVG.drawSVG(points)).toEqual(result)
 })

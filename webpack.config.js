@@ -5,7 +5,8 @@ module.exports = {
   entry: {
     editor: './editor/index.js',
     basic3d: './basic3d.js',
-    wrendebug: './wrendebug.js'
+    wrendebug: './wrendebug.js',
+    svgnest: './svgnest.js'
   },
   output: {
     filename: '[name].bundle.js',

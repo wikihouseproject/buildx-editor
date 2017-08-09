@@ -1,6 +1,6 @@
 {
   "name": "buildx-editor",
-  "description": "A 3D editor for designing a WikiHouse using the WREN building engine",
+  "description": "A 3D editor for designing a WikiHouse using the Wren building engine",
   "scripts": {
     "start": "webpack-dev-server",
     "build": "grunt && cp -R public dist && webpack -p",
@@ -20,8 +20,11 @@
     "@cycle/run": "^3.1.0",
     "clipper-js": "^1.0.2",
     "eventemitter3": "^2.0.3",
+    "express": "^4.15.4",
+    "jsjob": "^0.10.12",
     "lodash": "^4.17.4",
     "mathjs": "^3.14.2",
+    "multiparty": "^4.1.3",
     "noflo": "^0.8.3",
     "noflo-core": "^0.4.0",
     "noflo-objects": "^0.3.0",
@@ -30,6 +33,7 @@
     "preact": "^8.2.1",
     "prettier": "^1.5.3",
     "ramda": "^0.24.1",
+    "script-loader": "^0.7.0",
     "xstream": "^10.9.0"
   },
   "devDependencies": {
@@ -38,13 +42,18 @@
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
+    "chai": "^4.1.1",
+    "coffee-script": "^1.12.7",
     "ghpages": "^0.0.10",
     "grunt": "^1.0.1",
     "grunt-noflo-browser": "^1.2.0",
     "jest": "^20.0.4",
+    "mocha": "^3.5.0",
     "noflo-runtime-iframe": "^0.8.0",
     "regenerator-runtime": "^0.10.5",
     "sazerac": "^0.4.1",
+    "serve": "^6.0.5",
+    "superagent": "^3.5.2",
     "three": "^0.86.0",
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.5.1",
@@ -58,6 +67,12 @@
   ],
   "license": "MIT",
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleFileExtensions": [
+      "js",
+      "coffee"
+    ],
+    "transformIgnorePatterns": [ ],
+    "transform": {".*": "./jest-preprocessor.js"}
   }
 }
