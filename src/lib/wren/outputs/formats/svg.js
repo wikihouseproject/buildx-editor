@@ -13,7 +13,7 @@ function svg(elements, attributes) {
 
   for (var key in attributes) {
     var val = attributes[key].toString()
-    str += `${key}="${val}"`
+    str += ` ${key}="${val}"`
   }
 
   return str + `>${elements.join("")}</svg>`
@@ -26,7 +26,7 @@ const path = (points, attributes={}) => {
 
   for (var key in attributes) {
     var val = attributes[key].toString()
-    str += `${key}="${val}"`
+    str += ` ${key}="${val}"`
   }
 
   return str + `></path>`
