@@ -44,8 +44,7 @@ function main() {
 
     nofloRuntime = runtime;
     console.log('NoFlo running, adding link');
-    const url = noflo.flowhubURL(runtime.signaller, runtime.id);
-    console.log('Open in Flowhub URL:\n', url);
+    const url = noflo.flowhubURL(runtime.id);
     const link = flowhubLink(url);
     link.id = 'flowhubLink';
     document.body.appendChild(link);
