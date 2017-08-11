@@ -47,6 +47,11 @@ function main() {
     const url = noflo.flowhubURL(runtime.id);
     const link = flowhubLink(url);
     link.id = 'flowhubLink';
+    link.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      runtime.openClient(link.getAttribute('href'));
+    });
     document.body.appendChild(link);
 
     // Send the scene to NoFlo
