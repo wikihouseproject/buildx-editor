@@ -91,6 +91,7 @@ function setupJsJob(options, callback) {
 
 function setupApp(runner, config) {
   const app = express()
+  app.runner = runner
 
   // Inject the JsJob Runner instance request handlers using a middleware
   app.use((req, res, next) => {
@@ -103,10 +104,9 @@ function setupApp(runner, config) {
   return app
 }
 
-function closeServer(server, done) {
-  server.close( () => {
-    // QUESTION: does jsjob need closing before calling done here?
-    done()
+function closeServer(app, done) {
+  app.server.close( () => {
+    return app.runner.stop(done)
   })
 }
 
@@ -129,7 +129,8 @@ function setupServer(options, callback) {
 
     const app = setupApp(runner, config);
     const server = app.listen(port, (err) => {
-      return callback(err, server, port)
+      app.server = server
+      return callback(err, app, port)
     })
     // Support super-long HTTP requests
     server.setTimeout(config.jsjob.timeout*1.1)
@@ -137,7 +138,7 @@ function setupServer(options, callback) {
 }
 
 function main() {
-  const callback = (err, server, port) => {
+  const callback = (err, app, port) => {
     if (err) {
       console.error(err)
       process.exit(2)
