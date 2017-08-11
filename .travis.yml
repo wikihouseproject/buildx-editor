@@ -8,3 +8,11 @@ before_script:
 - cd dist && ../node_modules/.bin/serve --port 8080 --cors --silent &
 script:
 - npm test
+# automatically deploy to gh-pages after passing on master
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+  local_dir: dist
+  on:
+    branch: master
