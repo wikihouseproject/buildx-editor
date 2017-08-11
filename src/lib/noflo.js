@@ -5,7 +5,7 @@ const nofloPostMessage = r('noflo-runtime-postmessage');
 
 export function flowhubURL(runtimeId, options) {
   options = options || {};
-  options.ide = options.ide || 'http://app.flowhub.io';
+  options.ide = options.ide || 'https://app.flowhub.io';
   const protocol = 'opener';
   const address = window.location.href
   const params = `protocol=${protocol}&address=${address}&id=${runtimeId}`;
