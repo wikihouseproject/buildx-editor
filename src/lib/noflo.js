@@ -8,7 +8,10 @@ export function flowhubURL(runtimeId, options) {
   options.ide = options.ide || 'https://app.flowhub.io';
   const protocol = 'opener';
   const address = window.location.href
-  const params = `protocol=${protocol}&address=${address}&id=${runtimeId}`;
+  var params = `protocol=${protocol}&address=${address}`;
+  if (runtimeId) {
+    params = `&id=${runtimeId}`
+  }
   var debugUrl = options.ide+'#runtime/endpoint?'+encodeURIComponent(params);
   return debugUrl;
 }
