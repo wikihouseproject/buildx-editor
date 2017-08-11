@@ -20,7 +20,7 @@ exports.getComponent = function() {
     var data = input.getData('in');
     console.log('removing');
     const scene = window.scene;
-    const objects = scene.children.length; 
+    const objects = scene.children.length;
     for( var i = scene.children.length - 1; i >= 0; i--) {
       const child = scene.children[i];
       scene.remove(child);

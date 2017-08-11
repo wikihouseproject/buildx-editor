@@ -21,32 +21,32 @@
     "outports": {},
     "groups": [],
     "processes": {
-        "o": {
-            "component": "core/Output",
+        "preview": {
+            "component": "buildx-editor/PreviewGeometry",
             "metadata": {
-                "x": 324,
-                "y": -216,
+                "x": 396,
+                "y": -252,
                 "width": 72,
                 "height": 72,
-                "label": "o"
+                "label": "preview"
             }
         },
-        "buildx-sprint/GetDefaultParameters_7fxg8": {
-            "component": "buildx-sprint/GetDefaultParameters",
+        "buildx-editor/GetDefaultParameters_7fxg8": {
+            "component": "buildx-editor/GetDefaultParameters",
             "metadata": {
                 "label": "GetDefaultParameters",
                 "x": -72,
-                "y": -72,
+                "y": -216,
                 "width": 72,
                 "height": 72
             }
         },
-        "buildx-sprint/CreateFin_631o3": {
-            "component": "buildx-sprint/CreateFin",
+        "buildx-editor/CreateFin_631o3": {
+            "component": "buildx-editor/CreateFin",
             "metadata": {
                 "label": "CreateFin",
-                "x": 72,
-                "y": -108,
+                "x": 108,
+                "y": -144,
                 "width": 72,
                 "height": 72
             }
@@ -55,8 +55,8 @@
             "component": "objects/ExtractProperty",
             "metadata": {
                 "label": "ExtractProperty",
-                "x": 180,
-                "y": -144,
+                "x": 252,
+                "y": -72,
                 "width": 72,
                 "height": 72
             }
@@ -65,18 +65,18 @@
             "component": "core/Repeat",
             "metadata": {
                 "label": "Repeat",
-                "x": -180,
-                "y": -144,
+                "x": -252,
+                "y": -252,
                 "width": 72,
                 "height": 72
             }
         },
-        "buildx-sprint/ClearScene_nekcn": {
-            "component": "buildx-sprint/ClearScene",
+        "buildx-editor/ClearScene_nekcn": {
+            "component": "buildx-editor/ClearScene",
             "metadata": {
                 "label": "ClearScene",
-                "x": -108,
-                "y": -288,
+                "x": -144,
+                "y": -360,
                 "width": 72,
                 "height": 72
             }
@@ -85,17 +85,17 @@
     "connections": [
         {
             "src": {
-                "process": "buildx-sprint/GetDefaultParameters_7fxg8",
+                "process": "buildx-editor/GetDefaultParameters_7fxg8",
                 "port": "out"
             },
             "tgt": {
-                "process": "buildx-sprint/CreateFin_631o3",
+                "process": "buildx-editor/CreateFin_631o3",
                 "port": "parameters"
             }
         },
         {
             "src": {
-                "process": "buildx-sprint/CreateFin_631o3",
+                "process": "buildx-editor/CreateFin_631o3",
                 "port": "out"
             },
             "tgt": {
@@ -112,8 +112,8 @@
                 "port": "out"
             },
             "tgt": {
-                "process": "o",
-                "port": "in"
+                "process": "preview",
+                "port": "geometry"
             }
         },
         {
@@ -122,22 +122,20 @@
                 "port": "out"
             },
             "tgt": {
-                "process": "buildx-sprint/GetDefaultParameters_7fxg8",
+                "process": "buildx-editor/ClearScene_nekcn",
                 "port": "in"
             }
         },
         {
             "src": {
-                "process": "buildx-sprint/ClearScene_nekcn",
+                "process": "buildx-editor/ClearScene_nekcn",
                 "port": "out"
             },
             "tgt": {
-                "process": "o",
+                "process": "buildx-editor/GetDefaultParameters_7fxg8",
                 "port": "in"
             },
-            "metadata": {
-                "route": null
-            }
+            "metadata": {}
         },
         {
             "data": "inner",
@@ -147,17 +145,10 @@
             }
         },
         {
-            "data": "fff",
+            "data": "yellow",
             "tgt": {
-                "process": "core/Repeat_nxa8h",
-                "port": "in"
-            }
-        },
-        {
-            "data": "ss",
-            "tgt": {
-                "process": "buildx-sprint/ClearScene_nekcn",
-                "port": "in"
+                "process": "preview",
+                "port": "color"
             }
         }
     ]

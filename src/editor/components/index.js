@@ -97,14 +97,13 @@ const floor = ({width, bayLength, materialThickness}) => makePiece([
   [0,0]
 ], materialThickness, '#777')
 
-const extrudeShape = (shape, extrudeSettings, color) => {
+const extrudeShape = (shape, extrudeSettings, color=null) => {
   // const geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
   const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-
-  const material = new THREE.MeshBasicMaterial({ color });
+  const material = color ? new THREE.MeshBasicMaterial({ color }) : window.plyMaterial
   // const material = new THREE.MeshLambertMaterial({ color, side: THREE.DoubleSide });
   // const material = customShader;
-  return new THREE.Mesh(geometry, window.plyMaterial)
+  return new THREE.Mesh(geometry, material)
 }
 
 const makePiece = (points, amount, color=0x00ff00) => {

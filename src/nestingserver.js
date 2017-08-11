@@ -69,7 +69,7 @@ function doNestingSync(req, res) {
 
     // XXX: ugly API that the cutsheet must exist as a SVG path already
     const inputData = { svg: svgData, bin: binId };
-    const jobOptions = { maxTime: req.config.maxJobTime };
+    const jobOptions = { maxTime: req.config.jobTime };
 
     req.runner.runJob(req.config.pluginUrl, inputData, jobOptions, (err, results, details) => {
       if (err) {
@@ -114,9 +114,14 @@ function setupServer(options, callback) {
   const port = options.port || 3000
   const jsjobOptions = {}
   const config = {
-    maxJobTime: 15, // seconds
+    jobTime: 15*60, // seconds
     pluginUrl: 'http://localhost:8080/js/svgnest.bundle.js', // TODO: serve ourselves
-    jsjob: {},
+    jsjob: {
+      timeout: 30*60*1000, // hard cutoff
+    },
+  }
+  for (var k in options) {
+    config[k] = options[k]
   }
 
   setupJsJob(config.jsjob, (err, runner) => {
@@ -124,14 +129,15 @@ function setupServer(options, callback) {
 
     const app = setupApp(runner, config);
     const server = app.listen(port, (err) => {
-      // return callback(err, app, port)
       return callback(err, server, port)
     })
+    // Support super-long HTTP requests
+    server.setTimeout(config.jsjob.timeout*1.1)
   })
 }
 
 function main() {
-  const callback = (err, app, port) => {
+  const callback = (err, server, port) => {
     if (err) {
       console.error(err)
       process.exit(2)

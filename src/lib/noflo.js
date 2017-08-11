@@ -1,15 +1,17 @@
 
 const r = window['require'];
 const noflo = r('noflo');
-const nofloWebRTC = r('noflo-runtime-webrtc');
+const nofloPostMessage = r('noflo-runtime-postmessage');
 
-
-export function flowhubURL(signalServer, runtimeId, options) {
+export function flowhubURL(runtimeId, options) {
   options = options || {};
-  options.ide = options.ide || 'http://app.flowhub.io';
-  const protocol = 'webrtc';
-  const address = `${signalServer}#${runtimeId}`;
-  const params = `protocol=${protocol}&address=${address}&id=${runtimeId}`;
+  options.ide = options.ide || 'https://app.flowhub.io';
+  const protocol = 'opener';
+  const address = window.location.href
+  var params = `protocol=${protocol}&address=${address}`;
+  if (runtimeId) {
+    params = `&id=${runtimeId}`
+  }
   var debugUrl = options.ide+'#runtime/endpoint?'+encodeURIComponent(params);
   return debugUrl;
 }
@@ -17,11 +19,10 @@ export function flowhubURL(signalServer, runtimeId, options) {
 function createRuntime(libraryPrefix, options) {
 
   options = options || {};
-  options.protocol = options.protocol || 'webrtc';
-  options.signalServer = options.signalServer || 'https://api.flowhub.io';
+  options.protocol = options.protocol || 'opener';
 
   if (options.id) {
-    options.address = options.signalServer + "#" + options.id;
+    options.address = window.location.href;
   }
 
   var runtimeOptions = {
@@ -41,24 +42,17 @@ function createRuntime(libraryPrefix, options) {
   }
 
   var runtime = null;
-  if (options.protocol == 'webrtc') {
-    if (options.address) {
-      // ID to use specified from outside, normally by Flowhub IDE
-      runtime = nofloWebRTC(options.address, runtimeOptions, true);
-    } else {
-      // Generate new ID
-      runtime = nofloWebRTC(null, runtimeOptions, true);
-      runtime.signaller = options.signalServer;
-    }
-  } else if (queryProtocol == 'iframe') {
-    runtime = iframeRuntime(runtimeOptions);
+  if (options.protocol == 'opener') {
+    runtime = nofloPostMessage.opener(runtimeOptions);
+  } else if (options.protocol == 'iframe') {
+    runtime = nofloPostMessage.iframe(runtimeOptions);
   }
   return runtime;
 }
 
 export function setupAndRun(options, callback) {
   options = options || {};
-  const libraryPrefix = 'buildx-sprint';
+  const libraryPrefix = 'buildx-editor';
   const mainGraph = 'main';
 
   const loader = new noflo.ComponentLoader(libraryPrefix);
@@ -69,6 +63,9 @@ export function setupAndRun(options, callback) {
     instance.on('ready', function () {
       const graph = instance.network.graph;
       const runtime = createRuntime(libraryPrefix, { graph: graph, id: options.id });
+      if (!runtime) {
+        return callback(new Error('Unable to create a NoFlo runtime'));
+      }
       runtime.start();
       setTimeout(() => {
         return callback(null, runtime);

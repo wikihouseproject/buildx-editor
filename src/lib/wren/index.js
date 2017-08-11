@@ -6,7 +6,7 @@ function Wren(overrides) {
   const inputs = merge(defaults, overrides)
   const outputs = _outputs(inputs)
 
-  const toSVG = () => outputs.formats.svg()
+  const toSVG = (options) => outputs.formats.svg(options)
 
   return {
     inputs,

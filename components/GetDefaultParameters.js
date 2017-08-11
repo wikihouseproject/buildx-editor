@@ -1,5 +1,5 @@
 const noflo = require('noflo');
-const wren = window.wren; // HACK
+const Wren = window.Wren; // HACK
 
 exports.getComponent = function() {
   var c = new noflo.Component();
@@ -21,7 +21,7 @@ exports.getComponent = function() {
     var ignored = input.getData('in');
 
     // Process data and send output
-    const out = wren.getParameters().defaults;
+    const out = Wren().inputs;
     output.send({
       out: out
     });

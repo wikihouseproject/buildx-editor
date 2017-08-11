@@ -1,9 +1,8 @@
 import * as noflo from './lib/noflo';
-import * as wren from './lib/wren';
-
+import Wren from './lib/wren';
 import * as uuid from 'uuid';
 
-window.wren = wren; // Hack to expose for NoFlo components, built with another
+window.Wren = Wren; // Hack to expose for NoFlo components, built with another
 
 function setupNoFlo(callback) {
 
@@ -44,39 +43,42 @@ function main() {
 
     nofloRuntime = runtime;
     console.log('NoFlo running, adding link');
-    const url = noflo.flowhubURL(runtime.signaller, runtime.id);
-    console.log('Open in Flowhub URL:\n', url);
+    const url = noflo.flowhubURL(runtime.id);
     const link = flowhubLink(url);
     link.id = 'flowhubLink';
+    link.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      runtime.openClient(link.getAttribute('href'));
+    });
     document.body.appendChild(link);
+
+    window.scene = scene; // HACK
 
     // Send the scene to NoFlo
     // XXX: does not work, since project mode rebuilds the graph/network
     noflo.sendToInport(runtime, 'default/main', 'scene', scene);
-    window.scene = scene; // HACK
   });
 
   var renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
-  var geometry = new THREE.BoxGeometry( 500, 500, 500 );
+  var geometry = new THREE.BoxGeometry( 2, 2, 2 );
   var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
   var cube = new THREE.Mesh( geometry, material );
   scene.add( cube );
 
-  camera.position.z = 1000;
+  camera.position.z = 10;
+
+  const orbitControls = new THREE.OrbitControls(camera, renderer.domElement)
 
   var animate = function () {
     requestAnimationFrame( animate );
-
-    cube.rotation.x += 0.02;
-    cube.rotation.y += 0.02;
-
     renderer.render(scene, camera);
   };
 
-  animate();
+  requestAnimationFrame( animate );
 
 }
 main();
