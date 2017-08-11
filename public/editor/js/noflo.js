@@ -10866,8 +10866,8 @@ module.exports = {
 				"label": "o"
 			}
 		},
-		"buildx-sprint/GetDefaultParameters_7fxg8": {
-			"component": "buildx-sprint/GetDefaultParameters",
+		"buildx-editor/GetDefaultParameters_7fxg8": {
+			"component": "buildx-editor/GetDefaultParameters",
 			"metadata": {
 				"label": "GetDefaultParameters",
 				"x": -72,
@@ -10876,8 +10876,8 @@ module.exports = {
 				"height": 72
 			}
 		},
-		"buildx-sprint/CreateFin_631o3": {
-			"component": "buildx-sprint/CreateFin",
+		"buildx-editor/CreateFin_631o3": {
+			"component": "buildx-editor/CreateFin",
 			"metadata": {
 				"label": "CreateFin",
 				"x": 72,
@@ -10906,8 +10906,8 @@ module.exports = {
 				"height": 72
 			}
 		},
-		"buildx-sprint/ClearScene_nekcn": {
-			"component": "buildx-sprint/ClearScene",
+		"buildx-editor/ClearScene_nekcn": {
+			"component": "buildx-editor/ClearScene",
 			"metadata": {
 				"label": "ClearScene",
 				"x": -108,
@@ -10920,17 +10920,17 @@ module.exports = {
 	"connections": [
 		{
 			"src": {
-				"process": "buildx-sprint/GetDefaultParameters_7fxg8",
+				"process": "buildx-editor/GetDefaultParameters_7fxg8",
 				"port": "out"
 			},
 			"tgt": {
-				"process": "buildx-sprint/CreateFin_631o3",
+				"process": "buildx-editor/CreateFin_631o3",
 				"port": "parameters"
 			}
 		},
 		{
 			"src": {
-				"process": "buildx-sprint/CreateFin_631o3",
+				"process": "buildx-editor/CreateFin_631o3",
 				"port": "out"
 			},
 			"tgt": {
@@ -10957,13 +10957,13 @@ module.exports = {
 				"port": "out"
 			},
 			"tgt": {
-				"process": "buildx-sprint/GetDefaultParameters_7fxg8",
+				"process": "buildx-editor/GetDefaultParameters_7fxg8",
 				"port": "in"
 			}
 		},
 		{
 			"src": {
-				"process": "buildx-sprint/ClearScene_nekcn",
+				"process": "buildx-editor/ClearScene_nekcn",
 				"port": "out"
 			},
 			"tgt": {
@@ -10991,7 +10991,7 @@ module.exports = {
 		{
 			"data": "ss",
 			"tgt": {
-				"process": "buildx-sprint/ClearScene_nekcn",
+				"process": "buildx-editor/ClearScene_nekcn",
 				"port": "in"
 			}
 		}

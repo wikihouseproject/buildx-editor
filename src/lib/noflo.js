@@ -49,7 +49,7 @@ function createRuntime(libraryPrefix, options) {
 
 export function setupAndRun(options, callback) {
   options = options || {};
-  const libraryPrefix = 'buildx-sprint';
+  const libraryPrefix = 'buildx-editor';
   const mainGraph = 'main';
 
   const loader = new noflo.ComponentLoader(libraryPrefix);
