@@ -73,6 +73,7 @@ function doNestingSync(req, res) {
 
     req.runner.runJob(req.config.pluginUrl, inputData, jobOptions, (err, results, details) => {
       if (err) {
+        // QUESTION: stop jsjob and return res.end() here?
         return res.status(500).send(`Unable to nest file: ${err.message}`)
       }
       return res.json({files: results})
@@ -90,6 +91,7 @@ function setupJsJob(options, callback) {
 
 function setupApp(runner, config) {
   const app = express()
+  app.runner = runner
 
   // Inject the JsJob Runner instance request handlers using a middleware
   app.use((req, res, next) => {
@@ -102,8 +104,13 @@ function setupApp(runner, config) {
   return app
 }
 
-function setupServer(options, callback) {
+function closeServer(app, done) {
+  app.server.close( () => {
+    return app.runner.stop(done)
+  })
+}
 
+function setupServer(options, callback) {
   const port = options.port || 3000
   const jsjobOptions = {}
   const config = {
@@ -121,8 +128,8 @@ function setupServer(options, callback) {
     if (err) return callback(err)
 
     const app = setupApp(runner, config);
-
     const server = app.listen(port, (err) => {
+      app.server = server
       return callback(err, app, port)
     })
     // Support super-long HTTP requests
@@ -148,4 +155,5 @@ if (!module.parent) {
 module.exports = {
   main,
   setupServer,
+  closeServer
 }

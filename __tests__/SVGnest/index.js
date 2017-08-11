@@ -3,6 +3,7 @@ import http from 'http'
 import path from 'path'
 
 import superagent from 'superagent'
+import { catchErrors } from '../../jest-hotfixes'
 import bluebird from 'bluebird'
 import rimraf from 'rimraf'
 
@@ -50,11 +51,10 @@ describe('Nesting', () => {
     nestingserver.setupServer(serverOptions, (err, a) => {
       app = a
       return done()
-    }); 
-  }) 
+    });
+  })
   afterAll((done) => {
-    app.stop()
-    return done()
+    nestingserver.closeServer(app, done)
   })
 
   // Increase timeout for tests
@@ -76,12 +76,13 @@ describe('Nesting', () => {
     const svgData = new Buffer(wrenSvg.replace('</svg>', cutsheet+'</svg>'))
 
     it('should return cutsheets', function (done) {
+
       const req = superagent
         .post(`http://localhost:${serverOptions.port}/nest`)
         .field('bin', binId)
         .timeout(1*60*1000)
         .attach('svg', svgData, 'svg')
-      req.end((err, res) => {
+      req.end(catchErrors(done, (err, res) => {
         if (err && res) err.message += `: ${JSON.stringify(res.text)}`
         expect(err).not.toBeTruthy()
         expect(res.body.files).toBeInstanceOf(Array)
@@ -89,9 +90,8 @@ describe('Nesting', () => {
         expect(res.body.files.length).toBeLessThan(15)
         const r = res.body.files[0]
         expect(r).toMatch('</svg>')
-
         return writeFilesToNewDirectory(res.body.files, 'public/svgnest/wren-defaults-nested').then(done)
-      });
+      }));
     });
   });
 });
