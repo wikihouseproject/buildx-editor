@@ -78,7 +78,14 @@ function layoutPartsWithoutOverlap(parts, separation=0.1) {
     part.geometry.pts = movedPoints
   }
 
-  console.log('parts layout aspect ratio', currentY/maxWidth)
+  const bounds = {
+    x: 0,
+    y: 0,
+    width: maxWidth,
+    height: currentY,
+  }
+
+  return bounds
 }
 
 // https://stackoverflow.com/questions/19269545/how-to-get-n-no-elements-randomly-from-an-array

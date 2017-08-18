@@ -83,11 +83,8 @@ function doNestingSync(req, res) {
 }
 
 function serveJsJobScript(req, res) {
-    console.log('serve .jsjob')
-
     fs.readFile(req.config.pluginPath, (err, content) => {
       if (err) {
-        console.log('err', err)
         return res.status(500).send(`Failed to open svgnest.js: ${err.message}`)
       }
 
