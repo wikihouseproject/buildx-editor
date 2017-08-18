@@ -11,10 +11,35 @@ function isPartGeometry(o) {
   return hasPoints && hasPosition && hasRotation
 }
 
+function traverseDepthFirst(root, path, isLeaf, leafCallback) {
+
+  // Allow stopping early, for finding compund objects/values
+  if (isLeaf(root)) {
+    return leafCallback(root, path, true);
+  }
+
+  if (Array.isArray(root)) {
+    for (var idx=0; idx<root.length; idx++) {
+      const val = root[idx];
+      traverseDepthFirst(val, path.concat([idx]), isLeaf, leafCallback)
+    }
+  } else if (root && typeof root == 'object') {
+    for (var key in root) {
+      if (root.hasOwnProperty(key)) {
+        const val = root[key];
+        traverseDepthFirst(val, path.concat([key]), isLeaf, leafCallback)
+      }
+    }
+  } else {
+    // leaf which does not meet classifier
+    return leafCallback(root, path, false)
+  }
+}
+
 function getParts(pieces) {
 
   var ret = [];
-  const addPart = (geometry, ancestors) => {
+  const addPart = (geometry, ancestors, matched) => {
     if (!isPartGeometry(geometry)) {
       throw new Error("Not a proper part: " + JSON.stringify(geometry));
     }
@@ -29,29 +54,7 @@ function getParts(pieces) {
     return p
   }
 
-  // Basically just extracting leaves, keeping track of the path down to the leaf
-  for (var structureType in pieces) {
-    const list = pieces[structureType];
-    for (var structureIdx in list) {
-      const parts = list[structureIdx]
-      for (var partType in parts) {
-        if (partType == 'sides') {
-          for (var sideName in parts[partType]) {
-            const features = parts[sideName];
-            for (var featureName in features) {
-              const parents = [ structureType, structureIdx, partType, sideName, featureName ]
-              features[featureName].map((g, i) => addPart(g, parents.concat([i])))
-            }
-          }
-        } else {
-          for (var partIdx in parts[partType]) {
-            const parents = [ structureType, structureIdx, partType, partIdx ]
-            parts[partType][partIdx].map((g, i) => addPart(g, parents.concat([i])) )
-          }
-        }
-      }
-    }
-  }
+  traverseDepthFirst(pieces, [], isPartGeometry, addPart)
   return ret
 }
 
