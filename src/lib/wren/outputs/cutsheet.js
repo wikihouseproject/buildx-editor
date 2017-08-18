@@ -39,14 +39,14 @@ function getParts(pieces) {
           for (var sideName in parts[partType]) {
             const features = parts[sideName];
             for (var featureName in features) {
-              const parents = [ featureName, sideName, partType, structureIdx, structureType ]
-              features[featureName].map((g, i) => addPart(g, [i].concat(parents)))
+              const parents = [ structureType, structureIdx, partType, sideName, featureName ]
+              features[featureName].map((g, i) => addPart(g, parents.concat([i])))
             }
           }
         } else {
           for (var partIdx in parts[partType]) {
-            const parents = [ partIdx, partType, structureIdx, structureType ]
-            parts[partType][partIdx].map((g, i) => addPart(g, [i].concat(parents)) )
+            const parents = [ structureType, structureIdx, partType, partIdx ]
+            parts[partType][partIdx].map((g, i) => addPart(g, parents.concat([i])) )
           }
         }
       }
@@ -116,7 +116,7 @@ function calculateViewBox(points, padding=0) {
 export function layout(pieces, options={}) {
 
   const assignId = (part) => {
-    part.id = part.path.reverse().join("-")
+    part.id = part.path.join("-")
     return part
   }
 
