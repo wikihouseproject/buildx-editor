@@ -19,17 +19,3 @@ describe('SVG export', () => {
     });
   });
 });
-
-// describe.skip('with simple parameters', () => {
-//   const wren = new Wren();
-//   it('can generate points', () => {
-//     expect(wren.chassis).toHaveProperty('frames')
-//   });
-// });
-
-// describe.skip('CSV export', () => {
-//   const wren = new Wren();
-//   it('outputs CSV values', () => {
-//     expect(wren.toCSV()).toEqual([1,2,3])
-//   });
-// });
