@@ -3,7 +3,7 @@ const SVG = require('./formats/svg')
 
 const { flatMap } = require('lodash')
 
-function isPartGeometry(o) {
+export function isPartGeometry(o) {
   const hasPoints = o.pts && Array.isArray(o.pts) && o.pts.length > 0 
   const hasPosition = o.pos && typeof o.pos.x == 'number' && typeof o.pos.y == 'number' && typeof o.pos.z == 'number'
   const hasRotation = o.rot && typeof o.rot.order == 'string' &&
@@ -11,7 +11,7 @@ function isPartGeometry(o) {
   return hasPoints && hasPosition && hasRotation
 }
 
-function traverseDepthFirst(root, path, isLeaf, leafCallback) {
+export function traverseDepthFirst(root, path, isLeaf, leafCallback) {
 
   // Allow stopping early, for finding compund objects/values
   if (isLeaf(root)) {
@@ -36,7 +36,7 @@ function traverseDepthFirst(root, path, isLeaf, leafCallback) {
   }
 }
 
-function getParts(pieces) {
+export function getParts(pieces) {
 
   var ret = [];
   const addPart = (geometry, ancestors, matched) => {
