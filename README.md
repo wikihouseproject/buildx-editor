@@ -1,6 +1,8 @@
 # Buildx Editor
 
-[![Travis](https://img.shields.io/travis/wikihouseproject/buildx-editor.svg)](https://travis-ci.org/wikihouseproject/buildx-editor)
+[![Travis](https://img.shields.io/travis/wikihouseproject/buildx-editor/master.svg)](https://travis-ci.org/wikihouseproject/buildx-editor)
+[![Code Climate](https://img.shields.io/codeclimate/github/wikihouseproject/buildx-editor.svg)](https://codeclimate.com/github/wikihouseproject/buildx-editor)
+[![Code Climate Issues](https://img.shields.io/codeclimate/issues/github/wikihouseproject/buildx-editor.svg)](https://codeclimate.com/github/wikihouseproject/buildx-editor/issues)
 [![Gitter](https://img.shields.io/gitter/room/buildx-sprint/Lobby.svg)](http://gitter.im/buildx-sprint/Lobby)
 
 This repository is currently undergoing a lot of development.
