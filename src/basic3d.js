@@ -1,8 +1,8 @@
 import * as noflo from './lib/noflo';
 import Wren from './lib/wren';
-import * as uuid from 'uuid';
+import defaults from './lib/wren/defaults'
 
-window.Wren = Wren; // Hack to expose for NoFlo components, built with another
+import * as uuid from 'uuid';
 
 function setupNoFlo(callback) {
 
@@ -53,19 +53,30 @@ function main() {
     });
     document.body.appendChild(link);
 
-    window.scene = scene; // HACK
-
+    const params = defaults
+  
     const sendInputs = () => {
         // Send the scene to NoFlo
-        const packet = {
+        const scenePacket = {
           graph: 'default/main',
           port: 'scene',
           event: 'data',
           payload: scene,
         }
-        runtime.runtime.sendPacket(packet, (err) => {
+        const parametersPacket = {
+          graph: 'default/main',
+          port: 'parameters',
+          event: 'data',
+          payload: params,
+        }
+        runtime.runtime.sendPacket(parametersPacket, (err) => {
           if (err) {
             console.error('send packet failed', err)
+          }
+        })
+        runtime.runtime.sendPacket(scenePacket, (err) => {
+          if (err) {
+            console.error('scene send packet failed', err)
           }
         })
     }
