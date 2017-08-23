@@ -1,5 +1,10 @@
 const noflo = require('noflo');
-const Wren = window.Wren; // HACK
+
+const defaults = require('../src/lib/wren/defaults')
+
+function clone(obj) {
+    return JSON.parse(JSON.stringify(obj))
+}
 
 exports.getComponent = function() {
   var c = new noflo.Component();
@@ -21,7 +26,7 @@ exports.getComponent = function() {
     var ignored = input.getData('in');
 
     // Process data and send output
-    const out = Wren().inputs;
+    const out = clone(defaults);
     output.send({
       out: out
     });
