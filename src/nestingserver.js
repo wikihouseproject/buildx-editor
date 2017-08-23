@@ -1,4 +1,5 @@
 const http = require('http')
+const fs = require('fs')
 
 const express = require('express')
 const multiparty = require('multiparty')
@@ -81,6 +82,16 @@ function doNestingSync(req, res) {
   })
 }
 
+function serveJsJobScript(req, res) {
+    fs.readFile(req.config.pluginPath, (err, content) => {
+      if (err) {
+        return res.status(500).send(`Failed to open svgnest.js: ${err.message}`)
+      }
+
+      res.set('Content-Type', 'application/javascript')
+      return res.send(content)
+    })
+}
 
 function setupJsJob(options, callback) {
   const runner = new jsjob.Runner(options);
@@ -100,6 +111,8 @@ function setupApp(runner, config) {
     next()
   })
 
+  app.get('/svgnest.jsjob', serveJsJobScript)
+
   app.post('/nest', doNestingSync)
   return app
 }
@@ -115,7 +128,8 @@ function setupServer(options, callback) {
   const jsjobOptions = {}
   const config = {
     jobTime: 15*60, // seconds
-    pluginUrl: 'http://localhost:8080/js/svgnest.bundle.js', // TODO: serve ourselves
+    pluginUrl: `http://localhost:${port}/svgnest.jsjob`,
+    pluginPath: 'dist/js/svgnest.bundle.js',
     jsjob: {
       timeout: 30*60*1000, // hard cutoff
     },
