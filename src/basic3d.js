@@ -55,9 +55,35 @@ function main() {
 
     window.scene = scene; // HACK
 
-    // Send the scene to NoFlo
-    // XXX: does not work, since project mode rebuilds the graph/network
-    noflo.sendToInport(runtime, 'default/main', 'scene', scene);
+    const sendInputs = () => {
+        // Send the scene to NoFlo
+        const packet = {
+          graph: 'default/main',
+          port: 'scene',
+          event: 'data',
+          payload: scene,
+        }
+        runtime.runtime.sendPacket(packet, (err) => {
+          if (err) {
+            console.error('send packet failed', err)
+          }
+        })
+    }
+
+    runtime.runtime.on('ports', (ports) => {
+        console.log('Ports changed:', ports)
+        sendInputs() // Assume network changed and needs inputs anew
+    })
+
+    runtime.runtime.on('packet', (msg) => {
+        if (msg.event != 'data') {
+            // ignore connect/disconnect
+            return
+        }
+        console.log('NoFlo sent:', msg)
+    })
+
+    sendInputs()
   });
 
   var renderer = new THREE.WebGLRenderer();
