@@ -1,8 +1,6 @@
 
-global.wren = require('./wren');
-
 const r = window['require'];
-const noflo = r('noflo');
+export const noflo = r('noflo');
 const nofloPostMessage = r('noflo-runtime-postmessage');
 
 export function flowhubURL(runtimeId, options) {

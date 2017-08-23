@@ -6,6 +6,10 @@ import HUD from './ui/controls/hud'
 import House from './components/house'
 import { merge } from "lodash"
 import Wren from "../lib/wren"
+
+// Export so NoFlo build can use it
+window.wren = Wren
+
 import WrenWorker from "worker-loader?inline!../lib/wren/worker"
 
 const CONFIG = {
@@ -18,13 +22,17 @@ const USING_WEBWORKERS = (window.Worker && CONFIG.WEBWORKERS)
 
 var wrenWorker = (USING_WEBWORKERS) ? new WrenWorker : null
 
-let dimensions = Wren().inputs.dimensions
+let dimensions = Wren.inputs({}).dimensions
 const changeDimensions = house => newDimensions => {
   dimensions = merge(dimensions, newDimensions)
   if (USING_WEBWORKERS) {
     wrenWorker.postMessage({dimensions})
   } else {
-    house.update(Wren({dimensions}).outputs.pieces)
+
+    Wren({dimensions}).then((res) => {
+      house.update(res.outputs.pieces)
+    })
+    
   }
 }
 
@@ -55,8 +63,9 @@ loader.load('img/materials/plywood/birch.jpg',
 )
 
 function prerender() {
-  let initialPieces = Wren({dimensions}).outputs.pieces
-  const house = House(initialPieces)
+  Wren({dimensions}).then((res) => {
+
+  const house = House(res.outputs.pieces)
 
   if (USING_WEBWORKERS) {
     wrenWorker.onmessage = event => house.update(event.data.pieces)
@@ -68,6 +77,7 @@ function prerender() {
   scene.add(house.output)
 
   requestAnimationFrame(render)
+  })
 }
 
 function render() {
