@@ -61,16 +61,17 @@ function main() {
 
     const params = defaults
   
-    const sendInputs = () => {
+    var lastGraphName = 'default/main'
+    const sendInputs = (graphName) => {
         // Send the scene to NoFlo
         const scenePacket = {
-          graph: 'default/main',
+          graph: graphName,
           port: 'scene',
           event: 'data',
           payload: scene,
         }
         const parametersPacket = {
-          graph: 'default/main',
+          graph: graphName,
           port: 'parameters',
           event: 'data',
           payload: params,
@@ -87,9 +88,12 @@ function main() {
         })
     }
 
+    document.getElementById('send-data').addEventListener('click', () => sendInputs(lastGraphName))
+
     runtime.runtime.on('ports', (ports) => {
         console.log('Ports changed:', ports)
-        sendInputs() // Assume network changed and needs inputs anew
+        lastGraphName = ports.graph
+        sendInputs(ports.graph) // Assume network changed and needs inputs anew
     })
 
     runtime.runtime.on('packet', (msg) => {
@@ -100,7 +104,7 @@ function main() {
         console.log('NoFlo sent:', msg)
     })
 
-    sendInputs()
+    sendInputs(lastGraphName)
   });
 
   var renderer = new THREE.WebGLRenderer();
