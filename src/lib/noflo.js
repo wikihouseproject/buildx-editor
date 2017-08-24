@@ -40,6 +40,12 @@ function createRuntime(libraryPrefix, options) {
   if (options.graph) {
     runtimeOptions.defaultGraph = options.graph;
   }
+  if (options.repository) {
+    runtimeOptions.repository = options.repository;
+  }
+  if (options.namespace) {
+    runtimeOptions.namespace = options.namespace;
+  }
 
   var runtime = null;
   if (options.protocol == 'opener') {
@@ -62,7 +68,13 @@ export function setupAndRun(options, callback) {
 
     instance.on('ready', function () {
       const graph = instance.network.graph;
-      const runtime = createRuntime(libraryPrefix, { graph: graph, id: options.id });
+      const o = {
+        graph: graph,
+        id: options.id,
+        namespace: options.namespace,
+        repository: options.respository,
+      }
+      const runtime = createRuntime(libraryPrefix, o);
       if (!runtime) {
         return callback(new Error('Unable to create a NoFlo runtime'));
       }

@@ -11,11 +11,17 @@ function setupNoFlo(callback) {
   var runtimeId = storage.getItem(idKey);
   if (!runtimeId) {
     runtimeId = uuid.v4();
-    // Persistence DISABLED, due to https://github.com/noflo/noflo-ui/issues/748
     //storage.setItem(idKey, runtimeId);
   }
 
-  noflo.setupAndRun({ id: runtimeId }, (err, runtime) => {
+  // Runtime ID passing DISABLED, due to https://github.com/noflo/noflo-ui/issues/748
+  const o = {
+    id: runtimeId,
+    namespace: 'buildx-editor',
+    repository: 'wikihouse-project/buildx-editor',
+  }
+
+  noflo.setupAndRun(o, (err, runtime) => {
     return callback(err, runtime);
   });
 
