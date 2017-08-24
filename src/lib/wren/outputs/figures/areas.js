@@ -3,8 +3,6 @@ const Point = require('../../utils/point')
 const roof = require('../../outputs/pieces/bay/side')
 const O = require('../../utils/object')
 
-const { unit } = require('mathjs')
-
 const featureDistance = (points, name) => {
   const indices = profile.sides[name];
   const first = points[indices[0]];
@@ -37,7 +35,7 @@ const area = (points, features, length) => {
 
 const roofArea = (start, end, length) => Point.distance(start, end) * length
 
-const areas = (inputs, dimensions, points, _unit='mm2') => {
+const areas = (inputs, dimensions, points) => {
 
   const inputDimensions = inputs.dimensions
   const iEndWallArea = Clipper.area(Object.values(points.inner))
@@ -75,7 +73,7 @@ const areas = (inputs, dimensions, points, _unit='mm2') => {
   }
   // console.log(unit(100000, 'mm^2').to('mm^2').value)
 
-  return O.mutatingMap(_areas, v => unit(v, 'mm2').toNumber(_unit))
+  return O.mutatingMap(_areas, v => v/(1000*1000))
 }
 
 module.exports = areas

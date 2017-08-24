@@ -1,7 +1,6 @@
 const O = require('../../utils/object')
-const { unit } = require('mathjs')
 
-const volumes = (inputs, dimensions, points, areas, _unit="mm3") => {
+const volumes = (inputs, dimensions, points, areas) => {
 
   const inputDimensions = inputs.dimensions
   const m = inputs.materials
@@ -28,7 +27,7 @@ const volumes = (inputs, dimensions, points, areas, _unit="mm3") => {
     }
   }
 
-  return O.mutatingMap(_volumes, v => unit(v, 'mm3').toNumber(_unit))
+  return O.mutatingMap(_volumes, v => v/(1000*1000*1000))
 }
 
 module.exports = volumes
