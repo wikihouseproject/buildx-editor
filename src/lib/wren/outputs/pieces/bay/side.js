@@ -9,9 +9,8 @@ const Point = require('../../../utils/point')
 const WrenHelpers = require('../../../utils/wrenhelpers')
 const { merge } = require('lodash')
 const THREE = require('three')
-const { unit } = require('mathjs')
 
-const side = (params, _unit='mm') => ([start, end], pos={ x: 0, y: 0, z: 0 }, rotationOverrides={}) => {
+function side(params, [start, end], pos={ x: 0, y: 0, z: 0 }, rotationOverrides={}) {
 
   const length = Point.distance(start, end)
   const angle = Point.angle(start, end)
@@ -29,22 +28,22 @@ const side = (params, _unit='mm') => ([start, end], pos={ x: 0, y: 0, z: 0 }, ro
   const euler = new THREE.Euler(newRot.x, newRot.y, newRot.z, newRot.order)
   const direction = startPosition.clone().applyEuler(euler).normalize()
 
-  const pieceLengths = WrenHelpers.pieces(length, params.materials.plywood.maxHeight)
+  const pieceLengths = WrenHelpers.pieces(length/1000, params.materials.plywood.maxHeight/1000)
 
   let allPieces = []
   for (let i = 0; i < pieceLengths.length; i++) {
     const pieceLength = pieceLengths[i]
     const pts = [
       [0, pieceLength],
-      [params.dimensions.bayLength, pieceLength],
-      [params.dimensions.bayLength, 0],
+      [params.dimensions.bayLength/1000, pieceLength],
+      [params.dimensions.bayLength/1000, 0],
       [0, 0]
-    ].map(pts => pts.map(pt => unit(pt, 'mm').toNumber(_unit) ))
+    ]
 
     let newPos = startPosition.clone().add(
       new THREE.Vector3(
         0,
-        unit(params.materials.plywood.maxHeight*i, 'mm').toNumber(_unit),
+        (params.materials.plywood.maxHeight/1000)*i,
         0
       ).applyEuler(euler)
     )
