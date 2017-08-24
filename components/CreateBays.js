@@ -27,13 +27,13 @@ exports.getComponent = function() {
     const fin = input.getData('fin');
 
     // Process data and send output
-    const numFrames = params.dimensions.bays + 1
-    var bays = []
+    const numFrames = params.dimensions.bays + 1;
+    var bays = [];
     for (var i=0; i<numFrames; i++) {
-      bays.push(Bay(fin, params, i))
+      bays.push(Bay(fin, params, i));
     }
     output.send({
-      out: bays
+      out: bays,
     });
     // Deactivate
     output.done();

@@ -1,6 +1,6 @@
 const noflo = require('noflo');
 
-const defaults = require('../src/lib/wren/defaults')
+const defaults = require('../src/lib/wren/defaults');
 
 function clone(obj) {
     return JSON.parse(JSON.stringify(obj))
@@ -28,7 +28,7 @@ exports.getComponent = function() {
     // Process data and send output
     const out = clone(defaults);
     output.send({
-      out: out
+      out: out,
     });
     // Deactivate
     output.done();

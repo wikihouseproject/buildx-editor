@@ -22,7 +22,7 @@ exports.getComponent = function() {
     var data = input.getData('parameters');
 
     // Process data and send output
-    const out = points(data.dimensions)
+    const out = points(data.dimensions);
 
     output.send({
       out: out

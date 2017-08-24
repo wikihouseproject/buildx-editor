@@ -25,17 +25,15 @@ exports.getComponent = function() {
     if (!input.hasData('frames', 'bays', 'fin')) {
       return;
     }
-    // Read packets we need to process
-    const [bays, frames, fin] = input.getData('bays', 'frames', 'fin');
 
     // Process data and send output
     const out = {
-      points: fin,
+      points: input.getData('fin'),
       pieces: {
-        frames,
-        bays,
+        frames: input.getData('frames'),
+        bays: input.getData('bays'),
       }
-    }
+    };
 
     output.send({
       out: out
