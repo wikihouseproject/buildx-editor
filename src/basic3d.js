@@ -6,15 +6,15 @@ import * as uuid from 'uuid';
 
 function setupNoFlo(callback) {
 
+  // Use a persistent runtime id
   const idKey = 'noflo_runtime_id';
   const storage = window.localStorage; // could also use sessionStorage
   var runtimeId = storage.getItem(idKey);
   if (!runtimeId) {
     runtimeId = uuid.v4();
-    //storage.setItem(idKey, runtimeId);
+    storage.setItem(idKey, runtimeId);
   }
 
-  // Runtime ID passing DISABLED, due to https://github.com/noflo/noflo-ui/issues/748
   const o = {
     id: runtimeId,
     namespace: 'buildx-editor',
