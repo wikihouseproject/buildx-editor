@@ -1,4 +1,6 @@
 
+global.wren = require('./wren');
+
 const r = window['require'];
 const noflo = r('noflo');
 const nofloPostMessage = r('noflo-runtime-postmessage');

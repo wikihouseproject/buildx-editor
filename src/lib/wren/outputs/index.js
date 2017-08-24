@@ -1,8 +1,9 @@
 const _areas = require('./figures/areas')
 const estimates = require('./figures/estimates')
 const _volumes = require('./figures/volumes')
-const _points = require('./points')
 const _dimensions = require('./figures/dimensions')
+
+const _points = require('./points')
 const _pieces = require('./pieces')
 const cutsheet = require('./cutsheet')
 
@@ -30,5 +31,8 @@ const outputs = inputs => {
     points
   }
 }
+
+outputs.points = _points;
+outputs.pieces = _pieces;
 
 module.exports = outputs

@@ -1,6 +1,7 @@
 const noflo = require('noflo');
 
-const Bay = require('../src/lib/wren/outputs/pieces/bay')
+const wren = window.wren;
+const Bay = wren.outputs.pieces.Bay;
 
 exports.getComponent = function() {
   var c = new noflo.Component();

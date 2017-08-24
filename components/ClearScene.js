@@ -1,4 +1,4 @@
-const noflo = require('noflo');
+const noflo = require('noflo'); 
 
 exports.getComponent = function() {
   var c = new noflo.Component();

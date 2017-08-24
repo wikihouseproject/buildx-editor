@@ -1,6 +1,7 @@
 const noflo = require('noflo');
 
-const Frame = require('../src/lib/wren/outputs/pieces/frame')
+const wren = window.wren;
+const Frame = wren.outputs.pieces.Frame;
 
 exports.getComponent = function() {
   var c = new noflo.Component();

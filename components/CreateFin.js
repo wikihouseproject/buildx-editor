@@ -1,6 +1,7 @@
 const noflo = require('noflo');
 
-const points = require('../src/lib/wren/outputs/points')
+const wren = window.wren;
+const points = wren.outputs.points;
 
 exports.getComponent = function() {
   var c = new noflo.Component();

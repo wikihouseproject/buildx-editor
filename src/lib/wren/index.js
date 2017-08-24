@@ -15,4 +15,7 @@ function Wren(overrides) {
   }
 }
 
+Wren.outputs = _outputs;
+Wren.defaults = defaults;
+
 module.exports = Wren

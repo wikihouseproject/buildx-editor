@@ -1,6 +1,7 @@
 const noflo = require('noflo');
 
-const defaults = require('../src/lib/wren/defaults');
+const wren = window.wren;
+const defaults = wren.defaults
 
 function clone(obj) {
     return JSON.parse(JSON.stringify(obj))
