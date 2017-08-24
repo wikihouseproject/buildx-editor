@@ -4,16 +4,16 @@
       "component": "core/Repeat"
     },
     "fin": {
-      "component": "CreateFin"
+      "component": "buildx-editor/CreateFin"
     },
     "frames": {
-      "component": "CreateFrames"
+      "component": "buildx-editor/CreateFrames"
     },
     "bays": {
-      "component": "CreateBays"
+      "component": "buildx-editor/CreateBays"
     },
     "geometry": {
-      "component": "MergeGeometry"
+      "component": "buildx-editor/MergeGeometry"
     },
     "scene": {
       "component": "core/Repeat"
