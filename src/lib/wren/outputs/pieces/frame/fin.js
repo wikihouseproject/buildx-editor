@@ -2,8 +2,6 @@
 
 const Point = require('../../../utils/point')
 const List = require('../../../utils/list')
-const { compose } = require('ramda')
-const { curry, zipObject } = require('lodash')
 
 const draw = points => {
   const arrayLength = Object.values(points.outer).length
@@ -25,16 +23,12 @@ const draw = points => {
   return shapes
 }
 
-const returnWithMidpoints = ([start,end]) => {
-  return ([start, Point.midpoint(start,end), end])
+function withMidpoints([start, end]) {
+  const mid = Point.midpoint(start,end)
+  return { 'START': start, 'END': end, 'MID': mid }
 }
 
 const fin = points => {
-
-  const withMidpoints = compose(
-    curry(zipObject)(['START', 'MID', 'END']),
-    returnWithMidpoints,
-  )
 
   const pointsWithMidPoints = {
     outer: List.loopifyInPairs(Object.values(points.outer)).map(withMidpoints),

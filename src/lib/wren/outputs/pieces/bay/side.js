@@ -9,9 +9,8 @@ const Point = require('../../../utils/point')
 const WrenHelpers = require('../../../utils/wrenhelpers')
 const { merge } = require('lodash')
 const THREE = require('three')
-const { unit } = require('mathjs')
 
-const side = (params, _unit='mm') => ([start, end], pos={ x: 0, y: 0, z: 0 }, rotationOverrides={}) => {
+function side(params, [start, end], pos={ x: 0, y: 0, z: 0 }, rotationOverrides={}) {
 
   const length = Point.distance(start, end)
   const angle = Point.angle(start, end)
@@ -39,12 +38,12 @@ const side = (params, _unit='mm') => ([start, end], pos={ x: 0, y: 0, z: 0 }, ro
       [params.dimensions.bayLength, pieceLength],
       [params.dimensions.bayLength, 0],
       [0, 0]
-    ].map(pts => pts.map(pt => unit(pt, 'mm').toNumber(_unit) ))
+    ]
 
     let newPos = startPosition.clone().add(
       new THREE.Vector3(
         0,
-        unit(params.materials.plywood.maxHeight*i, 'mm').toNumber(_unit),
+        (params.materials.plywood.maxHeight)*i,
         0
       ).applyEuler(euler)
     )

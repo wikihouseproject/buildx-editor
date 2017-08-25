@@ -70,9 +70,10 @@ function runSvgNest(svgData, binId, options, callback) {
   options.maxTime = options.maxTime || 60.0; // seconds
   options.SvgNest = options.SvgNest || {};
 
+  // All dimensions in millimeters
   var config = {
-    spacing: 0.012, // give space for milling bit
-    curveTolerance: 0.005,
+    spacing: 12, // give space for milling bit
+    curveTolerance: 5,
     rotations: 4,
     populationSize: 10,
     mutationRate: 10,

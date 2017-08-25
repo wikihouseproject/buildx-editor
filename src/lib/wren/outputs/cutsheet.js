@@ -62,7 +62,7 @@ const addPoints = (a, b) => {
   return [ a[0] + b[0], a[1] + b[1] ]
 }
 
-function layoutPartsWithoutOverlap(parts, separation=0.1) {
+function layoutPartsWithoutOverlap(parts, separation=50) {
   // Can make this as complicated as one wants, right up to full-blown nesting...
   // So doing a trivial 1-column vertical layout
   // NOTE: SVG coordinate conventions, downwards = positive Y
@@ -137,8 +137,12 @@ export function layout(pieces, options={}) {
 
 export function exportSVG(layedoutParts, options={}) {
 
+  if (!options.stroke) {
+    options.stroke = 6.0
+  }
+
   const svgPart = (part) => {
-    const style = "fill:none;stroke:#000000;stroke-opacity:1;stroke-width:0.00377953"
+    const style = `fill:none;stroke:#000000;stroke-opacity:1;stroke-width:${options.stroke}`
     return SVG.path(part.geometry.pts, { id: part.id, style })
   }
 

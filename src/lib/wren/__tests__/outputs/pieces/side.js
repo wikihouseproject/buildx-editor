@@ -9,7 +9,7 @@ it('generates a side', () => {
     [0, 1500],
   ]
 
-  expect(side(defaults)(points)).toEqual([{
+  expect(side(defaults, points)).toEqual([{
     pts: [[0, 2400], [1200, 2400], [1200, 0], [0, 0]],
     pos: {x: 0, y: 0, z: 0},
     rot: {order: 'ZYX', x: 0, y: 0, z: Math.PI}
@@ -25,7 +25,7 @@ it('generates multiple pieces for a side longer than materials.plywood.maxHeight
     [3900,1500]
   ]
 
-  expect(side(defaults)(points)).toEqual([
+  expect(side(defaults, points)).toEqual([
     {
       pts: [[0, 2400], [1200, 2400], [1200, 0], [0, 0]],
       pos: {x: 0, y: 0, z: 0},
