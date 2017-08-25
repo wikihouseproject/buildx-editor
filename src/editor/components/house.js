@@ -24,8 +24,8 @@ const _add = (parent, thickness, color) => side => {
 
 const House = pieces => {
   const house = new THREE.Object3D()
-  const addBayPiece = _add(house, 0.018, 0x00FF00)
-  const addFramePiece = _add(house, 0.250, 0x00CC00)
+  const addBayPiece = _add(house, 18.0, 0x00FF00)
+  const addFramePiece = _add(house, 250.0, 0x00CC00)
 
   const draw = pieces => {
     const positions = ['inner', 'outer']

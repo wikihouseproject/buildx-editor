@@ -28,22 +28,22 @@ function side(params, [start, end], pos={ x: 0, y: 0, z: 0 }, rotationOverrides=
   const euler = new THREE.Euler(newRot.x, newRot.y, newRot.z, newRot.order)
   const direction = startPosition.clone().applyEuler(euler).normalize()
 
-  const pieceLengths = WrenHelpers.pieces(length/1000, params.materials.plywood.maxHeight/1000)
+  const pieceLengths = WrenHelpers.pieces(length, params.materials.plywood.maxHeight)
 
   let allPieces = []
   for (let i = 0; i < pieceLengths.length; i++) {
     const pieceLength = pieceLengths[i]
     const pts = [
       [0, pieceLength],
-      [params.dimensions.bayLength/1000, pieceLength],
-      [params.dimensions.bayLength/1000, 0],
+      [params.dimensions.bayLength, pieceLength],
+      [params.dimensions.bayLength, 0],
       [0, 0]
     ]
 
     let newPos = startPosition.clone().add(
       new THREE.Vector3(
         0,
-        (params.materials.plywood.maxHeight/1000)*i,
+        (params.materials.plywood.maxHeight)*i,
         0
       ).applyEuler(euler)
     )

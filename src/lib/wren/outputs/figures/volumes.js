@@ -27,7 +27,7 @@ const volumes = (inputs, dimensions, points, areas) => {
     }
   }
 
-  return O.mutatingMap(_volumes, v => v/(1000*1000*1000))
+  return _volumes
 }
 
 module.exports = volumes

@@ -64,7 +64,7 @@ function prerender() {
 
   const hud = HUD(dimensions, changeDimensions(house))
 
-  scene.add(ground(10,10))
+  scene.add(ground(10*1000,10*1000))
   scene.add(house.output)
 
   requestAnimationFrame(render)

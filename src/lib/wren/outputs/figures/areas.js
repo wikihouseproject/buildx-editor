@@ -73,7 +73,7 @@ const areas = (inputs, dimensions, points) => {
   }
   // console.log(unit(100000, 'mm^2').to('mm^2').value)
 
-  return O.mutatingMap(_areas, v => v/(1000*1000))
+  return _areas
 }
 
 module.exports = areas
