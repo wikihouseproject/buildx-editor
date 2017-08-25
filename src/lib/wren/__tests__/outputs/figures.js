@@ -1,13 +1,14 @@
 const defaults = require('../../defaults')
 const points = require('../../outputs/points')(defaults.dimensions)
 
+const { mutatingMap } = require('../../utils/object')
 const _dimensions = require('../../outputs/figures/dimensions')
 const _areas = require('../../outputs/figures/areas')
 const _volumes = require('../../outputs/figures/volumes')
 const _estimates = require('../../outputs/figures/estimates')
 
 const dimensions = _dimensions(defaults, points)
-const areas = _areas(defaults, dimensions, points, 'm2')
+
 
 describe('dimensions', () => {
   it('outputs dimensions in mm', () => {
@@ -26,8 +27,9 @@ describe('dimensions', () => {
 })
 
 describe('areas', () => {
-  it('calculates areas in m²', () => {
-    expect(areas).toEqual({
+  it('calculates areas in mm²', () => {
+    const areas = mutatingMap(_areas(defaults, dimensions, points), Math.round)
+    const expected = mutatingMap({
       internal: {
         floor: 37.676012, // 75.34
         walls: 72.18142209335001, // 88.89
@@ -40,7 +42,8 @@ describe('areas', () => {
         endWall: 14.046202506499998
         // surface: 185.44,
       }
-    })
+    }, (v) => Math.round(v*1000*1000) )
+    expect(areas).toEqual(expected)
   });
   // openings: {
   //   total: 14.66
@@ -60,10 +63,9 @@ describe('areas', () => {
 
 describe('volumes', () => {
   const areas = _areas(defaults, dimensions, points)
-  const volumes = _volumes(defaults, dimensions, points, areas, 'm3')
+  const volumes = mutatingMap(_volumes(defaults, dimensions, points, areas), Math.round)
 
-  it('calculates volumes in m³', () => {
-    expect(volumes).toEqual({
+  const expected = mutatingMap({
       internal: {
         total: 112.83834153894173,
         endWall: 2.660277761668751,
@@ -76,7 +78,10 @@ describe('volumes', () => {
       materials: {
         singleSheet: 0.0535824
       }
-    })
+  }, (v) => Math.round(v*1000*1000*1000) )
+
+  it('calculates volumes', () => {
+    expect(volumes).toEqual(expected)
   });
 })
 

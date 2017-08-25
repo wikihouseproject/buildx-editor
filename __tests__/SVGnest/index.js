@@ -71,8 +71,8 @@ describe('Nesting', () => {
     const wrenSvg = Wren().toSVG({onlyN: 15})
     const binId = 'cutsheet'
     
-    const sheetStyle = "fill:none;stroke:#ff0000;stroke-opacity:1;stroke-width:0.00377953"
-    const cutsheet = SVG.path(rectangle(4.0, 5.0), { id: binId, style: sheetStyle }) // FIXME: make cutsheet 1.2 x 2.4m
+    const sheetStyle = "fill:none;stroke:#ff0000;stroke-opacity:1;stroke-width:6"
+    const cutsheet = SVG.path(rectangle(4000, 5000), { id: binId, style: sheetStyle }) // FIXME: make cutsheet 1.2 x 2.4m
     const svgData = new Buffer(wrenSvg.replace('</svg>', cutsheet+'</svg>'))
 
     it('should return cutsheets', function (done) {
@@ -86,7 +86,7 @@ describe('Nesting', () => {
         if (err && res) err.message += `: ${JSON.stringify(res.text)}`
         expect(err).not.toBeTruthy()
         expect(res.body.files).toBeInstanceOf(Array)
-        expect(res.body.files.length).toBeGreaterThan(2)
+        expect(res.body.files.length).toBeGreaterThanOrEqual(2)
         expect(res.body.files.length).toBeLessThan(15)
         const r = res.body.files[0]
         expect(r).toMatch('</svg>')
