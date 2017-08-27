@@ -1,7 +1,7 @@
 {
   "processes": {
     "params": {
-      "component": "core/Repeat"
+      "component": "buildx-editor/ApplyDefaults"
     },
     "fin": {
       "component": "buildx-editor/CreateFin"
