@@ -1,8 +1,10 @@
-import * as noflo from './lib/noflo';
+import * as nofloTools from './lib/fbptools';
 import Wren from './lib/wren';
 import defaults from './lib/wren/defaults'
 
 import * as uuid from 'uuid';
+
+window.wren = Wren;
 
 function setupNoFlo(callback) {
 
@@ -21,7 +23,7 @@ function setupNoFlo(callback) {
     repository: 'wikihouse-project/buildx-editor',
   }
 
-  noflo.setupAndRun(o, (err, runtime) => {
+  nofloTools.setupAndRun(o, (err, runtime) => {
     return callback(err, runtime);
   });
 
@@ -49,7 +51,7 @@ function main() {
 
     nofloRuntime = runtime;
     console.log('NoFlo running, adding link');
-    const url = noflo.flowhubURL(runtime.id);
+    const url = nofloTools.flowhubURL(runtime.id);
     const link = flowhubLink(url);
     link.id = 'flowhubLink';
     link.addEventListener('click', function (event) {

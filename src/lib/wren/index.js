@@ -1,7 +1,7 @@
 const defaults = require('./defaults')
 const outputs = require('./outputs')
 const cutsheet = require('./outputs/cutsheet')
-const nofloTools = require('../noflo');
+const nofloTools = require('../fbptools');
 
 const { merge } = require('lodash')
 

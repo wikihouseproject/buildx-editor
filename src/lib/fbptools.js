@@ -1,7 +1,20 @@
 
-const r = window['require'];
-export const noflo = r('noflo');
-const nofloPostMessage = r('noflo-runtime-postmessage');
+// Some hacking needed to avoid webpack picking up the NoFlo include, as that currently fails
+var NOFLO = null
+var nofloPostMessage = null
+if (typeof window !== 'undefined') {
+  const r = window['require'];
+  nofloPostMessage = r('noflo-runtime-postmessage');
+  NOFLO = r('noflo')
+} else if (typeof self !== 'undefined') {
+  const r = self['require'];
+  NOFLO = new Error('NoFlo not bundled in WebWorker');    
+} else {
+  const r = global['require'];
+  NOFLO = require('noflo')
+}
+
+export const noflo = NOFLO;
 
 export function flowhubURL(runtimeId, options) {
   options = options || {};
