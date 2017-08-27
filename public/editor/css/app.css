@@ -10,6 +10,12 @@
   top: 200px;
   padding: 20px;
 }
+#flowhubLink {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+
 input {
   width: 100%;
 }
