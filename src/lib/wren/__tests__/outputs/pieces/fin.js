@@ -1,13 +1,17 @@
 const fin = require('../../../outputs/pieces/frame/fin')
+const defaults = require('../../../defaults')
+const _points = require('../../../outputs/points')
 const Wren = require('../../../index')
-const wren = Wren({
-  dimensions: {
-    width: 5000,
-    height: 3000
-  }
-})
 
 it('generates a fin', () => {
+  const params = Wren.inputs({
+    dimensions: {
+      width: 5000,
+      height: 3000
+    }
+  })
+  const points = _points(params.dimensions)
+
   const result = [
     [
       [3812.5, 641.7262029999999],
@@ -47,5 +51,5 @@ it('generates a fin', () => {
     ]
   ]
 
-  expect(fin(wren.outputs.points)).toEqual(result)
+  expect(fin(points)).toEqual(result)
 })

@@ -1,9 +1,14 @@
 const noflo = require('noflo');
-const Wren = window.Wren; // HACK
+
+const wren = window.wren;
+
+function clone(obj) {
+    return JSON.parse(JSON.stringify(obj))
+}
 
 exports.getComponent = function() {
   var c = new noflo.Component();
-  c.description = 'Get default Wren model parameters';
+  c.description = 'Merge in default Wren model parameters';
   c.icon = 'forward';
   c.inPorts.add('in', {
     datatype: 'all',
@@ -18,12 +23,12 @@ exports.getComponent = function() {
       return;
     }
     // Read packets we need to process
-    var ignored = input.getData('in');
+    var overrides = input.getData('in');
 
     // Process data and send output
-    const out = Wren().inputs;
+    const out = wren.inputs(overrides);
     output.send({
-      out: out
+      out: out,
     });
     // Deactivate
     output.done();

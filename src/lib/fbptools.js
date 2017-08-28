@@ -1,7 +1,20 @@
 
-const r = window['require'];
-const noflo = r('noflo');
-const nofloPostMessage = r('noflo-runtime-postmessage');
+// Some hacking needed to avoid webpack picking up the NoFlo include, as that currently fails
+var NOFLO = null
+var nofloPostMessage = null
+if (typeof window !== 'undefined') {
+  const r = window['require'];
+  nofloPostMessage = r('noflo-runtime-postmessage');
+  NOFLO = r('noflo')
+} else if (typeof self !== 'undefined') {
+  const r = self['require'];
+  NOFLO = new Error('NoFlo not bundled in WebWorker');    
+} else {
+  const r = global['require'];
+  NOFLO = require('noflo')
+}
+
+export const noflo = NOFLO;
 
 export function flowhubURL(runtimeId, options) {
   options = options || {};
@@ -40,6 +53,12 @@ function createRuntime(libraryPrefix, options) {
   if (options.graph) {
     runtimeOptions.defaultGraph = options.graph;
   }
+  if (options.repository) {
+    runtimeOptions.repository = options.repository;
+  }
+  if (options.namespace) {
+    runtimeOptions.namespace = options.namespace;
+  }
 
   var runtime = null;
   if (options.protocol == 'opener') {
@@ -62,7 +81,13 @@ export function setupAndRun(options, callback) {
 
     instance.on('ready', function () {
       const graph = instance.network.graph;
-      const runtime = createRuntime(libraryPrefix, { graph: graph, id: options.id });
+      const o = {
+        graph: graph,
+        id: options.id,
+        namespace: options.namespace,
+        repository: options.respository,
+      }
+      const runtime = createRuntime(libraryPrefix, o);
       if (!runtime) {
         return callback(new Error('Unable to create a NoFlo runtime'));
       }
@@ -72,32 +97,4 @@ export function setupAndRun(options, callback) {
       }, 100);
     });
   });
-}
-
-function sendTo(component, portName, data) {
-  const socket = noflo.internalSocket.createSocket()
-  const port = component.inPorts[portName]
-  port.attach(socket);
-  socket.send(data);
-  port.detach(socket);
-}
-
-export function sendToInport(runtime, graphName, portName, data) {
-  const graph = runtime.graph.graphs[graphName];
-  const network = runtime.network.networks[graphName]
-  if (!(graph && network)) {
-    throw new Error("Could not find graph named " + graphName);
-  }
-
-  const internal = graph.inports[portName];
-  if (!(internal && internal.process && internal.port)) {
-    throw new Error("No exported port named " + portName);
-  }
-
-  const node = network.network.getNode(internal.process);
-  if (!(node && node.component)) {
-    throw new Error("Could not find node for exported port " + portName);
-  }
-
-  return sendTo(node.component, internal.port, data);  
 }

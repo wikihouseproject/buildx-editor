@@ -14,4 +14,7 @@ const pieces = (points, inputs) => {
   }
 }
 
+pieces.Bay = Bay;
+pieces.Frame = Frame;
+
 module.exports = pieces

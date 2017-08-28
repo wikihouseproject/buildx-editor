@@ -68,30 +68,30 @@ describe('Nesting', () => {
   });
 
   describe('sending default Wren outlines', () => {
-    const wrenSvg = Wren().toSVG({onlyN: 15})
-    const binId = 'cutsheet'
-    
-    const sheetStyle = "fill:none;stroke:#ff0000;stroke-opacity:1;stroke-width:6"
-    const cutsheet = SVG.path(rectangle(4000, 5000), { id: binId, style: sheetStyle }) // FIXME: make cutsheet 1.2 x 2.4m
-    const svgData = new Buffer(wrenSvg.replace('</svg>', cutsheet+'</svg>'))
+    it('should return cutsheets', function () {
 
-    it('should return cutsheets', function (done) {
+      return Wren().then((wren) => {
+        const wrenSvg = wren.toSVG({onlyN: 15}) 
 
-      const req = superagent
-        .post(`http://localhost:${serverOptions.port}/nest`)
-        .field('bin', binId)
-        .timeout(1*60*1000)
-        .attach('svg', svgData, 'svg')
-      req.end(catchErrors(done, (err, res) => {
-        if (err && res) err.message += `: ${JSON.stringify(res.text)}`
-        expect(err).not.toBeTruthy()
+        const sheetStyle = "fill:none;stroke:#ff0000;stroke-opacity:1;stroke-width:6"
+        const binId = 'cutsheet'
+        const cutsheet = SVG.path(rectangle(4000, 5000), { id: binId, style: sheetStyle }) // FIXME: make cutsheet 1.2 x 2.4m
+        const svgData = new Buffer(wrenSvg.replace('</svg>', cutsheet+'</svg>'))
+  
+        const req = superagent
+          .post(`http://localhost:${serverOptions.port}/nest`)
+          .field('bin', binId)
+          .timeout(1*60*1000)
+          .attach('svg', svgData, 'svg')
+        return req
+      }).then((res) => {
         expect(res.body.files).toBeInstanceOf(Array)
         expect(res.body.files.length).toBeGreaterThanOrEqual(2)
         expect(res.body.files.length).toBeLessThan(15)
         const r = res.body.files[0]
         expect(r).toMatch('</svg>')
-        return writeFilesToNewDirectory(res.body.files, 'public/svgnest/wren-defaults-nested').then(done)
-      }));
+        return writeFilesToNewDirectory(res.body.files, 'public/svgnest/wren-defaults-nested')
+      });
     });
   });
 });

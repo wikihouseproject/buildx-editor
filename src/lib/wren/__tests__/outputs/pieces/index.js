@@ -3,7 +3,13 @@ const Wren = require('../../../index')
 const sortedKeys = ob => Object.keys(ob).sort()
 
 describe('pieces', () => {
-  const wren = Wren();
+  var wren = null
+
+  beforeAll(() => {
+    return Wren().then((w) => {
+      wren = w
+    });
+  })
 
   it('generates frame pieces', () => {
     expect(sortedKeys(wren.outputs.pieces.frames[0])).toEqual([

@@ -1,32 +1,40 @@
 const noflo = require('noflo');
 
 const wren = window.wren;
-const points = wren.outputs.points;
+const Bay = wren.outputs.pieces.Bay;
 
 exports.getComponent = function() {
   var c = new noflo.Component();
-  c.description = 'Create the shape of fin';
+  c.description = 'Create bays, the sections between frames';
   c.icon = 'forward';
   c.inPorts.add('parameters', {
     datatype: 'object',
     description: 'Wren model parameters'
+  });
+  c.inPorts.add('fin', {
+    datatype: 'object',
+    description: 'Wren fin profile'
   });
   c.outPorts.add('out', {
     datatype: 'all'
   });
   c.process(function (input, output) {
     // Check preconditions on input data
-    if (!input.hasData('parameters')) {
+    if (!input.hasData('parameters', 'fin')) {
       return;
     }
     // Read packets we need to process
-    var data = input.getData('parameters');
+    const params = input.getData('parameters');
+    const fin = input.getData('fin');
 
     // Process data and send output
-    const out = points(data.dimensions);
-
+    const numFrames = params.dimensions.bays + 1;
+    var bays = [];
+    for (var i=0; i<numFrames; i++) {
+      bays.push(Bay(fin, params, i));
+    }
     output.send({
-      out: out
+      out: bays,
     });
     // Deactivate
     output.done();

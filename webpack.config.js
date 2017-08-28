@@ -4,14 +4,18 @@ module.exports = {
   context: path.resolve(__dirname, './src'),
   entry: {
     editor: './editor/index.js',
-    basic3d: './basic3d.js',
     wrendebug: './wrendebug.js',
     svgnest: './svgnest.js'
   },
   output: {
     filename: '[name].bundle.js',
+    libraryTarget: 'umd',
     path: path.resolve(__dirname, './dist/js/'),
     publicPath: '/js/'
+  },
+  externals: {
+    'noflo': 'commonjs: noflo',
+    'noflo-runtime-postmessage': 'commonjs noflo-runtime-postmessage',
   },
   devServer: {
     contentBase: path.resolve(__dirname, './public')
@@ -27,5 +31,8 @@ module.exports = {
         }]
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.IgnorePlugin(/noflo/),
+  ]
 }

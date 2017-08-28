@@ -1,155 +1,121 @@
 {
-    "caseSensitive": false,
-    "properties": {
-        "name": "main",
-        "environment": {
-            "type": "noflo-browser"
-        }
+  "processes": {
+    "params": {
+      "component": "buildx-editor/ApplyDefaults"
     },
-    "inports": {
-        "scene": {
-            "process": "core/Repeat_nxa8h",
-            "port": "in",
-            "metadata": {
-                "x": -324,
-                "y": -144,
-                "width": 72,
-                "height": 72
-            }
-        }
+    "fin": {
+      "component": "buildx-editor/CreateFin"
     },
-    "outports": {},
-    "groups": [],
-    "processes": {
-        "preview": {
-            "component": "buildx-editor/PreviewGeometry",
-            "metadata": {
-                "x": 396,
-                "y": -252,
-                "width": 72,
-                "height": 72,
-                "label": "preview"
-            }
-        },
-        "buildx-editor/GetDefaultParameters_7fxg8": {
-            "component": "buildx-editor/GetDefaultParameters",
-            "metadata": {
-                "label": "GetDefaultParameters",
-                "x": -72,
-                "y": -216,
-                "width": 72,
-                "height": 72
-            }
-        },
-        "buildx-editor/CreateFin_631o3": {
-            "component": "buildx-editor/CreateFin",
-            "metadata": {
-                "label": "CreateFin",
-                "x": 108,
-                "y": -144,
-                "width": 72,
-                "height": 72
-            }
-        },
-        "objects/ExtractProperty_l7ics": {
-            "component": "objects/ExtractProperty",
-            "metadata": {
-                "label": "ExtractProperty",
-                "x": 252,
-                "y": -72,
-                "width": 72,
-                "height": 72
-            }
-        },
-        "core/Repeat_nxa8h": {
-            "component": "core/Repeat",
-            "metadata": {
-                "label": "Repeat",
-                "x": -252,
-                "y": -252,
-                "width": 72,
-                "height": 72
-            }
-        },
-        "buildx-editor/ClearScene_nekcn": {
-            "component": "buildx-editor/ClearScene",
-            "metadata": {
-                "label": "ClearScene",
-                "x": -144,
-                "y": -360,
-                "width": 72,
-                "height": 72
-            }
-        }
+    "frames": {
+      "component": "buildx-editor/CreateFrames"
     },
-    "connections": [
-        {
-            "src": {
-                "process": "buildx-editor/GetDefaultParameters_7fxg8",
-                "port": "out"
-            },
-            "tgt": {
-                "process": "buildx-editor/CreateFin_631o3",
-                "port": "parameters"
-            }
-        },
-        {
-            "src": {
-                "process": "buildx-editor/CreateFin_631o3",
-                "port": "out"
-            },
-            "tgt": {
-                "process": "objects/ExtractProperty_l7ics",
-                "port": "in"
-            },
-            "metadata": {
-                "route": 0
-            }
-        },
-        {
-            "src": {
-                "process": "objects/ExtractProperty_l7ics",
-                "port": "out"
-            },
-            "tgt": {
-                "process": "preview",
-                "port": "geometry"
-            }
-        },
-        {
-            "src": {
-                "process": "core/Repeat_nxa8h",
-                "port": "out"
-            },
-            "tgt": {
-                "process": "buildx-editor/ClearScene_nekcn",
-                "port": "in"
-            }
-        },
-        {
-            "src": {
-                "process": "buildx-editor/ClearScene_nekcn",
-                "port": "out"
-            },
-            "tgt": {
-                "process": "buildx-editor/GetDefaultParameters_7fxg8",
-                "port": "in"
-            },
-            "metadata": {}
-        },
-        {
-            "data": "inner",
-            "tgt": {
-                "process": "objects/ExtractProperty_l7ics",
-                "port": "key"
-            }
-        },
-        {
-            "data": "yellow",
-            "tgt": {
-                "process": "preview",
-                "port": "color"
-            }
-        }
-    ]
+    "bays": {
+      "component": "buildx-editor/CreateBays"
+    },
+    "geometry": {
+      "component": "buildx-editor/MergeGeometry"
+    },
+    "scene": {
+      "component": "core/Repeat"
+    }
+  },
+  "connections": [
+    {
+      "src": {
+        "process": "params",
+        "port": "out"
+      },
+      "tgt": {
+        "process": "fin",
+        "port": "parameters"
+      }
+    },
+    {
+      "src": {
+        "process": "fin",
+        "port": "out"
+      },
+      "tgt": {
+        "process": "frames",
+        "port": "fin"
+      }
+    },
+    {
+      "src": {
+        "process": "fin",
+        "port": "out"
+      },
+      "tgt": {
+        "process": "bays",
+        "port": "fin"
+      }
+    },
+    {
+      "src": {
+        "process": "fin",
+        "port": "out"
+      },
+      "tgt": {
+        "process": "geometry",
+        "port": "fin"
+      }
+    },
+    {
+      "src": {
+        "process": "params",
+        "port": "out"
+      },
+      "tgt": {
+        "process": "frames",
+        "port": "parameters"
+      }
+    },
+    {
+      "src": {
+        "process": "frames",
+        "port": "out"
+      },
+      "tgt": {
+        "process": "geometry",
+        "port": "frames"
+      }
+    },
+    {
+      "src": {
+        "process": "params",
+        "port": "out"
+      },
+      "tgt": {
+        "process": "bays",
+        "port": "parameters"
+      }
+    },
+    {
+      "src": {
+        "process": "bays",
+        "port": "out"
+      },
+      "tgt": {
+        "process": "geometry",
+        "port": "bays"
+      }
+    }
+  ],
+  "inports": {
+    "parameters": {
+      "process": "params",
+      "port": "in"
+    },
+    "scene": {
+      "process": "scene",
+      "port": "in"
+    }
+  },
+  "outports": {
+    "geometry": {
+      "process": "geometry",
+      "port": "out"
+    }
+  },
+  "caseSensitive": false
 }
