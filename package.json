@@ -30,8 +30,8 @@
     "noflo-objects": "^0.3.0",
     "noflo-runtime-postmessage": "^0.8.2",
     "noflo-strings": "^0.3.0",
-    "preact": "^8.2.1",
-    "prettier": "^1.5.3",
+    "preact": "^8.2.5",
+    "prettier": "^1.6.1",
     "ramda": "^0.24.1",
     "script-loader": "^0.7.0",
     "xstream": "^10.9.0"
