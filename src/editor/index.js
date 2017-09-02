@@ -4,6 +4,7 @@ import Mouse from './ui/controls/mouse'
 import HUD from './ui/controls/hud'
 // import Sidebar from './ui/controls/sidebar'
 import House from './components/house'
+import SiteOutline from './components/site_outline'
 import { merge } from "lodash"
 import Wren from "../lib/wren"
 
@@ -41,7 +42,7 @@ const changeDimensions = house => newDimensions => {
     Wren({dimensions}).then((res) => {
       house.update(res.outputs.pieces)
     })
-    
+
   }
 }
 
@@ -76,6 +77,7 @@ function prerender() {
   Wren({dimensions}).then((res) => {
 
   const house = House(res.outputs.pieces)
+  const siteOutline = SiteOutline([[-10,-10], [-10,10], [10,10], [10,-10]])
 
   if (USING_WEBWORKERS) {
     wrenWorker.onmessage = event => house.update(event.data.pieces)
@@ -89,6 +91,7 @@ function prerender() {
 
   scene.add(ground(10*1000,10*1000))
   scene.add(house.output)
+  scene.add(siteOutline)
 
   requestAnimationFrame(render)
   })
