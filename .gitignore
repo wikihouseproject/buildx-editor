@@ -48,11 +48,9 @@ jspm_packages
 build
 
 public/js/basic3d.bundle.js
-public/basic3d/js/noflo.js
+public/**/js/noflo.js
 
 src/lib/wren/nester/temp
-
-public/basic3d/js/noflo.js
 
 # aware that this is against advice of yarn
 # https://stackoverflow.com/questions/39990017/should-i-commit-the-yarn-lock-file-and-what-is-it-for
