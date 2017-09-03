@@ -26,9 +26,9 @@ container.appendChild(renderer.domElement)
 const scene = new THREE.Scene()
 
 const camera = new THREE.PerspectiveCamera(45, SIZE().WIDTH/SIZE().HEIGHT, 0.1*1000, 20000*1000)
-camera.position.y = 10*1000
-camera.position.z = -10*1000
-camera.position.x = 60*1000
+camera.position.y = 20*1000
+camera.position.z = -20*1000
+camera.position.x = -10*1000
 camera.lookAt(new THREE.Vector3(0,0,0))
 
 window.addEventListener('resize', onWindowResize, false)
