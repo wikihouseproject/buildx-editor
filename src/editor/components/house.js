@@ -1,9 +1,18 @@
 import { makePiece } from "./index"
 import { removeDescendants } from "../utils"
 
-const _add = (parent, thickness, color) => side => {
-  const piece = makePiece(side.pts, thickness, color)
-  piece.position.copy(side.pos)
+const _add = (parent, thicknessMM, color) => side => {
+
+  const scaledPoints = side.pts.map(([x,y]) => ([x/1000.0, y/1000.0]))
+  const scaledPos = {
+    x: side.pos.x/1000.0,
+    y: side.pos.y/1000.0,
+    z: side.pos.z/1000.0
+  }
+
+  const piece = makePiece(scaledPoints, thicknessMM/1000.0, color)
+
+  piece.position.copy(scaledPos)
   piece.rotation.x = side.rot.x
   piece.rotation.y = side.rot.y
   piece.rotation.z = side.rot.z
@@ -24,8 +33,8 @@ const _add = (parent, thickness, color) => side => {
 
 const House = pieces => {
   const house = new THREE.Object3D()
-  const addBayPiece = _add(house, 18.0, 0x00FF00)
-  const addFramePiece = _add(house, 250.0, 0x00CC00)
+  const addBayPiece = _add(house, 18, 0x00FF00)
+  const addFramePiece = _add(house, 250, 0x00CC00)
 
   const draw = pieces => {
     const positions = ['inner', 'outer']

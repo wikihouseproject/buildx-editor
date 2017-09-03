@@ -1,4 +1,5 @@
 const EventEmitter = require('eventemitter3')
+const { scale } = require('../../../utils')
 require('./manipulations')
 
 const Mouse = (_window, camera, container) => {
@@ -18,8 +19,8 @@ const Mouse = (_window, camera, container) => {
   container.addEventListener('mouseup', onMouseUp)
 
   const orbitControls = new THREE.OrbitControls(camera, container)
-  orbitControls.minDistance = 1*1000;
-  orbitControls.maxDistance = 30*1000;
+  orbitControls.minDistance = 1*scale;
+  orbitControls.maxDistance = 30*scale;
   orbitControls.maxPolarAngle = Math.PI/2.1
   orbitControls.enableDamping = true;
   orbitControls.dampingFactor = 0.1;

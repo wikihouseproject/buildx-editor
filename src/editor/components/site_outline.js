@@ -1,8 +1,9 @@
+const { scale } = require('../utils')
+
 const SiteOutline = _coords => {
-  const scale = 1000
   const coords = _coords.map( ([x,y]) => ([x*scale, y*scale]))
   const [startX, startY] = coords[0]
-  const outlineY = 1
+  const outlineY = 0
 
   const geometry = new THREE.Geometry()
   geometry.vertices.push( new THREE.Vector3( startX, outlineY, startY ) );

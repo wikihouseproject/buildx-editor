@@ -1,3 +1,5 @@
+import { scale } from "../utils"
+
 const SIZE = () => ({
   WIDTH: window.innerWidth,
   HEIGHT: window.innerHeight
@@ -25,10 +27,10 @@ container.appendChild(renderer.domElement)
 
 const scene = new THREE.Scene()
 
-const camera = new THREE.PerspectiveCamera(45, SIZE().WIDTH/SIZE().HEIGHT, 0.1*1000, 20000*1000)
-camera.position.y = 20*1000
-camera.position.z = -20*1000
-camera.position.x = -10*1000
+const camera = new THREE.PerspectiveCamera(45, SIZE().WIDTH/SIZE().HEIGHT, 0.1*scale, 20000*scale)
+camera.position.y = 20*scale
+camera.position.z = -20*scale
+camera.position.x = -10*scale
 camera.lookAt(new THREE.Vector3(0,0,0))
 
 window.addEventListener('resize', onWindowResize, false)

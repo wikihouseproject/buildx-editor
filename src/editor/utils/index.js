@@ -24,5 +24,6 @@ const removeDescendants = current => {
 // })
 
 module.exports = {
-  removeDescendants
+  removeDescendants,
+  scale: 1
 }
