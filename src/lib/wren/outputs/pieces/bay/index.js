@@ -5,7 +5,7 @@ const Bay = (points, inputs, index=0) => {
   const halfWidth = (points.outer.BR[0] - points.outer.BL[0])/2
   const bayLength = inputs.dimensions.bayLength
   const plyThickness = inputs.materials.plywood.depth
-  const bayZ = (bayLength * index) - (bayLength * inputs.dimensions.bays)/2
+  const bayZ = (bayLength * (index+1)) - (bayLength * inputs.dimensions.bays)/2
 
   return {
     skis: [],

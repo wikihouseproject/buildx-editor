@@ -3,7 +3,7 @@ const fin = require('./fin')
 const Frame = (points, inputs, index=0) => {
 
   const bayLength = inputs.dimensions.bayLength
-  const frameZ = (bayLength * (index-1)) - (bayLength * inputs.dimensions.bays)/2
+  const frameZ = (bayLength * index) - (bayLength * inputs.dimensions.bays)/2
   const frameX = -(inputs.dimensions.width + inputs.dimensions.finDepth)/2
   const frameY = (inputs.dimensions.roofApexHeight) + inputs.dimensions.beamWidth
 
