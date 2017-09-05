@@ -18,34 +18,34 @@
 <body>
   <div id="app"></div>
 
-  <div id="controls" style="display: none">
+  <div id="controls">
     <ul>
       <li id="RESIZE" class="active">Resize</li>
       <li id="MOVE">Move</li>
       <li id="ROTATE">Rotate</li>
     </ul>
 
-    <hr/>
+    <div style="display: none">
+      <p>Total Bays:</p>
+      <input id="totalBays" type="range" min="5" max="10" value="6" />
 
-    <p>Total Bays:</p>
-    <input id="totalBays" type="range" min="5" max="10" value="6" />
+      <p>Width:</p>
+      <input id="width" type="range" min="1" max="10" step="0.1" value="5" />
 
-    <p>Width:</p>
-    <input id="width" type="range" min="1" max="10" step="0.1" value="5" />
+      <p>Height:</p>
+      <input id="height" type="range" min="1" max="7" step="0.1" value="4" />
 
-    <p>Height:</p>
-    <input id="height" type="range" min="1" max="7" step="0.1" value="4" />
+      <hr/>
 
-    <hr/>
+      <p>Clipping Height:</p>
+      <input id="clippingHeight" type="range" min="0.1" max="5" step="0.1" value="5" />
 
-    <p>Clipping Height:</p>
-    <input id="clippingHeight" type="range" min="0.1" max="5" step="0.1" value="5" />
+      <hr/>
 
-    <hr/>
-
-    <table id="metrics"></table>
-    <hr/>
-    <table id="costs"></table>
+      <table id="metrics"></table>
+      <hr/>
+      <table id="costs"></table>
+    </div>
   </div>
 
   <script src="../editor/js/noflo.js"></script>
