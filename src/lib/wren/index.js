@@ -38,13 +38,13 @@ function Wren(overrides) {
 
   return calculate(inputs)
   .then((out) => {
-    console.timeEnd('geometry calc')
+    // console.timeEnd('geometry calc')
 
     console.time('figures calc')
     out.figures = outputs.figures(inputs, out.points)
     console.timeEnd('figures calc')
 
-    const toSVG = (options) => { 
+    const toSVG = (options) => {
       const sheet = cutsheet.layout(out.pieces, options)
       return cutsheet.exportSVG(sheet)
     }
