@@ -3,9 +3,9 @@ const fin = require('./fin')
 const Frame = (points, inputs, index=0) => {
 
   const bayLength = inputs.dimensions.bayLength
-  const frameZ = (bayLength * index) - (bayLength * inputs.dimensions.bays)/2
-  const frameX = -(inputs.dimensions.width + inputs.dimensions.finDepth)/2
-  const frameY = (inputs.dimensions.roofApexHeight) + inputs.dimensions.beamWidth
+  const frameZ = (bayLength * index) - (bayLength * inputs.dimensions.bays)/2 + inputs.dimensions.finDepth/2
+  const frameX = -(inputs.dimensions.width + inputs.dimensions.finDepth)/2 + inputs.dimensions.finDepth/2
+  const frameY = (inputs.dimensions.roofApexHeight) + inputs.dimensions.beamWidth - inputs.materials.plywood.depth
 
   const finsGroup = fin(points).map(piece => ({
     pts: piece,
