@@ -106,7 +106,7 @@ const extrudeShape = (shape, extrudeSettings, color=null) => {
   return new THREE.Mesh(geometry, material)
 }
 
-const makePiece = (points, amount, color=0x00ff00) => {
+const makePiece = (points, amount, color=null) => {
   const extrudeSettings = {
     steps: 1,
     amount,

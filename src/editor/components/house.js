@@ -23,7 +23,7 @@ const _add = (allVertices, parent, thicknessMM, color) => side => {
     z: side.pos.z/1000.0*scale
   }
 
-  const piece = makePiece(scaledPoints, thicknessMM/1000.0*scale, color)
+  const piece = makePiece(scaledPoints, thicknessMM/1000.0*scale)
 
   piece.position.copy(scaledPos)
   piece.rotation.x = side.rot.x
