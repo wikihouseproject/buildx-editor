@@ -177,6 +177,7 @@ function prerender() {
     if (USING_WEBWORKERS) {
       wrenWorker.onmessage = event => house.update(event.data.pieces)
     }
+    console.info(USING_WEBWORKERS ? "using webworkers" : "NOT using webworkers")
 
     // NoFlo.setupRuntime((updatedGeometry) => {
     //   house.update(updatedGeometry.pieces)
