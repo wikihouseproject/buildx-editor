@@ -107,7 +107,7 @@ function handleMove(intersects, intersection) {
   }
 }
 
-document.querySelectorAll('#controls li').forEach(li => li.addEventListener('click', changeCurrentAction))
+[...document.querySelectorAll('#controls li')].forEach(li => li.addEventListener('click', changeCurrentAction))
 
 let currentAction = "RESIZE"
 const activeClass = 'active'
