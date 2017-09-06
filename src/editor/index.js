@@ -89,9 +89,8 @@ function handleResize(intersects, intersection) {
     if (raycaster.ray.intersectPlane(plane, intersection)) {
       // ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
       // house.redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) })
-      console.log(
-        { [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) }
-      )
+      const dimensions = { [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) * scale }
+      changeDimensions(house)(dimensions)
     }
   }
 }
