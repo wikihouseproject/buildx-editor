@@ -4,11 +4,13 @@ var NOFLO = null
 var nofloPostMessage = null
 if (typeof window !== 'undefined') {
   const r = window['require'];
-  nofloPostMessage = r('noflo-runtime-postmessage');
-  NOFLO = r('noflo')
+  if (r) {
+    nofloPostMessage = r('noflo-runtime-postmessage');
+    NOFLO = r('noflo')
+  }
 } else if (typeof self !== 'undefined') {
   const r = self['require'];
-  NOFLO = new Error('NoFlo not bundled in WebWorker');    
+  NOFLO = new Error('NoFlo not bundled in WebWorker');
 } else {
   const r = global['require'];
   NOFLO = require('noflo')

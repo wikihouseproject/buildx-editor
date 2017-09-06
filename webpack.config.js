@@ -3,7 +3,7 @@ const webpack = require('webpack');
 module.exports = {
   context: path.resolve(__dirname, './src'),
   entry: {
-    editor: './editor/index.js',
+    editor: ["babel-polyfill", './editor/index.js'],
     wrendebug: './wrendebug.js',
     svgnest: './svgnest.js'
   },

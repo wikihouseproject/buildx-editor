@@ -31,6 +31,7 @@ const camera = new THREE.PerspectiveCamera(45, SIZE().WIDTH/SIZE().HEIGHT, 0.1*s
 camera.position.y = 20*scale
 camera.position.z = -20*scale
 camera.position.x = -10*scale
+
 camera.lookAt(new THREE.Vector3(0,0,0))
 
 window.addEventListener('resize', onWindowResize, false)
