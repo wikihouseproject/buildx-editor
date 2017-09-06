@@ -115,7 +115,7 @@ const activeClass = 'active'
 function changeCurrentAction(event) {
   currentAction = event.target.id
 
-  house.balls.forEach(ball => ball.visible = (currentAction === 'RESIZE'))
+  if (house && house.balls) house.balls.forEach(ball => ball.visible = (currentAction === 'RESIZE'))
 
   // change activeState
   document.querySelectorAll('#controls li').forEach(li => li.classList.remove(activeClass))
@@ -172,7 +172,7 @@ loader.load('img/materials/plywood/birch.jpg',
 function prerender() {
 
   Wren({dimensions}).then((res) => {
-    const house = House(res.outputs.pieces)
+    house = House(res.outputs.pieces)
     const siteOutline = SiteOutline([[-10,-10], [-10,10], [10,10], [10,-10]])
 
     if (USING_WEBWORKERS) {
