@@ -33,10 +33,10 @@ let dimensions = Wren.inputs({}).dimensions
 const changeDimensions = house => newDimensions => {
   dimensions = merge(dimensions, newDimensions)
 
-  if (NoFlo.nofloNetworkLive) {
-    NoFlo.sendToRuntime(NoFlo.nofloRuntime, NoFlo.lastGraphName, 'parameters', { dimensions })
-    return
-  }
+  // if (NoFlo.nofloNetworkLive) {
+  //   NoFlo.sendToRuntime(NoFlo.nofloRuntime, NoFlo.lastGraphName, 'parameters', { dimensions })
+  //   return
+  // }
 
   if (USING_WEBWORKERS) {
     wrenWorker.postMessage({dimensions})
@@ -179,9 +179,9 @@ function prerender() {
       wrenWorker.onmessage = event => house.update(event.data.pieces)
     }
 
-    NoFlo.setupRuntime((updatedGeometry) => {
-      house.update(updatedGeometry.pieces)
-    })
+    // NoFlo.setupRuntime((updatedGeometry) => {
+    //   house.update(updatedGeometry.pieces)
+    // })
 
     const hud = HUD(dimensions, changeDimensions(house))
 
