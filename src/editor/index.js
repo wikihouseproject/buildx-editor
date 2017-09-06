@@ -75,25 +75,24 @@ loader.load('img/materials/plywood/birch.jpg',
 function prerender() {
 
   Wren({dimensions}).then((res) => {
+    const house = House(res.outputs.pieces)
+    const siteOutline = SiteOutline([[-10,-10], [-10,10], [10,10], [10,-10]])
 
-  const house = House(res.outputs.pieces)
-  const siteOutline = SiteOutline([[-10,-10], [-10,10], [10,10], [10,-10]])
+    if (USING_WEBWORKERS) {
+      wrenWorker.onmessage = event => house.update(event.data.pieces)
+    }
 
-  if (USING_WEBWORKERS) {
-    wrenWorker.onmessage = event => house.update(event.data.pieces)
-  }
+    NoFlo.setupRuntime((updatedGeometry) => {
+      house.update(updatedGeometry.pieces)
+    })
 
-  NoFlo.setupRuntime((updatedGeometry) => {
-    house.update(updatedGeometry.pieces)
-  })
+    const hud = HUD(dimensions, changeDimensions(house))
 
-  const hud = HUD(dimensions, changeDimensions(house))
+    scene.add(ground(10*1000,10*1000))
+    scene.add(house.output)
+    scene.add(siteOutline)
 
-  scene.add(ground(10*1000,10*1000))
-  scene.add(house.output)
-  scene.add(siteOutline)
-
-  requestAnimationFrame(render)
+    requestAnimationFrame(render)
   })
 }
 
@@ -101,8 +100,10 @@ function render() {
   stats.begin()
   renderer.render(scene, camera)
   mouse.orbitControls.update() // needed because of damping
-  // clippingPlane.position.y -= 0.01
+  // // clippingPlane.position.y -= 0.01
   stats.end()
   rendererStats.update(renderer)
   requestAnimationFrame(render)
 }
+
+requestAnimationFrame(render)
