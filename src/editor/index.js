@@ -1,8 +1,11 @@
 import { renderer, container, scene, camera, stats, rendererStats, updateClippingPlane } from "./ui/scene"
 import { ground } from "./components"
+import { scale }  from './utils'
+
 import Mouse from './ui/controls/mouse'
 import HUD from './ui/controls/hud'
-// import Sidebar from './ui/controls/sidebar'
+// import { currentAction, changeCurrentAction }  from './ui/controls/sidebar'
+
 import House from './components/house'
 import SiteOutline from './components/site_outline'
 import { merge } from "lodash"
@@ -16,11 +19,11 @@ window.wren = Wren
 
 import WrenWorker from "worker-loader?inline!../lib/wren/worker"
 
+let house = undefined
+
 const CONFIG = {
   WEBWORKERS: true
 }
-
-// --------
 
 const USING_WEBWORKERS = (window.Worker && CONFIG.WEBWORKERS)
 
@@ -30,30 +33,122 @@ let dimensions = Wren.inputs({}).dimensions
 const changeDimensions = house => newDimensions => {
   dimensions = merge(dimensions, newDimensions)
 
-  if (NoFlo.nofloNetworkLive) {
-    NoFlo.sendToRuntime(NoFlo.nofloRuntime, NoFlo.lastGraphName, 'parameters', { dimensions })
-    return
-  }
+  // if (NoFlo.nofloNetworkLive) {
+  //   NoFlo.sendToRuntime(NoFlo.nofloRuntime, NoFlo.lastGraphName, 'parameters', { dimensions })
+  //   return
+  // }
 
   if (USING_WEBWORKERS) {
     wrenWorker.postMessage({dimensions})
   } else {
-
     Wren({dimensions}).then((res) => {
-      house.update(res.outputs.pieces)
+      house.update(res.outputs)
     })
-
   }
 }
 
-let currentAction = "RESIZE"
-
 const raycaster = new THREE.Raycaster()
 const raycastPlane = new THREE.Plane()
-const groundPlane = new THREE.Plane([0,1,0])
-// const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0),new THREE.Vector3(0,0,0))
+
+// const groundPlane = new THREE.Plane([0,1,0])
+const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(
+  new THREE.Vector3(0,1,0),
+  new THREE.Vector3(0,0,0)
+)
+const plane = new THREE.Plane()
+
+let hitTestObjects = [],
+  intersects = [],
+  intersectFn = undefined
+
+// function handleOutlineMesh(intersects) {
+//   if (intersects.length > 0) {
+//     house.outlineMesh.material.visible = true
+//   } else {
+//     if (!mouse.state.isDown) house.outlineMesh.material.visible = false
+//   }
+// }
+
+function handleRotate(intersects, intersection) {
+  // handleOutlineMesh(intersects)
+  if (mouse.state.activeTarget) {
+    mouse.orbitControls.enabled = false
+    house.output.rotation.y = mouse.state.position.x * 4
+  }
+}
+
+function handleResize(intersects, intersection) {
+  if (mouse.state.activeTarget) {
+    const ball = mouse.state.activeTarget.object
+    plane.setFromNormalAndCoplanarPoint(
+      camera.getWorldDirection(plane.normal),
+      ball.position
+    )
+    if (raycaster.ray.intersectPlane(plane, intersection)) {
+      // ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
+      // house.redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) })
+      // const dimensions = { [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) * scale }
+      console.log("change to ", { [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) })
+      // changeDimensions(house)(dimensions)
+    }
+  }
+}
+
+function handleMove(intersects, intersection) {
+  // handleOutlineMesh(intersects)
+  if (mouse.state.activeTarget) {
+    if (raycaster.ray.intersectPlane(groundPlane, intersection)) {
+      // console.log(intersection)
+      house.output.position.x = intersection.x
+      house.output.position.z = intersection.z
+    }
+  }
+}
+
+[...document.querySelectorAll('#controls li')].forEach(li => li.addEventListener('click', changeCurrentAction))
+
+let currentAction = "RESIZE"
+const activeClass = 'active'
+
+function changeCurrentAction(event) {
+  currentAction = event.target.id
+
+  if (house && house.balls) house.balls.forEach(ball => ball.visible = (currentAction === 'RESIZE'))
+
+  // change activeState
+  document.querySelectorAll('#controls li').forEach(li => li.classList.remove(activeClass))
+  event.target.classList.add(activeClass)
+}
+
 
 const mouse = Mouse(window, camera, renderer.domElement)
+function mouseEvent() {
+  if (!house) return;
+
+  raycaster.setFromCamera(mouse.state.position, camera)
+  hitTestObjects = []
+  intersectFn = function(x,y) { }
+
+  // mouse.orbitControls.enabled = true
+
+  if (currentAction === 'RESIZE') {
+    hitTestObjects = house.balls
+    intersectFn = handleResize
+  } else if (currentAction === 'MOVE') {
+    // hitTestObjects = [house.outlineMesh]
+    hitTestObjects = [house.output]
+    intersectFn = handleMove
+  } else if (currentAction === 'ROTATE') {
+    // hitTestObjects = [house.outlineMesh]
+    hitTestObjects = [house.output]
+    intersectFn = handleRotate
+  }
+
+  intersects = raycaster.intersectObjects(hitTestObjects, true)
+  mouse.handleIntersects(intersects)
+  intersectFn(intersects, new THREE.Vector3())
+}
+mouse.events.on('all', mouseEvent)
 
 var loader = new THREE.TextureLoader();
 loader.load('img/materials/plywood/birch.jpg',
@@ -75,20 +170,23 @@ loader.load('img/materials/plywood/birch.jpg',
 function prerender() {
 
   Wren({dimensions}).then((res) => {
-    const house = House(res.outputs.pieces)
+    house = House(res.outputs)
     const siteOutline = SiteOutline([[-10,-10], [-10,10], [10,10], [10,-10]])
 
     if (USING_WEBWORKERS) {
-      wrenWorker.onmessage = event => house.update(event.data.pieces)
+      wrenWorker.onmessage = event => {
+        house.update(event.data.pieces)
+      }
     }
+    console.info(USING_WEBWORKERS ? "using webworkers" : "NOT using webworkers")
 
-    NoFlo.setupRuntime((updatedGeometry) => {
-      house.update(updatedGeometry.pieces)
-    })
+    // NoFlo.setupRuntime((updatedGeometry) => {
+    //   house.update(updatedGeometry.pieces)
+    // })
 
     const hud = HUD(dimensions, changeDimensions(house))
 
-    scene.add(ground(10*1000,10*1000))
+    scene.add(ground(10*scale,10*scale))
     scene.add(house.output)
     scene.add(siteOutline)
 

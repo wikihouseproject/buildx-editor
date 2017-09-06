@@ -1,5 +1,5 @@
 import * as nofloTools from '../../lib/fbptools';
-
+import * as uuid from 'uuid';
 // NoFlo runtime setup
 var nofloRuntime = null;
 var lastGraphName = 'default/main';

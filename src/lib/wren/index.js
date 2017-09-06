@@ -40,9 +40,9 @@ function Wren(overrides) {
   .then((out) => {
     // console.timeEnd('geometry calc')
 
-    console.time('figures calc')
+    // console.time('figures calc')
     out.figures = outputs.figures(inputs, out.points)
-    console.timeEnd('figures calc')
+    // console.timeEnd('figures calc')
 
     const toSVG = (options) => {
       const sheet = cutsheet.layout(out.pieces, options)
