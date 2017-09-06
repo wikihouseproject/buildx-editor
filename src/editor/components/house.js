@@ -54,7 +54,8 @@ let balls = [
   clone(sourceBall, {y: wren.config.wallHeight/2, x: -wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => -x*2), dragAxis: 'x'})
 ]
 
-const House = pieces => {
+const House = ({pieces, figures}) => {
+
   const house = new THREE.Object3D()
   let allVertices = []
   const addBayPiece = _add(allVertices, house, 18, 0x00FF00)
@@ -95,30 +96,25 @@ const House = pieces => {
     }
   }
 
-  const updateBalls = () => {
-    const bbox = new THREE.Box3().setFromObject(house)
+  const updateBalls = (dimensions) => {
+    balls[0].position.y = dimensions.external.height/1000
 
-    balls[0].position.y = bbox.max.y - 0.4
-    // balls[0].position.z = wren.config.frameDepth/2
+    balls[1].position.x = dimensions.external.width/2000
 
-    // balls[1].position.y = wren.config.wallHeight/2
-    balls[1].position.x = bbox.max.x
-
-    // balls[2].position.y = wren.config.wallHeight/2
-    balls[2].position.x = bbox.min.x
+    balls[2].position.x = -dimensions.external.width/2000
   }
 
-  const update = pieces => {
+  const update = ({pieces, figures}) => {
     removeDescendants(house)
     draw(pieces)
     addOutlineMesh()
     house.add(...balls)
-    updateBalls()
+    updateBalls(figures.dimensions)
     // const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 10, 'green')
     // house.add(yArrow)
   }
-
-  update(pieces)
+  console.log(figures)
+  update({pieces, figures})
 
   return {
     output: house,

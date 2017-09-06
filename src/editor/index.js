@@ -41,11 +41,9 @@ const changeDimensions = house => newDimensions => {
   if (USING_WEBWORKERS) {
     wrenWorker.postMessage({dimensions})
   } else {
-
     Wren({dimensions}).then((res) => {
-      house.update(res.outputs.pieces)
+      house.update(res.outputs)
     })
-
   }
 }
 
@@ -89,8 +87,9 @@ function handleResize(intersects, intersection) {
     if (raycaster.ray.intersectPlane(plane, intersection)) {
       // ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
       // house.redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) })
-      const dimensions = { [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) * scale }
-      changeDimensions(house)(dimensions)
+      // const dimensions = { [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) * scale }
+      console.log("change to ", { [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) })
+      // changeDimensions(house)(dimensions)
     }
   }
 }
@@ -171,11 +170,13 @@ loader.load('img/materials/plywood/birch.jpg',
 function prerender() {
 
   Wren({dimensions}).then((res) => {
-    house = House(res.outputs.pieces)
+    house = House(res.outputs)
     const siteOutline = SiteOutline([[-10,-10], [-10,10], [10,10], [10,-10]])
 
     if (USING_WEBWORKERS) {
-      wrenWorker.onmessage = event => house.update(event.data.pieces)
+      wrenWorker.onmessage = event => {
+        house.update(event.data.pieces)
+      }
     }
     console.info(USING_WEBWORKERS ? "using webworkers" : "NOT using webworkers")
 
