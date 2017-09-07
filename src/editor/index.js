@@ -87,9 +87,9 @@ function handleResize(intersects, intersection) {
     if (raycaster.ray.intersectPlane(plane, intersection)) {
       // ball.position[ball.userData.dragAxis] = intersection[ball.userData.dragAxis]
       // house.redraw({ [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) })
-      // const dimensions = { [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) * scale }
-      console.log("change to ", { [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) })
-      // changeDimensions(house)(dimensions)
+      const dimensions = { [ball.userData.boundVariable]: ball.userData.bindFn(intersection[ball.userData.dragAxis]) * 1000 }
+      console.log("change to ", { [ball.userData.boundVariable]: Math.floor(ball.userData.bindFn(intersection[ball.userData.dragAxis]) * 1000) })
+      changeDimensions(house)(dimensions)
     }
   }
 }
@@ -186,7 +186,7 @@ function prerender() {
 
     const hud = HUD(dimensions, changeDimensions(house))
 
-    scene.add(ground(10*scale,10*scale))
+    // scene.add(ground(10*scale,10*scale))
     scene.add(house.output)
     scene.add(siteOutline)
 

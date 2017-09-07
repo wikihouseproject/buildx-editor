@@ -3,16 +3,6 @@ import { removeDescendants, scale } from "../utils"
 require('../utils/QuickHull')
 require('../utils/ConvexGeometry')
 
-// temporarily hardcoded
-const wren = {
-  config: {
-    height: 4,
-    wallHeight: 2,
-    width: 3,
-    frameDepth: 0
-  }
-}
-
 const _add = (allVertices, parent, thicknessMM, color) => side => {
 
   const scaledPoints = side.pts.map(([x,y]) => ([x/1000.0*scale, y/1000.0*scale]))
@@ -49,9 +39,9 @@ const _add = (allVertices, parent, thicknessMM, color) => side => {
 
 const sourceBall = ball()
 let balls = [
-  clone(sourceBall, {y: wren.config.height, z: wren.config.frameDepth/2}, {}, {boundVariable: 'height', bindFn: (x => x), dragAxis: 'y'}),
-  clone(sourceBall, {y: wren.config.wallHeight/2, x: wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => x*2), dragAxis: 'x'}),
-  clone(sourceBall, {y: wren.config.wallHeight/2, x: -wren.config.width/2}, {}, {boundVariable: 'width', bindFn: (x => -x*2), dragAxis: 'x'})
+  clone(sourceBall, {}, {}, {boundVariable: 'roofApexHeight', bindFn: (x => x), dragAxis: 'y'}),
+  clone(sourceBall, {y: 1}, {}, {boundVariable: 'width', bindFn: (x => x*2), dragAxis: 'x'}),
+  clone(sourceBall, {y: 1}, {}, {boundVariable: 'width', bindFn: (x => -x*2), dragAxis: 'x'})
 ]
 
 const House = ({pieces, figures}) => {
