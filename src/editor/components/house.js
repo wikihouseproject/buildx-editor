@@ -29,7 +29,9 @@ const _add = (allVertices, parent, thicknessMM, color) => side => {
   parent.add(piece)
 }
 
-const House = ({pieces, figures}) => {
+const House = ({inputs, outputs}) => {
+
+  const {pieces, figures} = outputs
 
   const house = new THREE.Object3D()
   let allVertices = []
@@ -38,12 +40,15 @@ const House = ({pieces, figures}) => {
 
   const sourceBall = ball()
   let balls = [
-    clone(sourceBall, {}, {}, {boundVariable: ['roofApexHeight'], bindFn: (x => ([x])), dragAxis: 'y'}),
-    clone(sourceBall, {y: 1}, {}, {boundVariable: ['width'], bindFn: (x => ([x*2])), dragAxis: 'x'}),
-    clone(sourceBall, {y: 1}, {}, {boundVariable: ['width'], bindFn: (x => ([-x*2])), dragAxis: 'x'}),
-    clone(sourceBall, {y: 1}, {}, {boundVariable: ['length', 'bays'], bindFn: ((x, {bayLength}) => {
-      return [-x, -Math.floor((x)%bayLength)]
-    }), dragAxis: 'z'})
+    clone(sourceBall, {}, {}, {boundVariable: 'roofApexHeight', bindFn: (x => Math.floor(x * 1000)), dragAxis: 'y'}),
+    clone(sourceBall, {y: 1}, {}, {boundVariable: 'width', bindFn: (x => Math.floor(x*2000)), dragAxis: 'x'}),
+    clone(sourceBall, {y: 1}, {}, {boundVariable: 'width', bindFn: (x => Math.floor(-x*2000)), dragAxis: 'x'}),
+    clone(sourceBall, {y: 1}, {}, {boundVariable: 'bays', bindFn: ((x, {bayLength}) => {
+      return Math.max(Math.floor(-x%bayLength), 1)
+    }), dragAxis: 'z'}),
+    // clone(sourceBall, {y: 1}, {}, {boundVariable: 'bays', bindFn: ((x, {bayLength}) => {
+    //   return Math.min(Math.floor((x)%bayLength), 1)
+    // }), dragAxis: 'z'})
   ]
 
   let outlineMesh = undefined
@@ -70,24 +75,26 @@ const House = ({pieces, figures}) => {
     }
   }
 
-  const updateBalls = (dimensions) => {
-    console.log(dimensions.external.length)
+  const updateBalls = (inputs, dimensions) => {
     balls[0].position.y = dimensions.external.height/1000
     balls[1].position.x = dimensions.external.width/2000
     balls[2].position.x = -dimensions.external.width/2000
-    balls[3].position.z = -dimensions.external.length/2000
+    balls[3].position.z = -Math.floor(inputs.dimensions.bays * inputs.dimensions.bayLength)/2000
+    // balls[4].position.z = dimensions.external.length/2000
   }
 
-  const update = ({pieces, figures}) => {
+  const update = ({inputs, outputs}) => {
+    const {pieces, figures} = outputs
+
     removeDescendants(house)
     draw(pieces)
     addOutlineMesh()
     house.add(...balls)
-    updateBalls(figures.dimensions)
+    updateBalls(inputs, figures.dimensions)
     // const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 10, 'green')
     // house.add(yArrow)
   }
-  update({pieces, figures})
+  update({inputs, outputs})
 
   return {
     output: house,
