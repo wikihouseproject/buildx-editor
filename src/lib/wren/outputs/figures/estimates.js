@@ -1,5 +1,4 @@
 const estimates = (inputs, volumes) => {
-
   // const sheets = ((
   //   (
   //     volumes.plywoodPortalFrame +
@@ -10,7 +9,7 @@ const estimates = (inputs, volumes) => {
 
   return {
     sheets: 200
-  }
-}
+  };
+};
 
-module.exports = estimates
+module.exports = estimates;

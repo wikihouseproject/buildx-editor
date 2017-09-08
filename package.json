@@ -11,7 +11,7 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,json,css}": ["prettier --write", "git add"]
+    "src/**/*.{js,json,css}": ["prettier --write", "git add"]
   },
   "bugs": {
     "url": "https://github.com/wikihouseproject/buildx-editor/issues"

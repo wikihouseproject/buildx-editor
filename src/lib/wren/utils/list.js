@@ -13,8 +13,8 @@
  */
 const loopify = array => {
   // NOTE: function name was previously 'wrapped'
-  return [...array, array[0]]
-}
+  return [...array, array[0]];
+};
 
 /**
  * Splits an array into groups that loop back to the first value
@@ -26,28 +26,28 @@ const loopify = array => {
  * loopifyInGroups(3,1)([1,2,3])
  * @returns {Array}
  */
-const loopifyInGroups = (size, offset=0) => arr => {
-  let loopedArray = []
+const loopifyInGroups = (size, offset = 0) => arr => {
+  let loopedArray = [];
   for (let i = 0; i < arr.length; i++) {
-    let current = i + (offset*i)
-    let nextItems = []
+    let current = i + offset * i;
+    let nextItems = [];
     for (let j = 1; j < size; j++) {
-      let index
-      if (current+j < arr.length) {
-        index = current+j
+      let index;
+      if (current + j < arr.length) {
+        index = current + j;
       } else {
-        index = current+j-arr.length
+        index = current + j - arr.length;
       }
-      nextItems.push(arr[index])
+      nextItems.push(arr[index]);
     }
     if (current < arr.length) {
-      loopedArray.push([arr[current], ...nextItems])
+      loopedArray.push([arr[current], ...nextItems]);
     } else {
       break;
     }
   }
-  return loopedArray
-}
+  return loopedArray;
+};
 
 /**
  * Returns an valid index even when its input value is out of bounds
@@ -55,19 +55,19 @@ const loopifyInGroups = (size, offset=0) => arr => {
  */
 const safeIndex = arrayLength => index => {
   if (index < 0) {
-    return (arrayLength + (index % arrayLength)) % arrayLength
+    return (arrayLength + index % arrayLength) % arrayLength;
   } else if (index >= arrayLength) {
-    return index % arrayLength
+    return index % arrayLength;
   } else {
-    return index
+    return index;
   }
-}
+};
 
 /**
  * Wraps its input into an array
  * @returns {Array}
  */
-const wrap = item => ([item])
+const wrap = item => [item];
 
 module.exports = {
   safeIndex,
@@ -75,4 +75,4 @@ module.exports = {
   loopifyInPairs: loopifyInGroups(2),
   loopify,
   wrap
-}
+};

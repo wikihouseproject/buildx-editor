@@ -18,12 +18,12 @@ const dimensions = {
   pointDistance: 150,
   minPointsInReinforcer: 5,
 
-  cncWasteFactor: 0.30,
+  cncWasteFactor: 0.3,
 
   frame: {
-    width: 286,
+    width: 286
   }
-}
+};
 
 const materials = {
   plywood: {
@@ -52,9 +52,9 @@ const materials = {
     horizontalBattenWidth: 32,
     verticalBattenWidth: 75
   }
-}
+};
 
 module.exports = {
   dimensions,
   materials
-}
+};

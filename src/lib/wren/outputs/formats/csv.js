@@ -1,13 +1,13 @@
 // CURRENTLY NOT BEING USED
 
-const defaultParameterOrder = ['footprintArea', 'floorArea'];
+const defaultParameterOrder = ["footprintArea", "floorArea"];
 
 function orderKeys(keys, order) {
   var sortedKeys = [];
   var unsortedKeys = [];
 
   const originalKeys = keys;
-  originalKeys.map((key) => {
+  originalKeys.map(key => {
     const index = order.indexOf(key);
     if (index == -1) {
       unsortedKeys.push(key);
@@ -23,8 +23,8 @@ function orderKeys(keys, order) {
 function dumpKeyValues(object, options) {
   options = options || {};
   options.order = options.order || defaultParameterOrder;
-  options.delimiter = options.delimiter || ';';
-  options.newline = options.newline || '\n';
+  options.delimiter = options.delimiter || ";";
+  options.newline = options.newline || "\n";
 
   // Ensure that there is a deterministic order when exporting
   // Important so that spreadsheets can expect values to appear in a certain place
@@ -32,11 +32,11 @@ function dumpKeyValues(object, options) {
 
   // Write header
   const header = orderedKeys.join(options.delimiter);
-  const values = orderedKeys.map((k) => object[k]).join(options.delimiter);
+  const values = orderedKeys.map(k => object[k]).join(options.delimiter);
   const out = header + options.newline + values + options.newline;
   return out;
 }
 
 module.exports = {
   dumpKeyValues
-}
+};

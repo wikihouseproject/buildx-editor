@@ -1,49 +1,65 @@
-import { scale } from "../utils"
+import { scale } from "../utils";
 
 const SIZE = () => ({
   WIDTH: window.innerWidth,
   HEIGHT: window.innerHeight
-})
-const resizeRenderer = () => renderer.setSize(SIZE().WIDTH, SIZE().HEIGHT)
+});
+const resizeRenderer = () => renderer.setSize(SIZE().WIDTH, SIZE().HEIGHT);
 
-const container = document.getElementById('app')
+const container = document.getElementById("app");
 
-const stats = new Stats()
-stats.showPanel(0)
-container.appendChild(stats.dom)
+const stats = new Stats();
+stats.showPanel(0);
+container.appendChild(stats.dom);
 
-const rendererStats = new THREEx.RendererStats()
-rendererStats.domElement.style.position = 'absolute'
-rendererStats.domElement.style.left = '0px'
-rendererStats.domElement.style.bottom = '0px'
-container.appendChild(rendererStats.domElement)
+const rendererStats = new THREEx.RendererStats();
+rendererStats.domElement.style.position = "absolute";
+rendererStats.domElement.style.left = "0px";
+rendererStats.domElement.style.bottom = "0px";
+container.appendChild(rendererStats.domElement);
 
-const renderer = new THREE.WebGLRenderer({antialias:true})
-renderer.setPixelRatio(window.devicePixelRatio)
-renderer.setClearColor(0xEEEEEE, 1)
-resizeRenderer()
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setClearColor(0xeeeeee, 1);
+resizeRenderer();
 
-container.appendChild(renderer.domElement)
+container.appendChild(renderer.domElement);
 
-const scene = new THREE.Scene()
+const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(45, SIZE().WIDTH/SIZE().HEIGHT, 0.1*scale, 20000*scale)
-camera.position.y = 20*scale
-camera.position.z = -20*scale
-camera.position.x = -10*scale
+const camera = new THREE.PerspectiveCamera(
+  45,
+  SIZE().WIDTH / SIZE().HEIGHT,
+  0.1 * scale,
+  20000 * scale
+);
+camera.position.y = 20 * scale;
+camera.position.z = -20 * scale;
+camera.position.x = -10 * scale;
 
-camera.lookAt(new THREE.Vector3(0,0,0))
+camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-window.addEventListener('resize', onWindowResize, false)
-function onWindowResize(){
-  camera.aspect = SIZE().WIDTH/SIZE().HEIGHT;
+window.addEventListener("resize", onWindowResize, false);
+function onWindowResize() {
+  camera.aspect = SIZE().WIDTH / SIZE().HEIGHT;
   camera.updateProjectionMatrix();
-  resizeRenderer()
+  resizeRenderer();
 }
 
-const updateClippingPlane = (height) => {
-  const clippingPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,-1,0), new THREE.Vector3(0,height,0));
-  renderer.clippingPlanes = [ clippingPlane ];
-}
+const updateClippingPlane = height => {
+  const clippingPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(
+    new THREE.Vector3(0, -1, 0),
+    new THREE.Vector3(0, height, 0)
+  );
+  renderer.clippingPlanes = [clippingPlane];
+};
 
-module.exports = { container, stats, rendererStats, renderer, scene, camera, updateClippingPlane }
+module.exports = {
+  container,
+  stats,
+  rendererStats,
+  renderer,
+  scene,
+  camera,
+  updateClippingPlane
+};

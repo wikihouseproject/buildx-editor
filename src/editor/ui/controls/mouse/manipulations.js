@@ -1,9 +1,7 @@
 // Mouse Events
-
 // let hitTestObjects = [],
 //     intersects = [],
 //     intersectFn = undefined
-
 // function mouseEvent() {
 //   raycaster.setFromCamera(mouse.state.position, camera)
 //   // if (currentAction === 'RESIZE') {
@@ -16,13 +14,11 @@
 //   //   hitTestObjects = [house.outlineMesh]
 //   //   intersectFn = handleRotate
 //   // }
-
 //   // intersects = raycaster.intersectObjects(hitTestObjects)
 //   // mouse.handleIntersects(intersects)
 //   // intersectFn(intersects, new THREE.Vector3())
 // }
 // mouse.events.on('all', mouseEvent)
-
 // // function handleOutlineMesh(intersects) {
 // //   if (intersects.length > 0) {
 // //     house.outlineMesh.material.visible = true
@@ -30,7 +26,6 @@
 // //     if (!mouse.state.isDown) house.outlineMesh.material.visible = false
 // //   }
 // // }
-
 // // function handleMove(intersects, intersection) {
 // //   handleOutlineMesh(intersects)
 // //   if (mouse.state.activeTarget) {
@@ -40,14 +35,12 @@
 // //     }
 // //   }
 // // }
-
 // // function handleRotate(intersects, intersection) {
 // //   handleOutlineMesh(intersects)
 // //   if (mouse.state.activeTarget) {
 // //     house.house.rotation.y = mouse.state.position.x * 4
 // //   }
 // // }
-
 // // function handleResize(intersects, intersection) {
 // //   if (mouse.state.activeTarget) {
 // //     const ball = mouse.state.activeTarget.object

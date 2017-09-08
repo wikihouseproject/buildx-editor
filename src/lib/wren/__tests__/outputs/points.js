@@ -1,8 +1,8 @@
-const defaults = require('../../defaults')
-const dimensions = require('../../outputs/figures/dimensions')(defaults)
-const points = require('../../outputs/points')(dimensions)
+const defaults = require("../../defaults");
+const dimensions = require("../../outputs/figures/dimensions")(defaults);
+const points = require("../../outputs/points")(dimensions);
 
-it.skip('generates points with keys to indicate positions.', () => {
+it.skip("generates points with keys to indicate positions.", () => {
   //    T
   // TL   TR
   // BL   BR
@@ -17,11 +17,10 @@ it.skip('generates points with keys to indicate positions.', () => {
   });
 
   expect(wren.outputs.points.center).toEqual({
-    "BL": [0, 9000],
-    "BR": [5000, 9000],
-    "T": [3500, 0],
-    "TL": [0, 3000],
-    "TR": [5000, 6000]
-  })
-
-})
+    BL: [0, 9000],
+    BR: [5000, 9000],
+    T: [3500, 0],
+    TL: [0, 3000],
+    TR: [5000, 6000]
+  });
+});

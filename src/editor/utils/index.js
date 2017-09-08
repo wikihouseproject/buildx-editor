@@ -2,18 +2,17 @@ const removeDescendants = current => {
   if (current) {
     if (current.type === "Object3D" && current.children) {
       // const numChildren = current.children.length
-      for(let i = current.children.length - 1; i >= 0; i--) {
-        removeDescendants(current.children[i])
+      for (let i = current.children.length - 1; i >= 0; i--) {
+        removeDescendants(current.children[i]);
       }
       // current.children.forEach(removeDescendants)
-
     } else if (current.type === "Mesh") {
-      current.parent.remove(current)
-      current.geometry.dispose()
-      current.material.dispose()
+      current.parent.remove(current);
+      current.geometry.dispose();
+      current.material.dispose();
     }
   }
-}
+};
 
 // house.children.forEach(child => {
 //   child.children.forEach(c => {
@@ -26,4 +25,4 @@ const removeDescendants = current => {
 module.exports = {
   removeDescendants,
   scale: 1
-}
+};
