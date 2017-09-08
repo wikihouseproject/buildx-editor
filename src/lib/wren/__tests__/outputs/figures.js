@@ -12,8 +12,8 @@ const dimensions = _dimensions(defaults, points);
 describe("dimensions", () => {
   it("outputs dimensions in mm", () => {
     expect(dimensions).toEqual({
-      external: { height: 2787, length: 1650, width: 2986 },
-      internal: { length: 1004, width: 2053 }
+      external: { height: 4486, length: 11250, width: 4486 },
+      internal: { length: 10604, width: 3553 }
     });
   });
 });
@@ -22,12 +22,12 @@ describe("areas", () => {
   it("calculates areas in mm²", () => {
     const areas = mutatingMap(_areas(defaults, dimensions, points), Math.round);
     const expected = {
-      external: { endWall: 6493687, footprint: 4926900 },
+      external: { endWall: 14046203, footprint: 50467500 },
       internal: {
-        endWall: 4193687,
-        floor: 2061212,
-        roof: 2158601,
-        walls: 12804974
+        endWall: 10641111,
+        floor: 37676012,
+        roof: 48830972,
+        walls: 72181422
       }
     };
     expect(areas).toEqual(expected);
@@ -56,11 +56,11 @@ describe("volumes", () => {
   );
 
   const expected = {
-    external: { endWall: 1623421774, total: 10714583705 },
+    external: { endWall: 3511550627, total: 158019778198 },
     internal: {
-      endWall: 1048421721,
-      insulation: 2671843495,
-      total: 4210461632
+      endWall: 2660277762,
+      insulation: 6171828388,
+      total: 112838341539
     },
     materials: { singleSheet: 53582400 }
   };

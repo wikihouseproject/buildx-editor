@@ -1,14 +1,14 @@
 // all units in mm unless otherwise specified
 const dimensions = {
-  width: 2400,
-  length: 1200,
-  roofApexHeight: 2201, // Height to top of chassis
+  width: 3900,
+  length: 10800,
+  roofApexHeight: 3900, // Height to top of chassis
 
   roofApexOffset: 0, // Offset to left or right, negative value to move left, positive right
-  leftWallHeight: 2200, // Height of wall, where the roof starts
-  rightWallHeight: 2200, // "" ""
+  leftWallHeight: 2400, // Height of wall, where the roof starts
+  rightWallHeight: 2400, // "" ""
 
-  bays: 1, // Number of bays (blocks inbetween frames)
+  bays: 9, // Number of bays (blocks inbetween frames)
   bayLength: 1200, // Distance between each of the frames
 
   finDepth: 250,
