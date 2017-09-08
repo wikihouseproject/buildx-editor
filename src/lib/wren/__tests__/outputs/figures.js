@@ -12,37 +12,14 @@ const dimensions = _dimensions(defaults, points)
 
 describe('dimensions', () => {
   it('outputs dimensions in mm', () => {
-    expect(dimensions).toEqual({
-      internal: {
-        width: 3553,
-        length: 10604
-      },
-      external: {
-        width: 4486,
-        length: 11250,
-        height: 4486
-      }
-    })
+    expect(dimensions).toEqual({"external": {"height": 2787, "length": 1650, "width": 2986}, "internal": {"length": 1004, "width": 2053}})
   });
 })
 
 describe('areas', () => {
   it('calculates areas in mm²', () => {
     const areas = mutatingMap(_areas(defaults, dimensions, points), Math.round)
-    const expected = mutatingMap({
-      internal: {
-        floor: 37.676012, // 75.34
-        walls: 72.18142209335001, // 88.89
-        roof: 48.830972218051116, // 49.24
-        endWall: 10.641111046675002, // 10.41
-        // ceilingHeight: x (if more than 1 storey)
-      },
-      external: {
-        footprint: 50.4675,
-        endWall: 14.046202506499998
-        // surface: 185.44,
-      }
-    }, (v) => Math.round(v*1000*1000) )
+    const expected = {"external": {"endWall": 6493687, "footprint": 4926900}, "internal": {"endWall": 4193687, "floor": 2061212, "roof": 2158601, "walls": 12804974}}
     expect(areas).toEqual(expected)
   });
   // openings: {
@@ -65,20 +42,7 @@ describe('volumes', () => {
   const areas = _areas(defaults, dimensions, points)
   const volumes = mutatingMap(_volumes(defaults, dimensions, points, areas), Math.round)
 
-  const expected = mutatingMap({
-      internal: {
-        total: 112.83834153894173,
-        endWall: 2.660277761668751,
-        insulation: 6.1718283882937515,
-      },
-      external: {
-        total: 158.01977819812498,
-        endWall: 3.5115506266249996
-      },
-      materials: {
-        singleSheet: 0.0535824
-      }
-  }, (v) => Math.round(v*1000*1000*1000) )
+  const expected = {"external": {"endWall": 1623421774, "total": 10714583705}, "internal": {"endWall": 1048421721, "insulation": 2671843495, "total": 4210461632}, "materials": {"singleSheet": 53582400}}
 
   it('calculates volumes', () => {
     expect(volumes).toEqual(expected)
