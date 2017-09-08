@@ -116,7 +116,7 @@ const makePiece = (points, amount, color=null) => {
 }
 
 const ball = () => {
-  const geometry = new THREE.SphereGeometry(0.5, 8, 8);
+  const geometry = new THREE.SphereGeometry(0.2, 8, 8);
   const material = new THREE.MeshBasicMaterial({ color: 0x00000 });
   return new THREE.Mesh(geometry, material)
 }
