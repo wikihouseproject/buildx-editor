@@ -1,4 +1,3 @@
-const CSV = require('../../../outputs/formats/csv')
+const CSV = require("../../../outputs/formats/csv");
 
-it.skip('can dumpKeyValues', () => {
-})
+it.skip("can dumpKeyValues", () => {});

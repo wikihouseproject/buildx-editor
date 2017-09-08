@@ -1,16 +1,15 @@
-const O = require('../../utils/object');
+const O = require("../../utils/object");
 
-it('maps over nested object and edits in place', () => {
-
+it("maps over nested object and edits in place", () => {
   const a = {
     b: 2,
     c: {
       d: 4,
       e: 5
     }
-  }
+  };
 
-  const double = value => value * 2
+  const double = value => value * 2;
 
   const result = {
     b: 4,
@@ -18,8 +17,7 @@ it('maps over nested object and edits in place', () => {
       d: 8,
       e: 10
     }
-  }
+  };
 
-  expect(O.mutatingMap(a, double)).toEqual(result)
-
-})
+  expect(O.mutatingMap(a, double)).toEqual(result);
+});

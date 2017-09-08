@@ -1,17 +1,17 @@
 const pieces = (_totalLength, maxPieceLength) => {
-  let length = _totalLength
-  let lengths = []
-  while(length > 0) {
+  let length = _totalLength;
+  let lengths = [];
+  while (length > 0) {
     if (length > maxPieceLength) {
-      lengths.push(maxPieceLength)
+      lengths.push(maxPieceLength);
     } else {
-      lengths.push(length)
+      lengths.push(length);
     }
-    length -= maxPieceLength
+    length -= maxPieceLength;
   }
-  return lengths
-}
+  return lengths;
+};
 
 module.exports = {
   pieces
-}
+};
