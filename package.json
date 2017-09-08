@@ -1,11 +1,16 @@
 {
   "name": "buildx-editor",
-  "description": "A 3D editor for designing a WikiHouse using the Wren building engine",
+  "description":
+    "A 3D editor for designing a WikiHouse using the Wren building engine",
   "scripts": {
     "start": "webpack-dev-server",
     "build": "grunt && cp -R public dist && webpack -p",
     "deploy": "npm run build && ghpages -p dist && rm -rf dist",
-    "test": "jest"
+    "test": "jest",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,json,css}": ["prettier --write", "git add"]
   },
   "bugs": {
     "url": "https://github.com/wikihouseproject/buildx-editor/issues"
@@ -49,7 +54,9 @@
     "ghpages": "^0.0.10",
     "grunt": "^1.0.1",
     "grunt-noflo-browser": "^1.3.0",
+    "husky": "^0.14.3",
     "jest": "^21.0.1",
+    "lint-staged": "^4.1.3",
     "mocha": "^3.5.0",
     "regenerator-runtime": "^0.11.0",
     "rimraf": "^2.6.1",
@@ -60,19 +67,11 @@
     "webpack-dev-server": "^2.5.1",
     "worker-loader": "^0.8.1"
   },
-  "keywords": [
-    "wikihouse",
-    "wren",
-    "parametric",
-    "3d"
-  ],
+  "keywords": ["wikihouse", "wren", "parametric", "3d"],
   "license": "MIT",
   "jest": {
     "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "js",
-      "coffee"
-    ],
+    "moduleFileExtensions": ["js", "coffee"],
     "transformIgnorePatterns": [],
     "transform": {
       ".*": "./jest-preprocessor.js"
