@@ -17,7 +17,22 @@ import {
   rendererStats,
   updateClippingPlane
 } from "./ui/scene";
+import config from "../config";
+
 // import { currentAction, changeCurrentAction }  from './ui/controls/sidebar'
+
+const { hash } = window.location;
+window.projectID = null;
+if (hash !== "") {
+  const matched = hash.match(/\d+/);
+  if (matched) {
+    window.projectID = parseInt(matched[0]);
+  }
+}
+fetch(`${config.buildxURL}/projects/${window.projectID}.json`)
+  .then(response => response.json())
+  .then(json => console.info(json))
+  .catch(ex => console.error({ ex }));
 
 // Export so NoFlo build can use it
 window.wren = Wren;
@@ -191,10 +206,10 @@ function prerender() {
   Wren({ dimensions }).then(res => {
     house = House(res);
     const siteOutline = SiteOutline([
-      [-10, -10],
-      [-10, 10],
-      [10, 10],
-      [10, -10]
+      [-8.050569244142638, -5.218374523904092],
+      [-1.404946987204948, 8.786493856488088],
+      [8.050569244142638, 3.478916349269395],
+      [1.9401648870925472, -8.786493856488088]
     ]);
 
     if (USING_WEBWORKERS) {

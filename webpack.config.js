@@ -3,7 +3,7 @@ const webpack = require('webpack');
 module.exports = {
   context: path.resolve(__dirname, './src'),
   entry: {
-    editor: ["babel-polyfill", './editor/index.js'],
+    editor: ['whatwg-fetch', 'babel-polyfill', './editor/index.js'],
     wrendebug: './wrendebug.js',
     svgnest: './svgnest.js'
   },
@@ -34,5 +34,8 @@ module.exports = {
   },
   plugins: [
     new webpack.IgnorePlugin(/noflo/),
+    new webpack.DefinePlugin({
+      __PRODUCTION__: JSON.stringify(process.env.PRODUCTION)
+    })
   ]
 }
