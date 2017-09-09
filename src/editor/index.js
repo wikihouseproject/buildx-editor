@@ -21,6 +21,8 @@ import config from "../config";
 
 // import { currentAction, changeCurrentAction }  from './ui/controls/sidebar'
 
+let house = undefined;
+
 const { hash } = window.location;
 window.projectID = null;
 if (hash !== "") {
@@ -31,15 +33,16 @@ if (hash !== "") {
 }
 fetch(`${config.buildxURL}/projects/${window.projectID}`)
   .then(response => response.json())
-  .then(json => console.info(json))
+  .then(json => {
+    const siteOutline = SiteOutline(json.site.bounds.cartesian);
+    scene.add(siteOutline);
+  })
   .catch(ex => console.error({ ex }));
 
 // Export so NoFlo build can use it
 window.wren = Wren;
 
 import WrenWorker from "worker-loader?inline!../lib/wren/worker";
-
-let house = undefined;
 
 const CONFIG = {
   WEBWORKERS: true
@@ -205,12 +208,6 @@ loader.load(
 function prerender() {
   Wren({ dimensions }).then(res => {
     house = House(res);
-    const siteOutline = SiteOutline([
-      [-8.050569244142638, -5.218374523904092],
-      [-1.404946987204948, 8.786493856488088],
-      [8.050569244142638, 3.478916349269395],
-      [1.9401648870925472, -8.786493856488088]
-    ]);
 
     if (USING_WEBWORKERS) {
       wrenWorker.onmessage = event => {
@@ -229,7 +226,6 @@ function prerender() {
 
     // scene.add(ground(10*scale,10*scale))
     scene.add(house.output);
-    scene.add(siteOutline);
 
     requestAnimationFrame(render);
   });
