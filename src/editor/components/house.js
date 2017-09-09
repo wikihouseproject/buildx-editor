@@ -136,6 +136,8 @@ const House = ({ inputs, outputs }) => {
   };
   update({ inputs, outputs });
 
+  house.rotation.y = -Math.PI/6;
+
   return {
     output: house,
     update,
