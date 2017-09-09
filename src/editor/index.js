@@ -29,7 +29,7 @@ if (hash !== "") {
     window.projectID = parseInt(matched[0]);
   }
 }
-fetch(`${config.buildxURL}/projects/${window.projectID}.json`)
+fetch(`${config.buildxURL}/projects/${window.projectID}`)
   .then(response => response.json())
   .then(json => console.info(json))
   .catch(ex => console.error({ ex }));
