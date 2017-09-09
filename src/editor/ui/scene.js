@@ -33,9 +33,9 @@ const camera = new THREE.PerspectiveCamera(
   0.1 * scale,
   20000 * scale
 );
-camera.position.y = 20 * scale;
-camera.position.z = -20 * scale;
-camera.position.x = -10 * scale;
+camera.position.y = 30 * scale;
+camera.position.z = 20 * scale;
+camera.position.x = 0; //-10 * scale;
 
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
