@@ -49,7 +49,7 @@ const House = ({ inputs, outputs }) => {
       {},
       {
         boundVariable: "roofApexHeight",
-        bindFn: x => Math.floor(x * 1000),
+        bindFn: x => Math.max(Math.floor(x), 1)* 1000,
         dragAxis: "y"
       }
     ),
@@ -59,7 +59,7 @@ const House = ({ inputs, outputs }) => {
       {},
       {
         boundVariable: "width",
-        bindFn: x => Math.floor(x * 2000),
+        bindFn: x => Math.max(Math.floor(x), 1)* 2000,
         dragAxis: "x"
       }
     ),
@@ -69,7 +69,7 @@ const House = ({ inputs, outputs }) => {
       {},
       {
         boundVariable: "width",
-        bindFn: x => Math.floor(-x * 2000),
+        bindFn: x => Math.max(Math.floor(-x), 1) * 2000,
         dragAxis: "x"
       }
     ),
@@ -80,7 +80,7 @@ const House = ({ inputs, outputs }) => {
       {
         boundVariable: "bays",
         bindFn: (x, { bayLength }) => {
-          return Math.max(Math.floor(-x % bayLength), 1);
+          return Math.max(Math.floor( (x*2) % bayLength), 1);
         },
         dragAxis: "z"
       }
@@ -119,7 +119,7 @@ const House = ({ inputs, outputs }) => {
     balls[1].position.x = dimensions.external.width / 2000;
     balls[2].position.x = -dimensions.external.width / 2000;
     balls[3].position.z =
-      -Math.floor(inputs.dimensions.bays * inputs.dimensions.bayLength) / 2000;
+      Math.floor(inputs.dimensions.bays * inputs.dimensions.bayLength) / 2000;
     // balls[4].position.z = dimensions.external.length/2000
   };
 
