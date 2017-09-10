@@ -27,6 +27,20 @@ import {
 // import { currentAction, changeCurrentAction }  from './ui/controls/sidebar'
 import WrenWorker from "worker-loader?inline!../lib/wren/worker";
 
+const renderObj = obj => {
+  return Object.keys(obj)
+    .map(key => {
+      if (!isNaN(obj[key][0])) {
+        return `<tr><td>${key}</td><td>${obj[key][0]}${obj[key][1]}</td></tr>`;
+      }
+    })
+    .join("\n");
+};
+
+const metricsTable = document.getElementById("metrics");
+const updateMetricsTable = metrics =>
+  (metricsTable.innerHTML = renderObj(metrics));
+
 const USING_WEBWORKERS = window.Worker && config.WEBWORKERS;
 var wrenWorker = USING_WEBWORKERS ? new WrenWorker() : null;
 
@@ -208,10 +222,13 @@ loader.load(
 function prerender() {
   Wren({ dimensions }).then(res => {
     house = House(res);
+    updateMetricsTable(res.outputs.figures.metrics);
 
     if (USING_WEBWORKERS) {
       wrenWorker.onmessage = event => {
         house.update(event.data);
+        // console.info(event.data)
+        updateMetricsTable(event.data.outputs.figures.metrics);
       };
     }
     console.info(

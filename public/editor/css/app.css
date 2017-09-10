@@ -9,11 +9,22 @@
   right: 0;
   top: 200px;
   padding: 20px;
+  width: 240px;
 }
 #flowhubLink {
   position: absolute;
   bottom: 0px;
   right: 0px;
+}
+
+#dimensions {
+  word-wrap: break-word;
+  font-size: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
 input {
