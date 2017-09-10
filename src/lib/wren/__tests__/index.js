@@ -18,12 +18,15 @@ it("can override default dimensions", () => {
 it("returns outputs object", () => {
   const params = { dimensions: { roofApexHeight: 3000 } };
   return Wren(params).then(wren => {
-    const outputs = wren.outputs;
-    expect(outputs).toHaveProperty("figures.areas");
-    expect(outputs).toHaveProperty("figures.dimensions");
-    expect(outputs).toHaveProperty("figures.estimates");
-    expect(outputs).toHaveProperty("figures.volumes");
-    expect(outputs).toHaveProperty("points");
+    expect(Object.keys(wren.outputs)).toEqual(["points", "pieces", "figures"]);
+    expect(Object.keys(wren.outputs.figures)).toEqual([
+      "areas",
+      "dimensions",
+      "volumes",
+      "estimates",
+      "metrics",
+      "costs"
+    ]);
   });
 });
 
