@@ -1,3 +1,11 @@
+import Mouse from "./ui/controls/mouse";
+import HUD from "./ui/controls/hud";
+import House from "./components/house";
+import SiteOutline from "./components/site_outline";
+import { merge } from "lodash";
+import Wren from "../lib/wren";
+import config from "../config";
+import TWEEN from "@tweenjs/tween.js";
 import {
   ground,
   plane,
@@ -6,15 +14,6 @@ import {
   groundPlane,
   loader
 } from "./components";
-import { scale } from "./utils";
-import * as uuid from "uuid";
-import Mouse from "./ui/controls/mouse";
-import HUD from "./ui/controls/hud";
-import House from "./components/house";
-import SiteOutline from "./components/site_outline";
-import { merge } from "lodash";
-import Wren from "../lib/wren";
-import NoFlo from "./utils/fbp"; // not called noflo.js because of webpack ignore
 import {
   renderer,
   container,
@@ -24,7 +23,7 @@ import {
   rendererStats,
   updateClippingPlane
 } from "./ui/scene";
-import config from "../config";
+// import NoFlo from "./utils/fbp"; // not called noflo.js because of webpack ignore
 // import { currentAction, changeCurrentAction }  from './ui/controls/sidebar'
 import WrenWorker from "worker-loader?inline!../lib/wren/worker";
 
@@ -52,6 +51,7 @@ if (hash !== "") {
       .then(response => response.json())
       .then(json => {
         const siteOutline = SiteOutline(json.site.bounds.cartesian);
+        console.info(json.buildings);
         scene.add(siteOutline);
       })
       .catch(ex => console.error({ ex }));
@@ -147,6 +147,17 @@ function changeCurrentAction(event) {
 }
 
 const mouse = Mouse(window, camera, renderer.domElement);
+
+var position = { x: 0, y: 80, z: 0 };
+var target = { x: 0, y: 30, z: 24 };
+var tween = new TWEEN.Tween(position).to(target, 1500);
+tween.easing(TWEEN.Easing.Cubic.InOut);
+tween.onUpdate(function() {
+  camera.position.x = position.x;
+  camera.position.y = position.y;
+  camera.position.z = position.z;
+});
+
 function mouseEvent() {
   if (!house) return;
 
@@ -212,15 +223,16 @@ function prerender() {
     // })
 
     const hud = HUD(dimensions, changeDimensions(house));
-
-    // scene.add(ground(10*scale,10*scale))
     scene.add(house.output);
     requestAnimationFrame(render);
+
+    tween.start();
   });
 }
 
 function render() {
   stats.begin();
+  TWEEN.update();
   renderer.render(scene, camera);
   mouse.orbitControls.update(); // needed because of damping
   stats.end();

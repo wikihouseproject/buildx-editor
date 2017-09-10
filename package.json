@@ -26,6 +26,7 @@
     "@cycle/html": "^2.1.0",
     "@cycle/http": "^14.3.0",
     "@cycle/run": "^3.2.0",
+    "@tweenjs/tween.js": "^17.1.0",
     "clipper-js": "^1.0.2",
     "eventemitter3": "^2.0.3",
     "express": "^4.15.4",
