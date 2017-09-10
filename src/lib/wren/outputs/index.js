@@ -9,7 +9,8 @@ const _pieces = require("./pieces");
 const m = x => [(x / 1000).toFixed(2), "m"];
 const m2 = x => [(x / 1000000).toFixed(2), "m²"];
 const m3 = x => [(x / 1000000000).toFixed(2), "m³"];
-const basic = x => [x, ""];
+const basic = x => [x];
+const gbp = x => ["£", x.toFixed(2)];
 
 const figures = (inputs, points) => {
   const dimensions = _dimensions(inputs, points);
@@ -25,7 +26,11 @@ const figures = (inputs, points) => {
     internalVolume: m3(volumes.internal.total),
     insulationVolume: m3(volumes.internal.insulation),
     externalVolume: m3(volumes.external.total),
-    sheetsEstimate: [estimates.sheets, ""]
+    sheetsEstimate: basic(estimates.sheets)
+  };
+
+  const costs = {
+    total: gbp(1000)
   };
 
   return {
@@ -33,7 +38,8 @@ const figures = (inputs, points) => {
     dimensions,
     volumes,
     estimates,
-    metrics
+    metrics,
+    costs
   };
 };
 

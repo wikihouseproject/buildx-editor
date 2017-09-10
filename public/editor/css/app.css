@@ -1,6 +1,8 @@
 * {
   margin: 0;
   padding: 0;
+}
+body {
   line-height: 2;
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -25,6 +27,7 @@
 table {
   width: 100%;
   border-collapse: collapse;
+  font-family: "Andale Mono", AndaleMono, monospace;
 }
 
 input {
