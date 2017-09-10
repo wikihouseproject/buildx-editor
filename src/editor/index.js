@@ -1,4 +1,11 @@
-import { ground } from "./components";
+import {
+  ground,
+  plane,
+  raycaster,
+  raycastPlane,
+  groundPlane,
+  loader
+} from "./components";
 import { scale } from "./utils";
 import * as uuid from "uuid";
 import Mouse from "./ui/controls/mouse";
@@ -18,10 +25,22 @@ import {
   updateClippingPlane
 } from "./ui/scene";
 import config from "../config";
-
 // import { currentAction, changeCurrentAction }  from './ui/controls/sidebar'
+import WrenWorker from "worker-loader?inline!../lib/wren/worker";
 
-let house = undefined;
+const USING_WEBWORKERS = window.Worker && config.WEBWORKERS;
+var wrenWorker = USING_WEBWORKERS ? new WrenWorker() : null;
+
+let hitTestObjects = [],
+  intersects = [],
+  intersectFn = undefined,
+  house = undefined,
+  currentAction = "RESIZE";
+
+const activeClass = "active";
+
+// Export so NoFlo build can use it
+// window.wren = Wren;
 
 const { hash } = window.location;
 window.projectID = null;
@@ -29,38 +48,27 @@ if (hash !== "") {
   const matched = hash.match(/\d+/);
   if (matched) {
     window.projectID = parseInt(matched[0]);
+    fetch(`${config.buildxURL}/projects/${window.projectID}`)
+      .then(response => response.json())
+      .then(json => {
+        const siteOutline = SiteOutline(json.site.bounds.cartesian);
+        scene.add(siteOutline);
+      })
+      .catch(ex => console.error({ ex }));
   }
 }
-fetch(`${config.buildxURL}/projects/${window.projectID}`)
-  .then(response => response.json())
-  .then(json => {
-    const siteOutline = SiteOutline(json.site.bounds.cartesian);
-    scene.add(siteOutline);
-  })
-  .catch(ex => console.error({ ex }));
 
-// Export so NoFlo build can use it
-window.wren = Wren;
+// function init() {
+// }
 
-import WrenWorker from "worker-loader?inline!../lib/wren/worker";
+let { dimensions } = Wren.inputs();
 
-const CONFIG = {
-  WEBWORKERS: true
-};
-
-const USING_WEBWORKERS = window.Worker && CONFIG.WEBWORKERS;
-
-var wrenWorker = USING_WEBWORKERS ? new WrenWorker() : null;
-
-let dimensions = Wren.inputs({}).dimensions;
 const changeDimensions = house => newDimensions => {
   dimensions = merge(dimensions, newDimensions);
-
   // if (NoFlo.nofloNetworkLive) {
   //   NoFlo.sendToRuntime(NoFlo.nofloRuntime, NoFlo.lastGraphName, 'parameters', { dimensions })
   //   return
   // }
-
   if (USING_WEBWORKERS) {
     wrenWorker.postMessage({ dimensions });
   } else {
@@ -69,20 +77,6 @@ const changeDimensions = house => newDimensions => {
     });
   }
 };
-
-const raycaster = new THREE.Raycaster();
-const raycastPlane = new THREE.Plane();
-
-// const groundPlane = new THREE.Plane([0,1,0])
-const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(
-  new THREE.Vector3(0, 1, 0),
-  new THREE.Vector3(0, 0, 0)
-);
-const plane = new THREE.Plane();
-
-let hitTestObjects = [],
-  intersects = [],
-  intersectFn = undefined;
 
 // function handleOutlineMesh(intersects) {
 //   if (intersects.length > 0) {
@@ -139,9 +133,6 @@ function handleMove(intersects, intersection) {
   li.addEventListener("click", changeCurrentAction)
 );
 
-let currentAction = "RESIZE";
-const activeClass = "active";
-
 function changeCurrentAction(event) {
   currentAction = event.target.id;
 
@@ -184,7 +175,6 @@ function mouseEvent() {
 }
 mouse.events.on("all", mouseEvent);
 
-var loader = new THREE.TextureLoader();
 loader.load(
   "img/materials/plywood/birch.jpg",
   function(texture) {
@@ -194,7 +184,6 @@ loader.load(
       map: texture,
       overdraw: 0.5
     });
-
     prerender();
   },
   function(xhr) {
@@ -226,7 +215,6 @@ function prerender() {
 
     // scene.add(ground(10*scale,10*scale))
     scene.add(house.output);
-
     requestAnimationFrame(render);
   });
 }
@@ -235,7 +223,6 @@ function render() {
   stats.begin();
   renderer.render(scene, camera);
   mouse.orbitControls.update(); // needed because of damping
-  // // clippingPlane.position.y -= 0.01
   stats.end();
   rendererStats.update(renderer);
   requestAnimationFrame(render);

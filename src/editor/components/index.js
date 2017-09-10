@@ -151,6 +151,16 @@ const ball = () => {
   return new THREE.Mesh(geometry, material);
 };
 
+const raycaster = new THREE.Raycaster();
+const raycastPlane = new THREE.Plane();
+const groundPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(
+  new THREE.Vector3(0, 1, 0),
+  new THREE.Vector3(0, 0, 0)
+);
+const plane = new THREE.Plane();
+// const groundPlane = new THREE.Plane([0,1,0])
+const loader = new THREE.TextureLoader();
+
 module.exports = {
   ground,
   makePiece,
@@ -163,5 +173,10 @@ module.exports = {
   floor,
   outline,
   segment,
-  outlinedComponent
+  outlinedComponent,
+  raycaster,
+  raycastPlane,
+  groundPlane,
+  plane,
+  loader
 };
