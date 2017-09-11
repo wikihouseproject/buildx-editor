@@ -12,6 +12,7 @@ body {
   top: 200px;
   padding: 20px;
   width: 240px;
+  background: rgba(238, 238, 238, 0.7);
 }
 #flowhubLink {
   position: absolute;
@@ -22,6 +23,9 @@ body {
 #figures,
 #add-building {
   display: none;
+}
+#figures > div {
+  pointer-events: none;
 }
 
 #dimensions {
