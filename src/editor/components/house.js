@@ -49,7 +49,7 @@ const House = ({ inputs, outputs }) => {
       {},
       {
         boundVariable: "roofApexHeight",
-        bindFn: x => Math.max(Math.floor(x), 1)* 1000,
+        bindFn: x => Math.max(x, 1) * 1000,
         dragAxis: "y"
       }
     ),
@@ -59,8 +59,9 @@ const House = ({ inputs, outputs }) => {
       {},
       {
         boundVariable: "width",
-        bindFn: x => Math.max(Math.floor(x), 1)* 2000,
-        dragAxis: "x"
+        bindFn: x => Math.max(x, 1) * 2000,
+        dragAxis: "x",
+        name: "left"
       }
     ),
     clone(
@@ -69,8 +70,9 @@ const House = ({ inputs, outputs }) => {
       {},
       {
         boundVariable: "width",
-        bindFn: x => Math.max(Math.floor(-x), 1) * 2000,
-        dragAxis: "x"
+        bindFn: x => Math.max(-x, 1) * 2000,
+        dragAxis: "x",
+        name: "right"
       }
     ),
     clone(
@@ -80,14 +82,11 @@ const House = ({ inputs, outputs }) => {
       {
         boundVariable: "bays",
         bindFn: (x, { bayLength }) => {
-          return Math.max(Math.floor( (x*2) % bayLength), 1);
+          return Math.max(Math.floor((x*2) % bayLength), 1);
         },
         dragAxis: "z"
       }
     )
-    // clone(sourceBall, {y: 1}, {}, {boundVariable: 'bays', bindFn: ((x, {bayLength}) => {
-    //   return Math.min(Math.floor((x)%bayLength), 1)
-    // }), dragAxis: 'z'})
   ];
 
   let outlineMesh = undefined;
@@ -115,9 +114,10 @@ const House = ({ inputs, outputs }) => {
   };
 
   const updateBalls = (inputs, dimensions) => {
-    balls[0].position.y = dimensions.external.height / 1000;
-    balls[1].position.x = dimensions.external.width / 2000;
-    balls[2].position.x = -dimensions.external.width / 2000;
+    balls[0].position.y = inputs.dimensions.roofApexHeight/1000;//dimensions.external.height / 1000;
+    balls[1].position.x = inputs.dimensions.width/2000;//dimensions.external.width / 2000;
+    balls[2].position.x = -inputs.dimensions.width/2000;//-dimensions.external.width / 2000;
+
     balls[3].position.z =
       Math.floor(inputs.dimensions.bays * inputs.dimensions.bayLength) / 2000;
     // balls[4].position.z = dimensions.external.length/2000
@@ -130,11 +130,12 @@ const House = ({ inputs, outputs }) => {
     draw(pieces);
     addOutlineMesh();
     house.add(...balls);
-    updateBalls(inputs, figures.dimensions);
+
     // const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 10, 'green')
     // house.add(yArrow)
   };
   update({ inputs, outputs });
+  updateBalls(inputs, figures.dimensions);
 
   house.rotation.y = -Math.PI/6;
 

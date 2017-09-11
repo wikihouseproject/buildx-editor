@@ -61,17 +61,15 @@ const changeDimensions = house => newDimensions => {
   //   NoFlo.sendToRuntime(NoFlo.nofloRuntime, NoFlo.lastGraphName, 'parameters', { dimensions })
   //   return
   // }
-  debounce(() => {
-    dimensions = merge(dimensions, newDimensions);
-    if (USING_WEBWORKERS) {
-      wrenWorker.postMessage({ dimensions });
-    } else {
-      Wren({ dimensions }).then(({ inputs, outputs }) => {
-        house.update({ inputs, outputs });
-      });
-    }
-  }, 10)();
-};
+  dimensions = merge(dimensions, newDimensions);
+  if (USING_WEBWORKERS) {
+    wrenWorker.postMessage({ dimensions });
+  } else {
+    Wren({ dimensions }).then(({ inputs, outputs }) => {
+      house.update({ inputs, outputs });
+    });
+  }
+}
 
 // function handleOutlineMesh(intersects) {
 //   if (intersects.length > 0) {
@@ -90,6 +88,7 @@ function persist(obj, method) {
     body: JSON.stringify(obj)
   });
 }
+const dbPersist = debounce(persist, 50, { leading: false, trailing: true })
 
 function handleRotate(intersects, intersection) {
   // handleOutlineMesh(intersects)
@@ -97,32 +96,47 @@ function handleRotate(intersects, intersection) {
     mouse.orbitControls.enabled = false;
     house.output.rotation.y = mouse.state.position.x * 4;
 
-    persist({ rotation: house.output.rotation }, "PATCH");
+    // dbPersist({ rotation: house.output.rotation }, "PATCH");
   }
 }
 
 function handleResize(intersects, intersection) {
   if (mouse.state.activeTarget) {
     const ball = mouse.state.activeTarget.object;
+
+    const newpos = ball.position.clone()
+    newpos.applyAxisAngle(new THREE.Vector3(0,1,0), house.output.rotation.y)
+    const position = house.output.position.clone()
+    position.add(newpos)
+
+    // const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), position, 10, 'green')
+    // scene.add(yArrow)
+
     plane.setFromNormalAndCoplanarPoint(
       camera.getWorldDirection(plane.normal),
-      ball.position
+      position
     );
+
     if (raycaster.ray.intersectPlane(plane, intersection)) {
-      // const results = ball.userData.bindFn(intersection[ball.userData.dragAxis], dimensions)//.map(r => r*1000)
-      // const keys = ball.userData.boundVariable
-      // let d = {}
-      // console.log(keys, results)
-
+      const position = house.output.worldToLocal(intersection)[ball.userData.dragAxis]
       const inputs = {
-        [ball.userData.boundVariable]: ball.userData.bindFn(
-          intersection[ball.userData.dragAxis],
+        [ball.userData.boundVariable]: Math.floor(ball.userData.bindFn(
+          position,
           dimensions
-        )
+        ))
       };
-      changeDimensions(house)(inputs);
 
-      persist({ dimensions: inputs }, "PATCH");
+      ball.position[ball.userData.dragAxis] = position
+      if (ball.userData.boundVariable === 'width') {
+        if (ball.userData.name === "left") {
+          house.balls[2].position[ball.userData.dragAxis] = -position
+        } else {
+          house.balls[1].position[ball.userData.dragAxis] = -position
+        }
+      }
+      changeDimensions(house)(inputs)
+
+      dbPersist({ dimensions: inputs }, "PATCH");
     }
   }
 }
@@ -135,7 +149,7 @@ function handleMove(intersects, intersection) {
       house.output.position.x = intersection.x;
       house.output.position.z = intersection.z;
 
-      persist({ position: house.output.position }, "PATCH");
+      // dbPersist(house.output.position, "PATCH");
     }
   }
 }
@@ -281,6 +295,13 @@ function prerender(buildings = []) {
       const hud = HUD(dimensions, changeDimensions(house));
       mouse = Mouse(window, camera, renderer.domElement);
       mouse.events.on("all", mouseEvent);
+      mouse.events.on("up", () => {
+        persist({
+          rotation: house.output.rotation,
+          position: house.output.position
+          // dimensions: newDimensions
+        }, "PATCH");
+      });
       document.getElementById("figures").style.display = "block";
       scene.add(house.output);
       tween.start();
