@@ -14,7 +14,7 @@ const SiteOutline = _coords => {
 
   const material = new THREE.LineBasicMaterial({ color: 0x000000 });
   const line = new THREE.Line(geometry, material);
-
+  line.position.y = 0.01;
   return line;
 };
 
