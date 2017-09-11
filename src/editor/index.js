@@ -171,7 +171,7 @@ function changeCurrentAction(event) {
   event.target.classList.add(activeClass);
 }
 
-var position = { x: 0, y: 80, z: 0 };
+var position = { x: 0, y: 70, z: 0 };
 var target = { x: 0, y: 30, z: 24 };
 camera.position.copy(new THREE.Vector3(position.x, position.y, position.z));
 camera.lookAt(new THREE.Vector3(0, 0, 0));
