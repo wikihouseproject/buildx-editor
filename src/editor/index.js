@@ -69,7 +69,7 @@ const changeDimensions = house => newDimensions => {
       house.update({ inputs, outputs });
     });
   }
-}
+};
 
 // function handleOutlineMesh(intersects) {
 //   if (intersects.length > 0) {
@@ -88,7 +88,7 @@ function persist(obj, method) {
     body: JSON.stringify(obj)
   });
 }
-const dbPersist = debounce(persist, 50, { leading: false, trailing: true })
+const dbPersist = debounce(persist, 50, { leading: false, trailing: true });
 
 function handleRotate(intersects, intersection) {
   // handleOutlineMesh(intersects)
@@ -104,10 +104,10 @@ function handleResize(intersects, intersection) {
   if (mouse.state.activeTarget) {
     const ball = mouse.state.activeTarget.object;
 
-    const newpos = ball.position.clone()
-    newpos.applyAxisAngle(new THREE.Vector3(0,1,0), house.output.rotation.y)
-    const position = house.output.position.clone()
-    position.add(newpos)
+    const newpos = ball.position.clone();
+    newpos.applyAxisAngle(new THREE.Vector3(0, 1, 0), house.output.rotation.y);
+    const position = house.output.position.clone();
+    position.add(newpos);
 
     // const yArrow = new THREE.ArrowHelper( new THREE.Vector3(0,1,0), position, 10, 'green')
     // scene.add(yArrow)
@@ -118,23 +118,24 @@ function handleResize(intersects, intersection) {
     );
 
     if (raycaster.ray.intersectPlane(plane, intersection)) {
-      const position = house.output.worldToLocal(intersection)[ball.userData.dragAxis]
+      const position = house.output.worldToLocal(intersection)[
+        ball.userData.dragAxis
+      ];
       const inputs = {
-        [ball.userData.boundVariable]: Math.floor(ball.userData.bindFn(
-          position,
-          dimensions
-        ))
+        [ball.userData.boundVariable]: Math.floor(
+          ball.userData.bindFn(position, dimensions)
+        )
       };
 
-      ball.position[ball.userData.dragAxis] = position
-      if (ball.userData.boundVariable === 'width') {
+      ball.position[ball.userData.dragAxis] = position;
+      if (ball.userData.boundVariable === "width") {
         if (ball.userData.name === "left") {
-          house.balls[2].position[ball.userData.dragAxis] = -position
+          house.balls[2].position[ball.userData.dragAxis] = -position;
         } else {
-          house.balls[1].position[ball.userData.dragAxis] = -position
+          house.balls[1].position[ball.userData.dragAxis] = -position;
         }
       }
-      changeDimensions(house)(inputs)
+      changeDimensions(house)(inputs);
 
       dbPersist({ dimensions: inputs }, "PATCH");
     }
@@ -172,7 +173,7 @@ function changeCurrentAction(event) {
 }
 
 var position = { x: 0, y: 70, z: 0 };
-var target = { x: 0, y: 30, z: 24 };
+var target = { x: 20, y: 25, z: 33 };
 camera.position.copy(new THREE.Vector3(position.x, position.y, position.z));
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 var tween = new TWEEN.Tween(position).to(target, 1500);
@@ -245,24 +246,44 @@ function loadData() {
             window.project.newBuildingUrl;
           const siteOutline = SiteOutline(window.project.site.bounds.cartesian);
 
-          const mapImage = `https://maps.googleapis.com/maps/api/staticmap?center=${window.project.site.center}&zoom=${20}&size=512x512&maptype=satellite&key=AIzaSyCYoR9LbdepF82lzZh4XYRbcdtiEvR7oXg`
-          var map = new THREE.TextureLoader().load(mapImage,
+          const mapImage = `https://maps.googleapis.com/maps/api/staticmap?center=${window
+            .project.site
+            .center}&zoom=${20}&size=512x512&maptype=satellite&key=AIzaSyCYoR9LbdepF82lzZh4XYRbcdtiEvR7oXg`;
+          var map = new THREE.TextureLoader().load(
+            mapImage,
             texture => {
               texture.wrapS = THREE.RepeatWrapping;
               texture.wrapT = THREE.RepeatWrapping;
-              const pg = new THREE.PlaneGeometry(window.project.site.gpp, window.project.site.gpp, 32);
-              const m = new THREE.MeshBasicMaterial( {map: texture, color: 0xEEEEEE, transparent: true, opacity: 0.8} );
+              const pg = new THREE.PlaneGeometry(
+                window.project.site.gpp,
+                window.project.site.gpp,
+                32
+              );
+              const m = new THREE.MeshBasicMaterial({
+                map: texture,
+                color: 0xeeeeee,
+                transparent: true,
+                opacity: 0.8
+              });
               const p = new THREE.Mesh(pg, m);
-              p.visible = true;
-              p.rotation.x = -Math.PI/2
-              scene.add(p)
+              p.visible = false;
+              p.rotation.x = -Math.PI / 2;
+              scene.add(p);
+
+              document
+                .getElementById("toggle-map")
+                .addEventListener("click", event => {
+                  event.preventDefault();
+                  p.visible = !p.visible;
+                });
             },
             function(xhr) {
               console.log(xhr.loaded / xhr.total * 100 + "% loaded");
             },
             function(xhr) {
               console.error("An error occurred");
-          });
+            }
+          );
 
           scene.add(siteOutline);
           prerender(window.project.buildings);
@@ -316,11 +337,14 @@ function prerender(buildings = []) {
       mouse = Mouse(window, camera, renderer.domElement);
       mouse.events.on("all", mouseEvent);
       mouse.events.on("up", () => {
-        persist({
-          rotation: house.output.rotation,
-          position: house.output.position
-          // dimensions: newDimensions
-        }, "PATCH");
+        persist(
+          {
+            rotation: house.output.rotation,
+            position: house.output.position
+            // dimensions: newDimensions
+          },
+          "PATCH"
+        );
       });
       document.getElementById("figures").style.display = "block";
       scene.add(house.output);
