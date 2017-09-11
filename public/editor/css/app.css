@@ -19,6 +19,11 @@ body {
   right: 0px;
 }
 
+#figures,
+#add-building {
+  display: none;
+}
+
 #dimensions {
   word-wrap: break-word;
   font-size: 12px;

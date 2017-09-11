@@ -29,8 +29,14 @@ const figures = (inputs, points) => {
     sheetsEstimate: basic(estimates.sheets)
   };
 
+  const baseCostPerSqmm = 4 / 1000;
+  const chassisTotal = baseCostPerSqmm * areas.external.footprint;
+  const insulationTotal = 100;
+
   const costs = {
-    total: gbp(1000)
+    chassisTotal: gbp(chassisTotal),
+    insulationTotal: gbp(insulationTotal),
+    total: gbp(chassisTotal + insulationTotal)
   };
 
   return {
