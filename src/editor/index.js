@@ -2,7 +2,7 @@ import Mouse from "./ui/controls/mouse";
 import HUD from "./ui/controls/hud";
 import House from "./components/house";
 import SiteOutline from "./components/site_outline";
-import { merge } from "lodash";
+import { merge, debounce } from "lodash";
 import Wren from "../lib/wren";
 import config from "../config";
 import TWEEN from "@tweenjs/tween.js";
@@ -57,18 +57,20 @@ const activeClass = "active";
 let { dimensions } = Wren.inputs();
 
 const changeDimensions = house => newDimensions => {
-  dimensions = merge(dimensions, newDimensions);
   // if (NoFlo.nofloNetworkLive) {
   //   NoFlo.sendToRuntime(NoFlo.nofloRuntime, NoFlo.lastGraphName, 'parameters', { dimensions })
   //   return
   // }
-  if (USING_WEBWORKERS) {
-    wrenWorker.postMessage({ dimensions });
-  } else {
-    Wren({ dimensions }).then(({ inputs, outputs }) => {
-      house.update({ inputs, outputs });
-    });
-  }
+  debounce(() => {
+    dimensions = merge(dimensions, newDimensions);
+    if (USING_WEBWORKERS) {
+      wrenWorker.postMessage({ dimensions });
+    } else {
+      Wren({ dimensions }).then(({ inputs, outputs }) => {
+        house.update({ inputs, outputs });
+      });
+    }
+  }, 10)();
 };
 
 // function handleOutlineMesh(intersects) {
