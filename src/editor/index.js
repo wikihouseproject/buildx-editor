@@ -244,6 +244,26 @@ function loadData() {
           document.getElementById("add-building").href =
             window.project.newBuildingUrl;
           const siteOutline = SiteOutline(window.project.site.bounds.cartesian);
+
+          const mapImage = `https://maps.googleapis.com/maps/api/staticmap?center=${window.project.site.center}&zoom=${20}&size=512x512&maptype=satellite&key=AIzaSyCYoR9LbdepF82lzZh4XYRbcdtiEvR7oXg`
+          var map = new THREE.TextureLoader().load(mapImage,
+            texture => {
+              texture.wrapS = THREE.RepeatWrapping;
+              texture.wrapT = THREE.RepeatWrapping;
+              const pg = new THREE.PlaneGeometry(window.project.site.gpp, window.project.site.gpp, 32);
+              const m = new THREE.MeshBasicMaterial( {map: texture, color: 0xEEEEEE, transparent: true, opacity: 0.8} );
+              const p = new THREE.Mesh(pg, m);
+              p.visible = true;
+              p.rotation.x = -Math.PI/2
+              scene.add(p)
+            },
+            function(xhr) {
+              console.log(xhr.loaded / xhr.total * 100 + "% loaded");
+            },
+            function(xhr) {
+              console.error("An error occurred");
+          });
+
           scene.add(siteOutline);
           prerender(window.project.buildings);
         })
