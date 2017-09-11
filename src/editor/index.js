@@ -81,11 +81,23 @@ const changeDimensions = house => newDimensions => {
 //   }
 // }
 
+function persist(obj, method) {
+  fetch(window.project.buildings[0].endpoint, {
+    method,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(obj)
+  });
+}
+
 function handleRotate(intersects, intersection) {
   // handleOutlineMesh(intersects)
   if (mouse.state.activeTarget) {
     mouse.orbitControls.enabled = false;
     house.output.rotation.y = mouse.state.position.x * 4;
+
+    persist({ rotation: house.output.rotation }, "PATCH");
   }
 }
 
@@ -102,13 +114,15 @@ function handleResize(intersects, intersection) {
       // let d = {}
       // console.log(keys, results)
 
-      const d = {
+      const inputs = {
         [ball.userData.boundVariable]: ball.userData.bindFn(
           intersection[ball.userData.dragAxis],
           dimensions
         )
       };
-      changeDimensions(house)(d);
+      changeDimensions(house)(inputs);
+
+      persist({ dimensions: inputs }, "PATCH");
     }
   }
 }
@@ -120,6 +134,8 @@ function handleMove(intersects, intersection) {
       // console.log(intersection)
       house.output.position.x = intersection.x;
       house.output.position.z = intersection.z;
+
+      persist({ position: house.output.position }, "PATCH");
     }
   }
 }
