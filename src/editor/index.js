@@ -46,32 +46,13 @@ let hitTestObjects = [],
   intersects = [],
   intersectFn = undefined,
   house = undefined,
+  mouse = undefined,
   currentAction = "RESIZE";
 
 const activeClass = "active";
 
 // Export so NoFlo build can use it
 // window.wren = Wren;
-
-const { hash } = window.location;
-window.projectID = null;
-if (hash !== "") {
-  const matched = hash.match(/\d+/);
-  if (matched) {
-    window.projectID = parseInt(matched[0]);
-    fetch(`${config.buildxURL}/projects/${window.projectID}`)
-      .then(response => response.json())
-      .then(json => {
-        const siteOutline = SiteOutline(json.site.bounds.cartesian);
-        console.info(json.buildings);
-        scene.add(siteOutline);
-      })
-      .catch(ex => console.error({ ex }));
-  }
-}
-
-// function init() {
-// }
 
 let { dimensions } = Wren.inputs();
 
@@ -158,10 +139,10 @@ function changeCurrentAction(event) {
   event.target.classList.add(activeClass);
 }
 
-const mouse = Mouse(window, camera, renderer.domElement);
-
 var position = { x: 0, y: 80, z: 0 };
 var target = { x: 0, y: 30, z: 24 };
+camera.position.copy(new THREE.Vector3(position.x, position.y, position.z));
+camera.lookAt(new THREE.Vector3(0, 0, 0));
 var tween = new TWEEN.Tween(position).to(target, 1500);
 tween.easing(TWEEN.Easing.Cubic.InOut);
 tween.onUpdate(function() {
@@ -196,7 +177,6 @@ function mouseEvent() {
   mouse.handleIntersects(intersects);
   intersectFn(intersects, new THREE.Vector3());
 }
-mouse.events.on("all", mouseEvent);
 
 loader.load(
   "img/materials/plywood/birch.jpg",
@@ -207,7 +187,7 @@ loader.load(
       map: texture,
       overdraw: 0.5
     });
-    prerender();
+    loadData();
   },
   function(xhr) {
     console.log(xhr.loaded / xhr.total * 100 + "% loaded");
@@ -217,7 +197,31 @@ loader.load(
   }
 );
 
-function prerender() {
+function loadData() {
+  const { hash } = window.location;
+  window.projectID = null;
+  if (hash !== "") {
+    const matched = hash.match(/\d+/);
+    if (matched) {
+      window.projectID = parseInt(matched[0]);
+      const projectURL = `${config.buildxURL}/projects/${window.projectID}`;
+      fetch(projectURL)
+        .then(response => response.json())
+        .then(json => {
+          const siteOutline = SiteOutline(json.site.bounds.cartesian);
+          document.getElementById("add-building").href = json.newBuildingUrl;
+          scene.add(siteOutline);
+          prerender(json.buildings);
+        })
+        .catch(ex => {
+          prerender();
+          console.error({ ex });
+        });
+    }
+  }
+}
+
+function prerender(buildings = []) {
   Wren({ dimensions }).then(res => {
     house = House(res);
     updateFigures(res.outputs.figures);
@@ -225,7 +229,6 @@ function prerender() {
     if (USING_WEBWORKERS) {
       wrenWorker.onmessage = event => {
         house.update(event.data);
-        // console.info(event.data)
         updateFigures(event.data.outputs.figures);
       };
     }
@@ -237,11 +240,18 @@ function prerender() {
     //   house.update(updatedGeometry.pieces)
     // })
 
-    const hud = HUD(dimensions, changeDimensions(house));
-    scene.add(house.output);
-    requestAnimationFrame(render);
+    if (buildings.length > 0) {
+      const hud = HUD(dimensions, changeDimensions(house));
+      mouse = Mouse(window, camera, renderer.domElement);
+      mouse.events.on("all", mouseEvent);
+      document.getElementById("figures").style.display = "block";
+      scene.add(house.output);
+      tween.start();
+    } else {
+      document.getElementById("add-building").style.display = "block";
+    }
 
-    tween.start();
+    requestAnimationFrame(render);
   });
 }
 
@@ -249,7 +259,9 @@ function render() {
   stats.begin();
   TWEEN.update();
   renderer.render(scene, camera);
-  mouse.orbitControls.update(); // needed because of damping
+  if (mouse) {
+    mouse.orbitControls.update();
+  } // needed because of damping
   stats.end();
   rendererStats.update(renderer);
   requestAnimationFrame(render);
