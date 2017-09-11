@@ -217,19 +217,21 @@ loader.load(
 
 function loadData() {
   const { hash } = window.location;
-  window.projectID = null;
+  window.project = {};
   if (hash !== "") {
     const matched = hash.match(/\d+/);
     if (matched) {
-      window.projectID = parseInt(matched[0]);
-      const projectURL = `${config.buildxURL}/projects/${window.projectID}`;
-      fetch(projectURL)
+      window.project.id = parseInt(matched[0]);
+      window.project.url = `${config.buildxURL}/projects/${window.project.id}`;
+      fetch(window.project.url)
         .then(response => response.json())
         .then(json => {
-          const siteOutline = SiteOutline(json.site.bounds.cartesian);
-          document.getElementById("add-building").href = json.newBuildingUrl;
+          window.project = json;
+          document.getElementById("add-building").href =
+            window.project.newBuildingUrl;
+          const siteOutline = SiteOutline(window.project.site.bounds.cartesian);
           scene.add(siteOutline);
-          prerender(json.buildings);
+          prerender(window.project.buildings);
         })
         .catch(ex => {
           prerender();
@@ -240,7 +242,11 @@ function loadData() {
 }
 
 function prerender(buildings = []) {
-  Wren({ dimensions }).then(res => {
+  let newDimensions = {};
+  if (window.project.buildings && window.project.buildings.length > 0) {
+    newDimensions = window.project.buildings[0].dimensions || {};
+  }
+  Wren({ dimensions: newDimensions }).then(res => {
     house = House(res);
     updateFigures(res.outputs.figures);
 
@@ -259,6 +265,19 @@ function prerender(buildings = []) {
     // })
 
     if (buildings.length > 0) {
+      const { rotation, position } = window.project.buildings[0];
+      if (rotation) {
+        house.output.rotation.x = rotation._x || 0;
+        house.output.rotation.y = rotation._y || 0;
+        house.output.rotation.z = rotation._z || 0;
+        house.output.rotation.order = rotation._order || "XYZ";
+      }
+      if (position) {
+        house.output.position.x = position.x || 0;
+        house.output.position.y = position.y || 0;
+        house.output.position.z = position.z || 0;
+      }
+
       const hud = HUD(dimensions, changeDimensions(house));
       mouse = Mouse(window, camera, renderer.domElement);
       mouse.events.on("all", mouseEvent);
