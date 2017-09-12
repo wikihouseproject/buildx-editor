@@ -25,6 +25,7 @@ body {
   display: none;
 }
 #figures > div {
+  margin-top: 40px;
   pointer-events: none;
 }
 
