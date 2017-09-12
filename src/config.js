@@ -1,5 +1,6 @@
 const defaults = {
-  WEBWORKERS: true
+  WEBWORKERS: true,
+  DEBUG: false // !!localStorage.getItem('debug')
 };
 
 module.exports = (function() {

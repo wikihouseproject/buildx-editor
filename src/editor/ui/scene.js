@@ -1,4 +1,5 @@
 import { scale } from "../utils";
+import config from "../../config";
 
 const SIZE = () => ({
   WIDTH: window.innerWidth,
@@ -9,14 +10,17 @@ const resizeRenderer = () => renderer.setSize(SIZE().WIDTH, SIZE().HEIGHT);
 const container = document.getElementById("app");
 
 const stats = new Stats();
-stats.showPanel(0);
-container.appendChild(stats.dom);
-
 const rendererStats = new THREEx.RendererStats();
-rendererStats.domElement.style.position = "absolute";
-rendererStats.domElement.style.left = "0px";
-rendererStats.domElement.style.bottom = "0px";
-container.appendChild(rendererStats.domElement);
+
+if (config.DEBUG) {
+  stats.showPanel(0);
+  container.appendChild(stats.dom);
+
+  rendererStats.domElement.style.position = "absolute";
+  rendererStats.domElement.style.left = "0px";
+  rendererStats.domElement.style.bottom = "0px";
+  container.appendChild(rendererStats.domElement);
+}
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
