@@ -23,6 +23,7 @@ const HUD = (dimensions, changeDimensionsFn) => {
   addControl("rightWallHeight", 1000, 5500, 1);
 
   addControl("bays", 3, 15, 1);
+  gui.close();
 };
 
 module.exports = HUD;
