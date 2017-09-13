@@ -1,0 +1,71 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  line-height: 2;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+#controls {
+  position: absolute;
+  right: 0;
+  top: 200px;
+  padding: 20px;
+  width: 240px;
+  background: rgba(238, 238, 238, 0.7);
+}
+#flowhubLink {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+
+#figures,
+#add-building {
+  display: none;
+}
+#figures > div {
+  margin-top: 40px;
+  pointer-events: none;
+}
+
+#dimensions {
+  word-wrap: break-word;
+  font-size: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Andale Mono", AndaleMono, monospace;
+}
+
+input {
+  width: 100%;
+}
+tr td:last-child {
+  text-align: right;
+}
+li {
+  cursor: pointer;
+  list-style: none;
+}
+li.active {
+  background: white;
+  text-align: right;
+}
+
+canvas[data-cursor] {
+  cursor: move; /* fallback: no `url()` support or images disabled */
+  cursor: url(images/grab.cur); /* fallback: Internet Explorer */
+  cursor: -webkit-grab; /* Chrome 1-21, Safari 4+ */
+  cursor:    -moz-grab; /* Firefox 1.5-26 */
+  cursor:         grab; /* W3C standards syntax, should come least */
+}
+
+canvas[data-cursor='grabbing'] {
+  cursor: url(images/grabbing.cur);
+  cursor: -webkit-grabbing;
+  cursor:    -moz-grabbing;
+  cursor:         grabbing;
+}

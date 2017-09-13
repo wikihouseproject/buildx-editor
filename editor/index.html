@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="../vendor/js/three.min.js"></script>
+  <script src="../vendor/js/OrbitControls.js"></script>
+  <script src="../vendor/js/SectionHelper.js"></script>
+  <script src="../vendor/js/threex.rendererstats.js"></script>
+  <script src="../vendor/js/stats.min.js"></script>
+  <script src="../vendor/js/dat.gui.js"></script>
+
+  <title>3D Editor</title>
+
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="app"></div>
+  <div id="controls">
+    <a href="#" target="_parent" id="add-building">Add Building</a>
+    <a href="#" target="_parent" id="toggle-map">Toggle Map</a>
+    <div id="figures">
+      <ul>
+        <li id="RESIZE" class="active">Resize</li>
+        <li id="MOVE">Move</li>
+        <li id="ROTATE">Rotate</li>
+      </ul>
+      <div>
+        <hr />
+        <table id="metrics"></table>
+        <hr />
+        <table id="costs"></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- <script src="../editor/js/noflo.js"></script> -->
+  <script src="../js/editor.bundle.js"></script>
+</body>
+</html>
