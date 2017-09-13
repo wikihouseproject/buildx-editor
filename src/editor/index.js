@@ -340,6 +340,8 @@ function prerender(buildings = []) {
     //   house.update(updatedGeometry.pieces)
     // })
 
+    mouse = Mouse(window, camera, renderer.domElement);
+
     if (buildings.length > 0) {
       const { rotation, position } = window.project.buildings[0];
       if (rotation) {
@@ -355,7 +357,7 @@ function prerender(buildings = []) {
       }
 
       const hud = HUD(dimensions, changeDimensions(house));
-      mouse = Mouse(window, camera, renderer.domElement);
+
       mouse.events.on("all", mouseEvent);
 
       // mouse.events.on("up", () => {
