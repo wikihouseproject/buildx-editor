@@ -1,6 +1,9 @@
 const defaults = require("../../defaults");
-const dimensions = require("../../outputs/figures/dimensions")(defaults);
-const points = require("../../outputs/points")(dimensions);
+const points = require("../../outputs/points")(defaults.dimensions);
+const dimensions = require("../../outputs/figures/dimensions")(
+  defaults,
+  points
+);
 
 it.skip("generates points with keys to indicate positions.", () => {
   //    T

@@ -51,7 +51,8 @@ li {
   list-style: none;
 }
 li.active {
-  background: red;
+  background: white;
+  text-align: right;
 }
 
 canvas[data-cursor] {

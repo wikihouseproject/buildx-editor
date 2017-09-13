@@ -1,17 +1,21 @@
+const { distance } = require("../../utils/point");
+
 const dimensions = (inputs, points) => {
   const d = inputs.dimensions;
   const m = inputs.materials;
+
+  const length = d.bays * d.bayLength;
 
   const iWidth =
     d.width -
     d.finDepth -
     (m.plywood.depth + d.battenHeight + m.plasterboard.thickness) * 2;
+
   const iLength =
-    d.length +
+    length +
     d.beamWidth -
     (d.finDepth +
       (m.plywood.depth + m.plasterboard.depth / 2 + d.battenHeight) * 2);
-  // (d.bays * d.bayLength)
 
   const eWidth =
     d.width +
@@ -21,8 +25,9 @@ const dimensions = (inputs, points) => {
       m.cladding.horizontalBattenWidth +
       m.cladding.verticalBattenWidth) *
       2;
+
   const eLength =
-    d.length +
+    length +
     d.beamWidth +
     (m.cladding.thickness +
       m.cladding.horizontalBattenWidth +
@@ -41,17 +46,19 @@ const dimensions = (inputs, points) => {
   return {
     internal: {
       width: iWidth,
-      length: iLength
+      length: iLength,
+      leftRoof: distance(points.inner.TL, points.inner.T),
+      rightRoof: distance(points.inner.TR, points.inner.T)
       // height: 10,
-      // leftRoofLength: 1,
-      // rightRoofLength: 1,
     },
     external: {
       width: eWidth,
       length: eLength,
-      height: eHeight //points.outer.BR[1],
-      // leftRoofLength: 1,
-      // rightRoofLength: 1,
+      height: eHeight,
+      leftWall: distance(points.outer.BL, points.outer.TL),
+      rightWall: distance(points.outer.BR, points.outer.TR),
+      leftRoof: distance(points.outer.TL, points.outer.T),
+      rightRoof: distance(points.outer.TR, points.outer.T)
     }
   };
 };

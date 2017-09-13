@@ -51,6 +51,13 @@ const areas = (inputs, dimensions, points) => {
     dimensions.internal.length
   );
 
+  const eRoofArea =
+    (dimensions.external.leftRoof + dimensions.external.rightRoof) *
+    dimensions.external.length;
+  const footprint = dimensions.external.width * dimensions.external.length;
+  const eWallArea =
+    (dimensions.external.leftWall + dimensions.external.rightWall) *
+    dimensions.external.length;
   //   const innerArea = endWallArea(profile.inner);
   //   const outerArea = endWallArea(profile.outer);
 
@@ -65,17 +72,21 @@ const areas = (inputs, dimensions, points) => {
         2 * iEndWallArea,
       // area(profile.inner, walls, length.inner) + 2*endWallArea(profile.inner),
 
-      roof: leftRoofArea + rightRoofArea,
+      roof:
+        (dimensions.internal.leftRoof + dimensions.internal.rightRoof) *
+        dimensions.internal.length,
       // openings: 10, //
       // endWalls: points => Clipper.area(points)/(100*100),
       // surface: 10,
       endWall: iEndWallArea
     },
     external: {
-      footprint: dimensions.external.width * dimensions.external.length, // area(profile.outer, undersides, length.outer)
+      footprint, // area(profile.outer, undersides, length.outer)
       // walls: area(profile.outer, walls, length.outer) + 2*endWallArea(profile.outer),
-      // roof: area(profile.outer, roofs, length.outer)
-      endWall: eEndWallArea
+      // roof: area(profile.outer, roofs, length.outer),
+      endWall: eEndWallArea,
+      roof: eRoofArea,
+      surface: eRoofArea + eEndWallArea * 2 + eWallArea * 2
     }
     // openings: {
     //   // total: 100,

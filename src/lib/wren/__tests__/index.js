@@ -25,7 +25,8 @@ it("returns outputs object", () => {
       "volumes",
       "estimates",
       "metrics",
-      "costs"
+      "costs",
+      "total"
     ]);
   });
 });
