@@ -6,19 +6,25 @@ const volumes = (inputs, dimensions, points, areas) => {
 
   const iEndWallVolume = inputDimensions.finDepth * areas.internal.endWall; // endwall sits inside frame
   const eEndWallVolume = inputDimensions.finDepth * areas.external.endWall; // endwall sits inside frame
-  const frameVolume = eEndWallVolume - iEndWallVolume;
+  const frameVolume =
+    (eEndWallVolume - iEndWallVolume) * dimensions.external.length;
+
+  const externalVolume = dimensions.external.length * areas.external.endWall;
+  const internalVolume = dimensions.internal.length * areas.internal.endWall;
 
   const _volumes = {
+    portalFrame: frameVolume,
+    insulation: frameVolume,
+    endWalls: iEndWallVolume * 0.2,
     internal: {
-      total: dimensions.internal.length * areas.internal.endWall,
+      total: internalVolume,
       endWall: iEndWallVolume,
-      insulation: frameVolume + iEndWallVolume * 2 // rough est for insulation needed
-
+      insulation: (externalVolume - internalVolume) * 0.7 // rough est for insulation needed
       // frame: 1,
       // connectors: 1
     },
     external: {
-      total: dimensions.external.length * areas.external.endWall,
+      total: externalVolume,
       endWall: eEndWallVolume
     },
     materials: {

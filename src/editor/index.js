@@ -27,6 +27,27 @@ import {
 // import { currentAction, changeCurrentAction }  from './ui/controls/sidebar'
 import WrenWorker from "worker-loader?inline!../lib/wren/worker";
 
+function persist(obj, method) {
+  if (
+    !window.project ||
+    !window.project.buildings ||
+    window.project.buildings.length < 1
+  )
+    return;
+  fetch(window.project.buildings[0].endpoint, {
+    method,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(obj)
+  });
+}
+const dSave = debounce(function(obj) {
+  persist(obj, "PATCH");
+}, 500);
+
+// const dbPersist = debounce(persist, 50, { leading: false, trailing: true });
+
 const renderObj = obj =>
   Object.keys(obj)
     .map(key => `<tr><td>${key}</td><td>${obj[key].join("")}</td></tr>`)
@@ -34,9 +55,18 @@ const renderObj = obj =>
 
 const metricsTable = document.getElementById("metrics");
 const costsTable = document.getElementById("costs");
-const updateFigures = ({ metrics, costs }) => {
+
+const updateFigures = ({ inputs, outputs }) => {
+  const { metrics, costs } = outputs.figures;
   metricsTable.innerHTML = renderObj(metrics);
   costsTable.innerHTML = renderObj(costs);
+
+  const values = {
+    sheets: metrics["sheetsEstimate"][0],
+    days: metrics["CNC Time"][0]
+  };
+
+  dSave({ dimensions: Object.assign({}, inputs.dimensions, values) });
 };
 
 const USING_WEBWORKERS = window.Worker && config.WEBWORKERS;
@@ -62,6 +92,7 @@ const changeDimensions = house => newDimensions => {
   //   return
   // }
   dimensions = merge(dimensions, newDimensions);
+  // console.log(dimensions)
   if (USING_WEBWORKERS) {
     wrenWorker.postMessage({ dimensions });
   } else {
@@ -79,24 +110,12 @@ const changeDimensions = house => newDimensions => {
 //   }
 // }
 
-function persist(obj, method) {
-  fetch(window.project.buildings[0].endpoint, {
-    method,
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(obj)
-  });
-}
-const dbPersist = debounce(persist, 50, { leading: false, trailing: true });
-
 function handleRotate(intersects, intersection) {
   // handleOutlineMesh(intersects)
   if (mouse.state.activeTarget) {
     mouse.orbitControls.enabled = false;
     house.output.rotation.y = mouse.state.position.x * 4;
-
-    // dbPersist({ rotation: house.output.rotation }, "PATCH");
+    dSave({ rotation: house.output.rotation });
   }
 }
 
@@ -137,7 +156,7 @@ function handleResize(intersects, intersection) {
       }
       changeDimensions(house)(inputs);
 
-      dbPersist({ dimensions: inputs }, "PATCH");
+      // dSave({ dimensions: inputs });
     }
   }
 }
@@ -150,7 +169,7 @@ function handleMove(intersects, intersection) {
       house.output.position.x = intersection.x;
       house.output.position.z = intersection.z;
 
-      // dbPersist(house.output.position, "PATCH");
+      dSave({ position: house.output.position });
     }
   }
 }
@@ -176,7 +195,7 @@ var position = { x: 0, y: 70, z: 0 };
 var target = { x: 20, y: 25, z: 33 };
 camera.position.copy(new THREE.Vector3(position.x, position.y, position.z));
 camera.lookAt(new THREE.Vector3(0, 0, 0));
-var tween = new TWEEN.Tween(position).to(target, 1500);
+var tween = new TWEEN.Tween(position).to(target, 1500); //.delay(100);
 tween.easing(TWEEN.Easing.Cubic.InOut);
 tween.onUpdate(function() {
   camera.position.x = position.x;
@@ -303,12 +322,12 @@ function prerender(buildings = []) {
   }
   Wren({ dimensions: newDimensions }).then(res => {
     house = House(res);
-    updateFigures(res.outputs.figures);
+    updateFigures(res);
 
     if (USING_WEBWORKERS) {
       wrenWorker.onmessage = event => {
         house.update(event.data);
-        updateFigures(event.data.outputs.figures);
+        updateFigures(event.data);
       };
     }
     console.info(
@@ -336,16 +355,18 @@ function prerender(buildings = []) {
       const hud = HUD(dimensions, changeDimensions(house));
       mouse = Mouse(window, camera, renderer.domElement);
       mouse.events.on("all", mouseEvent);
-      mouse.events.on("up", () => {
-        persist(
-          {
-            rotation: house.output.rotation,
-            position: house.output.position
-            // dimensions: newDimensions
-          },
-          "PATCH"
-        );
-      });
+
+      // mouse.events.on("up", () => {
+      //   persist(
+      //     {
+      //       rotation: house.output.rotation,
+      //       position: house.output.position
+      //       // dimensions: newDimensions
+      //     },
+      //     "PATCH"
+      //   );
+      // });
+
       document.getElementById("figures").style.display = "block";
       scene.add(house.output);
       tween.start();

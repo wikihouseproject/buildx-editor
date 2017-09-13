@@ -1,14 +1,21 @@
-const estimates = (inputs, volumes) => {
+const estimates = (inputs, areas, volumes) => {
   // const sheets = ((
   //   (
-  //     volumes.plywoodPortalFrame +
-  //     volumes.plywoodConnectors +
-  //     volumes.plywoodEndWalls
-  //   ) * inputs.dimensions.cncwastefactor
+  //     volumes.portalFrame +
+  //     // volumes.plywoodConnectors +
+  //     volumes.endWalls
+  //   ) * inputs.dimensions.cncWasteFactor
   // ) / volumes.materials.singleSheet) + 6
 
+  // const sheets = parseInt(areas.external.surface/1000000) - 10
+
+  const sheets = Math.floor(
+    (volumes.portalFrame + volumes.endWalls) / 10000000000 * 0.23
+  );
+
   return {
-    sheets: 200
+    sheets,
+    daysRequiredToCNC: Math.ceil(sheets / 20)
   };
 };
 
